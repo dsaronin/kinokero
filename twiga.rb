@@ -26,7 +26,7 @@ class Twiga
 
 end # class Twiga
 
-me = Twiga.new()
+me = Twiga.new( :url => "https://secure.majozi.com" )
 me.say_info "\nTwiga starting...\n"
 system('ruby -v')
 me.say_info "...ending\n\n"
