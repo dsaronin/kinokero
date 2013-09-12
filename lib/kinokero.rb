@@ -4,7 +4,7 @@ require "kinokero/ruby_extensions"
 require "faraday"
 require "faraday_middleware"
 require "simple_oauth"
-
+require 'typhoeus/adapters/faraday'
 
 module Kinokero
 # #########################################################################
@@ -71,15 +71,15 @@ module Kinokero
         faraday.request  :oauth2, { :token => options[:oauth_token] } 
       end
       faraday.request  :multipart             # multipart files
-      faraday.request  :json             # json en/decoding
+      faraday.response :json             # json en/decoding
       faraday.request  :url_encoded           # form-encode POST params
       faraday.response :logger                # log requests to STDOUT
-      # faraday.adapter Faraday.default_adapter 
       faraday.adapter  :typhoeus  # make requests with typhoeus
     end # do faraday setup
     
   end
 
+      # faraday.adapter Faraday.default_adapter 
 # ------------------------------------------------------------------------------
 # ------------------------------------------------------------------------------
 

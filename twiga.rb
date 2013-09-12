@@ -36,8 +36,19 @@ class Twiga
 # -----------------------------------------------------------------------------
 # -----------------------------------------------------------------------------
   def do_work()
-    response = @cloudprint.connection.get "/home/stats"
-    puts response.body
+
+    action_path = "/_feed/c395af64361f5ad6323a8296381ccfee123145ba/show_events.json" 
+
+    # response = @cloudprint.connection.get "/home/stats"
+    response = @cloudprint.connection.get action_path do |request|
+      request.params['start'] = 1378018800
+      request.params['end']   = 1378105200
+      request.headers['Content-Type'] = 'application/json'
+    end # do
+
+    say_warn("\n----------------------------------------------------------------\n")
+    puts response.body.first['location']
+    say_warn("\n----------------------------------------------------------------\n")
   end
 
 # -----------------------------------------------------------------------------
@@ -50,7 +61,7 @@ class Twiga
 end # class Twiga
 
 me = Twiga.new( 
-    :url => "https://secure.majozi.com"
+    :url => "https://staging-punda.herokuapp.com"
     #  :oauth_token => "wildblue"
 )
 
