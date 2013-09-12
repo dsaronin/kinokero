@@ -1,6 +1,11 @@
 require "kinokero/version"
 require "kinokero/ruby_extensions"
 
+require "faraday"
+require "faraday_middleware"
+require "simple_oauth"
+
+
 module Kinokero
 # #########################################################################
 
@@ -10,7 +15,8 @@ module Kinokero
     # default options and configurations for AntEngine
   DEFAULT_OPTIONS = {
     :url => 'default',
-    :ssl => { :ca_path => "/usr/lib/ssl/certs" }
+    :oauth_token => 'abcdefghijklmnopqrstuvwxyz',
+    :ssl_ca_path => "/usr/lib/ssl/certs"
   }
     # will be used to determine if user options valid
     # if (in future) any default options were to be off-limits,
@@ -22,7 +28,7 @@ module Kinokero
 
 # #########################################################################
 
-
+  attr_reader :connection
 
 
 # ------------------------------------------------------------------------------
@@ -41,8 +47,9 @@ module Kinokero
 # init stuff goes here; options validations;
     options.assert_valid_keys(VALID_CLOUDPRINT_OPTIONS)
 
-#    unless (options[:duty_group_count].nil?
-#      raise ArgumentError,":duty_group_count must be > 0"
+# future options checking using following pattern
+#    unless (options[:any_key].nil?
+#      raise ArgumentError,":any_key must exist"
 #    end
     
   end
@@ -50,12 +57,19 @@ module Kinokero
 # ------------------------------------------------------------------------------
 # ------------------------------------------------------------------------------
   def setup_connection( options )
-    return Faraday.new( options[:url], options[:ssl] ) do |faraday|
+
+#     return Faraday.new( options[:url], options[:ssl] ) do |faraday|
+#       faraday.adapter  :typhoeus  # make requests with typhoeus
+#     end # do
+
+    return Faraday.new( 
+          options[:url], 
+          :ssl => { :ca_path => options[:ssl_ca_path] }
+    ) do |faraday|
       faraday.request  :retry
-      faraday.request  :oauth
+      faraday.request  :oauth2, { :token => options[:oauth_token] }
       faraday.request  :multipart             # multipart files
-      faraday.request  :mashify               # hashie:mash
-      faraday.request  :multijson             # json en/decoding
+      faraday.request  :json, {:content_type => /\bjson$/}             # json en/decoding
       faraday.request  :url_encoded           # form-encode POST params
       faraday.response :logger                # log requests to STDOUT
       faraday.adapter  :typhoeus  # make requests with typhoeus

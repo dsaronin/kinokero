@@ -1,5 +1,14 @@
 #!/usr/bin/env ruby
+# ****************************************************************************
+# ******  mimic the way RAILS sets up required gems  *************************
+# ****************************************************************************
+require 'rubygems'
 
+# Set up gems listed in the Gemfile.
+ENV['BUNDLE_GEMFILE'] ||= File.expand_path('../../Gemfile', __FILE__)
+require 'bundler/setup' if File.exists?(ENV['BUNDLE_GEMFILE'])
+
+# ****************************************************************************
 require "kinokero"
 
 # ****************************************************************************
@@ -26,7 +35,10 @@ class Twiga
 
 end # class Twiga
 
-me = Twiga.new( :url => "https://secure.majozi.com" )
+me = Twiga.new( 
+    :url => "https://secure.majozi.com",
+    :oauth_token => "wildblue"
+)
 me.say_info "\nTwiga starting...\n"
 system('ruby -v')
 me.say_info "...ending\n\n"
