@@ -1,5 +1,6 @@
 # commonly used extensions from Rails for Ruby
 #
+  require 'kinokero/blank'
 
 # ****************************************************************************
 class Hash

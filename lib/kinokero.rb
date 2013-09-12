@@ -15,7 +15,7 @@ module Kinokero
     # default options and configurations for AntEngine
   DEFAULT_OPTIONS = {
     :url => 'default',
-    :oauth_token => 'abcdefghijklmnopqrstuvwxyz',
+    :oauth_token => nil,
     :ssl_ca_path => "/usr/lib/ssl/certs"
   }
     # will be used to determine if user options valid
@@ -66,12 +66,15 @@ module Kinokero
           options[:url], 
           :ssl => { :ca_path => options[:ssl_ca_path] }
     ) do |faraday|
-      faraday.request  :retry
-      faraday.request  :oauth2, { :token => options[:oauth_token] }
+      #   faraday.request  :retry
+      unless options[:oauth_token].blank?
+        faraday.request  :oauth2, { :token => options[:oauth_token] } 
+      end
       faraday.request  :multipart             # multipart files
-      faraday.request  :json, {:content_type => /\bjson$/}             # json en/decoding
+      faraday.request  :json             # json en/decoding
       faraday.request  :url_encoded           # form-encode POST params
       faraday.response :logger                # log requests to STDOUT
+      # faraday.adapter Faraday.default_adapter 
       faraday.adapter  :typhoeus  # make requests with typhoeus
     end # do faraday setup
     
