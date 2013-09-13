@@ -15,9 +15,15 @@ require "kinokero"
 
 class Twiga
 
+# #########################################################################
+
+  attr_reader :cloudprint
+
+# #########################################################################
 UBUNTU_PPD_PATH  = '/etc/cups/ppd/'
 TEST_PRINTER_PPD = 'HP-LaserJet-1020.ppd'
 TEST_PRINTER     = 'HP-LaserJet-1020'
+# #########################################################################
 
 # -----------------------------------------------------------------------------
   def initialize( options = {} )
@@ -53,7 +59,7 @@ TEST_PRINTER     = 'HP-LaserJet-1020'
   def do_work()
 
     say_warn("\n----------------------------------------------------------------\n")
-    response = @cloudprint.connection.register_anonymous_printer(
+    response = @cloudprint.register_anonymous_printer(
       TEST_PRINTER,
       UBUNTU_PPD_PATH + TEST_PRINTER_PPD
     )
@@ -72,12 +78,14 @@ TEST_PRINTER     = 'HP-LaserJet-1020'
 end # class Twiga
 
 me = Twiga.new( 
-    :url => "https://staging-punda.herokuapp.com"
+    # :url => "https://staging-punda.herokuapp.com"
     #  :oauth_token => "wildblue"
 )
 
 me.say_info "\nTwiga starting...\n"
 #  system('ruby -v')
+
+puts me.cloudprint.inspect
 
 me.do_work()   # primary twiga control area
 
