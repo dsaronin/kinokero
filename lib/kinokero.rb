@@ -12,19 +12,55 @@ module Kinokero
   class Cloudprint
 
 # #########################################################################
-    # default options and configurations for AntEngine
+CRLF = '\r\n'
+
+# The following are used for authentication functions.
+FOLLOWUP_HOST = 'www.google.com/cloudprint'
+FOLLOWUP_URI = 'select%2Fgaiaauth'
+GAIA_HOST = 'www.google.com'
+LOGIN_URI = '/accounts/ServiceLoginAuth'
+LOGIN_URL = 'https://www.google.com/accounts/ClientLogin'
+GCP_SERVICE = 'cloudprint'
+
+# The following are used for general backend access.
+GCP_URL = 'https://www.google.com/cloudprint'
+
+
+# unique name for this running of the GCP connector client
+# formed with gem name + machine-node name (expected to be  unique)
+# TODO: make sure machine nodename is unique
+MY_PROXY_ID = "kinokero::"+`uname -n`.chop
+
+# CLIENT_NAME should be some string identifier for the client you are writing.
+CLIENT_NAME = MY_PROXY_ID + " cloudprint controller v"+ Kinokero::VERSION
+
+# GCP API actions
+GCP_CONTROL  = '/control'
+GCP_DELETE   = '/delete'
+GCP_FETCH    = '/fetch'
+GCP_LIST     = '/list'
+GCP_REGISTER = '/register'
+GCP_UPDATE   = '/update'
+
+# mimetype for how to encode PPD files
+MIMETYPE_PPD     = 'application/vnd.cups.ppd'
+
+# SSL certificates path for this machine
+SSL_CERT_PATH = "/usr/lib/ssl/certs"
+
+# #########################################################################
+    # default options and configurations for cloudprinting
   DEFAULT_OPTIONS = {
-    :url => 'default',
+    :url => GCP_URL    ,
     :oauth_token => nil,
-    :ssl_ca_path => "/usr/lib/ssl/certs"
+    :ssl_ca_path => SSL_CERT_PATH
   }
+
+# #########################################################################
     # will be used to determine if user options valid
     # if (in future) any default options were to be off-limits,
     # then a specific sets of keys will have to be enumerated below 
   VALID_CLOUDPRINT_OPTIONS = DEFAULT_OPTIONS.keys
-
-# #########################################################################
-
 
 # #########################################################################
 
@@ -81,7 +117,29 @@ module Kinokero
 
       # faraday.adapter Faraday.default_adapter 
 # ------------------------------------------------------------------------------
+# Anonymous registration requires registering without any login credentials, 
+# and then taking some of the returning tokens to complete the registration. 
+# Here are the steps required:
+
+  # Access registration URL using HTTPS without authentication tokens
+  # Get token back from Cloud Print Service
+  # Use the token to claim the printer (with authentication tokens)
+  # Get the auth token back from the claim printer step
+  # Send auth token to polling URL
+
+# args:
+  # printer - string name of printer
 # ------------------------------------------------------------------------------
+  def register_anonymous_printer(printer, capability_filename, default_filename=nil)
+
+    payload = {
+      :printer => printer,
+      :proxy   => `uname -n`.chop,
+      :capabilities => Faraday::UploadIO.new( capability_filename, MIMETYPE_PPD ),
+    }
+    response = @connection.get GCP_REGISTER, payload
+
+  end
 
 # ------------------------------------------------------------------------------
 # ------------------------------------------------------------------------------

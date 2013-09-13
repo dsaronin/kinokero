@@ -14,6 +14,11 @@ require "kinokero"
 # ****************************************************************************
 
 class Twiga
+
+UBUNTU_PPD_PATH  = '/etc/cups/ppd/'
+TEST_PRINTER_PPD = 'HP-LaserJet-1020.ppd'
+TEST_PRINTER     = 'HP-LaserJet-1020'
+
 # -----------------------------------------------------------------------------
   def initialize( options = {} )
      @cloudprint = Kinokero::Cloudprint.new( options )
@@ -32,22 +37,28 @@ class Twiga
     print "\e[1;31m" + msg + "\e[0m"
   end
 # -----------------------------------------------------------------------------
+#    action_path = "/_feed/c395af64361f5ad6323a8296381ccfee123145ba/show_events.json" 
+
+    # response = @cloudprint.connection.get "/home/stats"
+#    response = @cloudprint.connection.get action_path do |request|
+#      request.params['start'] = 1378018800
+#      request.params['end']   = 1378105200
+#      request.headers['Content-Type'] = 'application/json'
+#    end # do
+
+#    puts response.body.first['location']
 
 # -----------------------------------------------------------------------------
 # -----------------------------------------------------------------------------
   def do_work()
 
-    action_path = "/_feed/c395af64361f5ad6323a8296381ccfee123145ba/show_events.json" 
-
-    # response = @cloudprint.connection.get "/home/stats"
-    response = @cloudprint.connection.get action_path do |request|
-      request.params['start'] = 1378018800
-      request.params['end']   = 1378105200
-      request.headers['Content-Type'] = 'application/json'
-    end # do
-
     say_warn("\n----------------------------------------------------------------\n")
-    puts response.body.first['location']
+    response = @cloudprint.connection.register_anonymous_printer(
+      TEST_PRINTER,
+      UBUNTU_PPD_PATH + TEST_PRINTER_PPD
+    )
+    say_warn("\n----------------------------------------------------------------\n")
+    puts response.body
     say_warn("\n----------------------------------------------------------------\n")
   end
 
@@ -66,7 +77,7 @@ me = Twiga.new(
 )
 
 me.say_info "\nTwiga starting...\n"
-system('ruby -v')
+#  system('ruby -v')
 
 me.do_work()   # primary twiga control area
 
