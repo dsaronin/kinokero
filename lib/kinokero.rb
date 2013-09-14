@@ -20,11 +20,6 @@ FOLLOWUP_URI = 'select%2Fgaiaauth'
 GAIA_HOST = 'www.google.com'
 LOGIN_URI = '/accounts/ServiceLoginAuth'
 LOGIN_URL = 'https://www.google.com/accounts/ClientLogin'
-GCP_SERVICE = 'cloudprint'
-
-# The following are used for general backend access.
-GCP_URL = 'https://www.google.com/cloudprint'
-
 
 # unique name for this running of the GCP connector client
 # formed with gem name + machine-node name (expected to be  unique)
@@ -33,6 +28,11 @@ MY_PROXY_ID = "kinokero::"+`uname -n`.chop
 
 # CLIENT_NAME should be some string identifier for the client you are writing.
 CLIENT_NAME = MY_PROXY_ID + " cloudprint controller v"+ Kinokero::VERSION
+
+# a GCP path is composed of URL + SERVICE + ACTION
+# GCP_URL = 'http://0.0.0.0:3000'
+GCP_URL = 'https://www.google.com'
+GCP_SERVICE = '/cloudprint'
 
 # GCP API actions
 GCP_CONTROL  = '/control'
@@ -72,7 +72,7 @@ SSL_CERT_PATH = "/usr/lib/ssl/certs"
   def initialize( options )
     @options = DEFAULT_OPTIONS.merge(options)
     validate_cloudprint_options(@options)
-    @connection = setup_connection(options)
+    @connection = setup_connection(@options)
   end
 
 # ------------------------------------------------------------------------------
@@ -134,10 +134,13 @@ SSL_CERT_PATH = "/usr/lib/ssl/certs"
 
     payload = {
       :printer => printer,
-      :proxy   => `uname -n`.chop,
+      :proxy   => MY_PROXY_ID,
       :capabilities => Faraday::UploadIO.new( capability_filename, MIMETYPE_PPD ),
     }
-    response = @connection.get GCP_REGISTER, payload
+    response = @connection.post GCP_SERVICE + GCP_REGISTER do |req|
+      req.headers['X-CloudPrint-Proxy'] = MY_PROXY_ID 
+      req.body =  payload
+    end  # request do
 
   end
 
