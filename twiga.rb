@@ -85,8 +85,6 @@ me = Twiga.new(
 me.say_info "\nTwiga starting...\n"
 #  system('ruby -v')
 
-puts me.cloudprint.inspect
-
 me.do_work()   # primary twiga control area
 
 me.say_info "...ending\n\n"

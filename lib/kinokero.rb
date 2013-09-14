@@ -1,5 +1,6 @@
 require "kinokero/version"
 require "kinokero/ruby_extensions"
+require "kinokero/auth_key"
 
 require "faraday"
 require "faraday_middleware"
@@ -72,6 +73,7 @@ SSL_CERT_PATH = "/usr/lib/ssl/certs"
   def initialize( options )
     @options = DEFAULT_OPTIONS.merge(options)
     validate_cloudprint_options(@options)
+    @csrf_token = gen_csrf_token( MY_PROXY_ID )
     @connection = setup_connection(@options)
   end
 
@@ -135,6 +137,8 @@ SSL_CERT_PATH = "/usr/lib/ssl/certs"
     payload = {
       :printer => printer,
       :proxy   => MY_PROXY_ID,
+      :xsrf    => @csrf_token,
+      :default_display_name => printer,
       :capabilities => Faraday::UploadIO.new( capability_filename, MIMETYPE_PPD ),
     }
     response = @connection.post GCP_SERVICE + GCP_REGISTER do |req|
@@ -146,6 +150,9 @@ SSL_CERT_PATH = "/usr/lib/ssl/certs"
 
 # ------------------------------------------------------------------------------
 # ------------------------------------------------------------------------------
+  def gen_csrf_token( user_secret )
+    AuthKey.make_auth_key( user_secret )
+  end
 
 # ------------------------------------------------------------------------------
 
