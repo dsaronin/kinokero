@@ -1,6 +1,6 @@
 require "kinokero/version"
 require "kinokero/ruby_extensions"
-require "kinokero/auth_key"
+require "faraday_middleware/xsrf"
 
 require "faraday"
 require "faraday_middleware"
@@ -31,8 +31,8 @@ MY_PROXY_ID = "kinokero::"+`uname -n`.chop
 CLIENT_NAME = MY_PROXY_ID + " cloudprint controller v"+ Kinokero::VERSION
 
 # a GCP path is composed of URL + SERVICE + ACTION
-# GCP_URL = 'http://0.0.0.0:3000'
-GCP_URL = 'https://www.google.com'
+GCP_URL = 'http://0.0.0.0:3000'
+# GCP_URL = 'https://www.google.com'
 GCP_SERVICE = '/cloudprint'
 
 # GCP API actions
@@ -73,7 +73,6 @@ SSL_CERT_PATH = "/usr/lib/ssl/certs"
   def initialize( options )
     @options = DEFAULT_OPTIONS.merge(options)
     validate_cloudprint_options(@options)
-    @csrf_token = gen_csrf_token( MY_PROXY_ID )
     @connection = setup_connection(@options)
   end
 
@@ -96,10 +95,6 @@ SSL_CERT_PATH = "/usr/lib/ssl/certs"
 # ------------------------------------------------------------------------------
   def setup_connection( options )
 
-#     return Faraday.new( options[:url], options[:ssl] ) do |faraday|
-#       faraday.adapter  :typhoeus  # make requests with typhoeus
-#     end # do
-
     return Faraday.new( 
           options[:url], 
           :ssl => { :ca_path => options[:ssl_ca_path] }
@@ -108,11 +103,12 @@ SSL_CERT_PATH = "/usr/lib/ssl/certs"
       unless options[:oauth_token].blank?
         faraday.request  :oauth2, { :token => options[:oauth_token] } 
       end
-      faraday.request  :multipart             # multipart files
-      faraday.response :json             # json en/decoding
-      faraday.request  :url_encoded           # form-encode POST params
-      faraday.response :logger                # log requests to STDOUT
-      faraday.adapter  :typhoeus  # make requests with typhoeus
+      faraday.request  :xsrf             # XSRF token handling
+      faraday.request  :multipart        # multipart files
+      # faraday.response :json             # json en/decoding
+      faraday.request  :url_encoded      # form-encode POST params
+      faraday.response :logger           # log requests to STDOUT
+      faraday.adapter  :typhoeus         # make requests with typhoeus
     end # do faraday setup
     
   end
@@ -134,24 +130,17 @@ SSL_CERT_PATH = "/usr/lib/ssl/certs"
 # ------------------------------------------------------------------------------
   def register_anonymous_printer(printer, capability_filename, default_filename=nil)
 
-    payload = {
-      :printer => printer,
-      :proxy   => MY_PROXY_ID,
-      :xsrf    => @csrf_token,
-      :default_display_name => printer,
-      :capabilities => Faraday::UploadIO.new( capability_filename, MIMETYPE_PPD ),
-    }
-    response = @connection.post GCP_SERVICE + GCP_REGISTER do |req|
+    response = @connection.get "/" do |req|
+    # response = @connection.post GCP_SERVICE + GCP_REGISTER do |req|
       req.headers['X-CloudPrint-Proxy'] = MY_PROXY_ID 
-      req.body =  payload
+      req.body =  {
+        :printer => printer,
+        :proxy   => MY_PROXY_ID,
+        :default_display_name => printer,
+        :capabilities => Faraday::UploadIO.new( capability_filename, MIMETYPE_PPD ),
+      }
     end  # request do
 
-  end
-
-# ------------------------------------------------------------------------------
-# ------------------------------------------------------------------------------
-  def gen_csrf_token( user_secret )
-    AuthKey.make_auth_key( user_secret )
   end
 
 # ------------------------------------------------------------------------------
