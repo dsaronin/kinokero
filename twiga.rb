@@ -21,8 +21,12 @@ class Twiga
 
 # #########################################################################
 UBUNTU_PPD_PATH  = '/etc/cups/ppd/'
-TEST_PRINTER_PPD = 'HP-LaserJet-1020.ppd'
-TEST_PRINTER     = 'HP-LaserJet-1020'
+# TEST_PRINTER_PPD = 'HP-LaserJet-1020.ppd'
+# TEST_PRINTER     = 'HP-LaserJet-1020'
+
+TEST_PRINTER_PPD = 'Canon-MP160.ppd'
+TEST_PRINTER     = 'Canon-MP160'
+
 # #########################################################################
 
 # -----------------------------------------------------------------------------
