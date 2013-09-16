@@ -1,6 +1,7 @@
 require "kinokero/version"
 require "kinokero/ruby_extensions"
 require "faraday_middleware/xsrf"
+require 'faraday-cookie_jar'
 
 require "faraday"
 require "faraday_middleware"
@@ -31,8 +32,8 @@ MY_PROXY_ID = "kinokero::"+`uname -n`.chop
 CLIENT_NAME = MY_PROXY_ID + " cloudprint controller v"+ Kinokero::VERSION
 
 # a GCP path is composed of URL + SERVICE + ACTION
-GCP_URL = 'http://0.0.0.0:3000'
-# GCP_URL = 'https://www.google.com'
+# GCP_URL = 'http://0.0.0.0:3000'
+GCP_URL = 'https://www.google.com'
 GCP_SERVICE = '/cloudprint'
 
 # GCP API actions
@@ -104,8 +105,9 @@ SSL_CERT_PATH = "/usr/lib/ssl/certs"
         faraday.request  :oauth2, { :token => options[:oauth_token] } 
       end
       faraday.request  :xsrf             # XSRF token handling
+      faraday.use      :cookie_jar       # cookiejar handling
       faraday.request  :multipart        # multipart files
-      # faraday.response :json             # json en/decoding
+      faraday.response :json             # json en/decoding
       faraday.request  :url_encoded      # form-encode POST params
       faraday.response :logger           # log requests to STDOUT
       faraday.adapter  :typhoeus         # make requests with typhoeus
@@ -130,8 +132,8 @@ SSL_CERT_PATH = "/usr/lib/ssl/certs"
 # ------------------------------------------------------------------------------
   def register_anonymous_printer(printer, capability_filename, default_filename=nil)
 
-    response = @connection.get "/" do |req|
-    # response = @connection.post GCP_SERVICE + GCP_REGISTER do |req|
+    # response = @connection.get "/" do |req|
+    response = @connection.post GCP_SERVICE + GCP_REGISTER do |req|
       req.headers['X-CloudPrint-Proxy'] = MY_PROXY_ID 
       req.body =  {
         :printer => printer,
