@@ -32,16 +32,20 @@ MY_PROXY_ID = "kinokero::"+`uname -n`.chop
 CLIENT_NAME = MY_PROXY_ID + " cloudprint controller v"+ Kinokero::VERSION
 
 # a GCP path is composed of URL + SERVICE + ACTION
-# GCP_URL = 'http://0.0.0.0:3000'
-GCP_URL = 'https://www.google.com'
-GCP_SERVICE = '/cloudprint'
+# below three are used when testing locally
+GCP_URL = 'http://0.0.0.0:3000'
+GCP_SERVICE = '/'
+GCP_REGISTER = ''
+
+# GCP_URL = 'https://www.google.com'
+# GCP_SERVICE = '/cloudprint'
 
 # GCP API actions
 GCP_CONTROL  = '/control'
 GCP_DELETE   = '/delete'
 GCP_FETCH    = '/fetch'
 GCP_LIST     = '/list'
-GCP_REGISTER = '/register'
+# GCP_REGISTER = '/register'
 GCP_UPDATE   = '/update'
 
 # mimetype for how to encode PPD files
@@ -107,7 +111,7 @@ SSL_CERT_PATH = "/usr/lib/ssl/certs"
       faraday.request  :xsrf             # XSRF token handling
       faraday.use      :cookie_jar       # cookiejar handling
       faraday.request  :multipart        # multipart files
-      faraday.response :json             # json en/decoding
+      # faraday.response :json             # json en/decoding
       faraday.request  :url_encoded      # form-encode POST params
       faraday.response :logger           # log requests to STDOUT
       faraday.adapter  :typhoeus         # make requests with typhoeus
