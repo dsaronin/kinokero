@@ -9,22 +9,6 @@
 
 # #########################################################################
 
-class Time
-
-  # ------------------------------------------------------------------------------
-  # UnixNano returns Unix time, the number of nanoseconds elapsed 
-  #          since January 1, 1970 UTC. 
-  # ------------------------------------------------------------------------------
-  def to_unix_nano
-    return self.to_i * 1000
-  end
-
-  def self.fm_unix_nano( nano )
-    return Time.at( nano / 1000 )
-  end
-
-end # class Time
-
 # #########################################################################
 # #########################################################################
 
@@ -87,7 +71,7 @@ module FaradayMiddleware
       if is_post?(env) &&
          (
            !env[:response].respond_to?( :xsrf ) ||
-           !XsrfToken.valid?(env[:response].xsrf, @secret_key, @user_id, @action_id )
+           !::XsrfToken.valid?(env[:response].xsrf, @secret_key, @user_id, @action_id )
          )
 
         env[:response].success = false if env[:response].respond_to?( :success )
