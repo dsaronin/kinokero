@@ -26,6 +26,8 @@ TEST_PRINTER     = 'HP-LaserJet-1020'
 
 # TEST_PRINTER_PPD = 'Canon-MP160.ppd'
 # TEST_PRINTER     = 'Canon-MP160'
+#
+GOOGLE_API_PROJECT_NBR = 407812739496
 
 # #########################################################################
 
