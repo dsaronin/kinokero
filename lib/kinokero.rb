@@ -113,11 +113,11 @@ SSL_CERT_PATH = "/usr/lib/ssl/certs"
       faraday.request  :url_encoded      # form-encode POST params
       faraday.response :logger           # log requests to STDOUT
       faraday.adapter  :typhoeus         # make requests with typhoeus
+      # faraday.adapter Faraday.default_adapter # useful for debugging
     end # do faraday setup
     
   end
 
-      # faraday.adapter Faraday.default_adapter 
 # ------------------------------------------------------------------------------
 # Anonymous registration requires registering without any login credentials, 
 # and then taking some of the returning tokens to complete the registration. 
@@ -129,6 +129,21 @@ SSL_CERT_PATH = "/usr/lib/ssl/certs"
   # Get the auth token back from the claim printer step
   # Send auth token to polling URL
 
+#   anonymous registration calls will return:
+
+#   registration_token: a human readable string the user will need to claim printer ownership
+#   token_duration: the lifetime of the registration_token, in seconds (the whole registration has to finish within this time frame)
+#   invite_url: the url that a user will need to visit to claim ownership of the printer
+#   complete_invite_url: same thing of invite_url but already containing the registration_token, so that the user doesn't have to insert it manually
+#   invite_page_url: the url of a printable page containing the user's registration_token and url. (The page can be retrieved by the printer in PDF or PWG-raster format based on the HTTP header of the request, as for getting print jobs. At the moment the page size is letter and the resolution for the raster format is 300dpi. In the near future the page will have the page size and resolution based on the printer defaults.)
+#   polling_url: the url that the printer will need to poll for the OAuth2 authorization_code
+
+#   and will require some of this information to be displayed to the user
+#   as part of a manual step to go and claim the user's printer.
+#       print 'Go claim your printer at this url:'
+#       print 'http://www.google.com/cloudprint/claimprinter.html'
+#       print 'Use token: response['registration_token']
+  
 # args:
   # printer - string name of printer
 # ------------------------------------------------------------------------------
