@@ -1,6 +1,5 @@
 require "kinokero/version"
 require "kinokero/ruby_extensions"
-require "faraday_middleware/xsrf"
 require 'faraday-cookie_jar'
 
 require "faraday"
@@ -108,7 +107,6 @@ SSL_CERT_PATH = "/usr/lib/ssl/certs"
       unless options[:oauth_token].blank?
         faraday.request  :oauth2, { :token => options[:oauth_token] } 
       end
-      faraday.request  :xsrf             # XSRF token handling
       faraday.use      :cookie_jar       # cookiejar handling
       faraday.request  :multipart        # multipart files
       # faraday.response :json             # json en/decoding
