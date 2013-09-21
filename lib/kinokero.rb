@@ -1,6 +1,8 @@
 require "kinokero/version"
 require "kinokero/ruby_extensions"
 require 'faraday-cookie_jar'
+require 'logger'
+require 'forwardable'
 
 require "faraday"
 require "faraday_middleware"
@@ -78,7 +80,10 @@ SSL_CERT_PATH = "/usr/lib/ssl/certs"
     @options = DEFAULT_OPTIONS.merge(options)
     validate_cloudprint_options(@options)
     @connection = setup_connection(@options)
+    @logger = ::Logger.new(STDOUT)  # in case we need error logging
   end
+
+    def_delegators :@logger, :debug, :info, :warn, :error, :fatal
 
 # ------------------------------------------------------------------------------
 # validate_cloudprint_options -- validates user's options
