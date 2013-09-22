@@ -150,7 +150,7 @@ SSL_CERT_PATH = "/usr/lib/ssl/certs"
 #       print 'Use token: response['registration_token']
   
 # args:
-  # printer - string name of printer
+  # params  - hash with parameters: :printer_name, :capability_ppd, :default_ppd
 # ------------------------------------------------------------------------------
   def register_anonymous_printer(printer, capability_filename, default_filename=nil)
 
