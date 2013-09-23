@@ -149,25 +149,105 @@ SSL_CERT_PATH = "/usr/lib/ssl/certs"
 #       print 'http://www.google.com/cloudprint/claimprinter.html'
 #       print 'Use token: response['registration_token']
   
-# args:
-  # params  - hash with parameters: :printer_name, :capability_ppd, :default_ppd
 # ------------------------------------------------------------------------------
-  def register_anonymous_printer(printer, capability_filename, default_filename=nil)
+# register_anonymous_printer -- returns success/failure, response hash
+# ------------------------------------------------------------------------------
+# args:
+  # params  - hash with parameters: 
+  #           :id, :printer_name, :capability_ppd, :default_ppd
+  # block   - asynchronously will get oauth2 info if user submits token
+# ------------------------------------------------------------------------------
+  def register_anonymous_printer(params,&block)
+      # step 1: issue /register to GCP server
+    response = gcp_anonymous_register(params)
 
-    # response = @connection.get "/" do |req|
-    response = @connection.post GCP_SERVICE + GCP_REGISTER do |req|
+    if (status = response.success)  # success; continues
+        # step 3: poll GCP asynchronously
+      exec( "gcp_anonymous_poll(response, params, block)" ) if fork.nil?
+
+      # continue on asynchronously
+    end  # if successful response
+
+      # step 2: tell user where to claim printer
+    return status, response
+
+  end
+
+#     trap( "CLD" ) do
+#       pid = Process.wait
+#       puts "Child pid #{pid}: terminated"
+#     end  # trap
+
+# ------------------------------------------------------------------------------
+# gcp_anonymous_register - posts /register for anon printer; returns response hash
+# args:
+  # params  - hash with parameters: 
+  #           :id, :printer_name, :capability_ppd, :default_ppd
+# ------------------------------------------------------------------------------
+  def gcp_anonymous_register(params)
+
+    return @connection.post GCP_SERVICE + GCP_REGISTER do |req|
       req.headers['X-CloudPrint-Proxy'] = MY_PROXY_ID 
       req.body =  {
-        :printer => printer,
+        :printer => params[:printer],
         :proxy   => MY_PROXY_ID,
-        :default_display_name => printer,
-        :capabilities => Faraday::UploadIO.new( capability_filename, MIMETYPE_PPD ),
+        :default_display_name => params[:printer],
+        :capabilities => Faraday::UploadIO.new( 
+                  params[:capability_filename], 
+                  MIMETYPE_PPD 
+        ),
       }
     end  # request do
 
   end
 
 # ------------------------------------------------------------------------------
+# gcp_anonymous_poll - polls GCP server to see if user has claimed token
+# args:
+  # response - gcp response hash
+  # params  - hash with parameters: 
+  #           :id, :printer_name, :capability_ppd, :default_ppd
+  # block   - asynchronously will get oauth2 info if user submits token
+# ------------------------------------------------------------------------------
+  def gcp_anonymous_poll(response, params,&block)
+
+    0.step( response['token_duration'], POLLING_SECS ) do |i|
+      sleep POLLING_SECS
+
+      oauth_response = @connection.post response['polling_url'] do |req|
+        req.headers['X-CloudPrint-Proxy'] = MY_PROXY_ID 
+        req.body =  {
+          :printer => params[:printer],
+          :proxy   => MY_PROXY_ID,
+        }
+      end  # connection poll request
+
+      if oauth_response.success
+        yield( params[:id], oauth_response )
+
+        info( "oauth responsed" ) 
+        return true
+
+      end  # success
+
+      #else failure,, continue to poll
+
+    end  # sleep/polling loop
+
+    info( "polling timed out"
+    return nil
+
+  end
+
+# ------------------------------------------------------------------------------
+# ------------------------------------------------------------------------------
+# ------------------------------------------------------------------------------
+
+
+# ------------------------------------------------------------------------------
+# ------------------------------------------------------------------------------
+# ------------------------------------------------------------------------------
+
 
 # #########################################################################
   end  # class Cloudprint
