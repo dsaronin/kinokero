@@ -70,6 +70,8 @@ POLLING_SECS = 30     # number of secs to sleep before polling again
     :oauth_token => nil,
     :ssl_ca_path => SSL_CERT_PATH,
     :verbose => true,   # log all responses
+    :client_id => '',
+    :client_secret => ''
   }
 
 # #########################################################################
@@ -254,7 +256,7 @@ POLLING_SECS = 30     # number of secs to sleep before polling again
 # ------------------------------------------------------------------------------
   def gcp_anonymous_poll(response)
 
-    poll_url = response['polling_url'] + @options[:oauth]
+    poll_url = response['polling_url'] + @options[:client_id]
     printer_id = response['printers'][0]['id']
 
       # countdown timer for polling loop
@@ -333,9 +335,9 @@ POLLING_SECS = 30     # number of secs to sleep before polling again
         :printer => params[:printer],
         :proxy   => MY_PROXY_ID,
 
-        :client_id =>  ,
+        :client_id =>  @options[::client_id],
         :redirect_uri => AUTHORIZATION_REDIRECT_URI,
-        :client_secret => ,
+        :client_secret => @options[::client_secret],
         :grant_type => poll_response[ 'authorization_code' ],
         :scope => AUTHORIZATION_SCOPE
       }
