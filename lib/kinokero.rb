@@ -39,27 +39,23 @@ CLIENT_NAME = MY_PROXY_ID + " cloudprint controller v"+ Kinokero::VERSION
 
 # a GCP path is composed of URL + SERVICE + ACTION
 # below three are used when testing locally
-GCP_URL = 'http://0.0.0.0:3000'
-GCP_SERVICE = '/'
-GCP_REGISTER = ''
+# GCP_URL = 'http://0.0.0.0:3000'
+# GCP_SERVICE = '/'
+# GCP_REGISTER = ''
 
-# GCP_URL = 'https://www.google.com'
-# GCP_SERVICE = '/cloudprint'
+GCP_URL = 'https://www.google.com'
+GCP_SERVICE = '/cloudprint'
 
 # GCP API actions
 GCP_CONTROL  = '/control'
 GCP_DELETE   = '/delete'
 GCP_FETCH    = '/fetch'
 GCP_LIST     = '/list'
-# GCP_REGISTER = '/register'
+GCP_REGISTER = '/register'
 GCP_UPDATE   = '/update'
 
 # mimetype for how to encode PPD files
 MIMETYPE_PPD     = 'application/vnd.cups.ppd'
-
-# SSL certificates path for this machine
-# NOTE: move this out before finalizing gem
-SSL_CERT_PATH = "/usr/lib/ssl/certs"
 
 POLLING_SECS = 30     # number of secs to sleep before polling again
 
@@ -68,7 +64,7 @@ POLLING_SECS = 30     # number of secs to sleep before polling again
   DEFAULT_OPTIONS = {
     :url => GCP_URL    ,
     :oauth_token => nil,
-    :ssl_ca_path => SSL_CERT_PATH,
+    :ssl_ca_path => '',
     :verbose => true,   # log all responses
     :client_id => '',
     :client_secret => ''
@@ -335,9 +331,9 @@ POLLING_SECS = 30     # number of secs to sleep before polling again
         :printer => params[:printer],
         :proxy   => MY_PROXY_ID,
 
-        :client_id =>  @options[::client_id],
+        :client_id =>  @options[:client_id],
         :redirect_uri => AUTHORIZATION_REDIRECT_URI,
-        :client_secret => @options[::client_secret],
+        :client_secret => @options[:client_secret],
         :grant_type => poll_response[ 'authorization_code' ],
         :scope => AUTHORIZATION_SCOPE
       }
