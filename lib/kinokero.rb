@@ -24,6 +24,11 @@ GAIA_HOST = 'www.google.com'
 LOGIN_URI = '/accounts/ServiceLoginAuth'
 LOGIN_URL = 'https://www.google.com/accounts/ClientLogin'
 
+  # from GCP documentation
+AUTHORIZATION_SCOPE = "https://www.googleapis.com/auth/cloudprint"
+AUTHORIZATION_REDIRECT_URI = 'oob'
+OAUTH2_TOKEN_ENDPOINT = "https://accounts.google.com/o/oauth2/token"
+
 # unique name for this running of the GCP connector client
 # formed with gem name + machine-node name (expected to be  unique)
 # TODO: make sure machine nodename is unique
@@ -53,7 +58,10 @@ GCP_UPDATE   = '/update'
 MIMETYPE_PPD     = 'application/vnd.cups.ppd'
 
 # SSL certificates path for this machine
+# NOTE: move this out before finalizing gem
 SSL_CERT_PATH = "/usr/lib/ssl/certs"
+
+POLLING_SECS = 30     # number of secs to sleep before polling again
 
 # #########################################################################
     # default options and configurations for cloudprinting
@@ -134,17 +142,10 @@ SSL_CERT_PATH = "/usr/lib/ssl/certs"
   # Get the auth token back from the claim printer step
   # Send auth token to polling URL
 
-#   anonymous registration calls will return:
-
-#   registration_token: a human readable string the user will need to claim printer ownership
-#   token_duration: the lifetime of the registration_token, in seconds (the whole registration has to finish within this time frame)
-#   invite_url: the url that a user will need to visit to claim ownership of the printer
-#   complete_invite_url: same thing of invite_url but already containing the registration_token, so that the user doesn't have to insert it manually
-#   invite_page_url: the url of a printable page containing the user's registration_token and url. (The page can be retrieved by the printer in PDF or PWG-raster format based on the HTTP header of the request, as for getting print jobs. At the moment the page size is letter and the resolution for the raster format is 300dpi. In the near future the page will have the page size and resolution based on the printer defaults.)
-#   polling_url: the url that the printer will need to poll for the OAuth2 authorization_code
 
 #   and will require some of this information to be displayed to the user
 #   as part of a manual step to go and claim the user's printer.
+#   
 #       print 'Go claim your printer at this url:'
 #       print 'http://www.google.com/cloudprint/claimprinter.html'
 #       print 'Use token: response['registration_token']
@@ -161,23 +162,47 @@ SSL_CERT_PATH = "/usr/lib/ssl/certs"
       # step 1: issue /register to GCP server
     response = gcp_anonymous_register(params)
 
-    if (status = response.success)  # success; continues
-        # step 3: poll GCP asynchronously
-      exec( "gcp_anonymous_poll(response, params, block)" ) if fork.nil?
+    if (status = response[:success])  # success; continues
 
-      # continue on asynchronously
+      pid = fork {
+        # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+        # step 3: poll GCP asynchronously as a separate process
+        # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+        poll_response = gcp_anonymous_poll(response)
+
+        if poll_response[:success]  # successful polling registration
+
+            # step 4, obtain OAuth2 authorization tokens
+          oauth_response = gcp_get_oauth2_tokens( poll_response )
+
+            # let calling module save the response for us
+          yield( params[:id], oauth_response )  # save the oauth info
+        end
+
+        exit
+        # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+      }
+
+      Process.detach(pid) # we are not interested in the exit
+      # code of this child and it should become independent
+      
     end  # if successful response
 
+      # continue on asynchronously with whatever
       # step 2: tell user where to claim printer
     return status, response
 
   end
 
-#     trap( "CLD" ) do
-#       pid = Process.wait
-#       puts "Child pid #{pid}: terminated"
-#     end  # trap
-
+# ------------------------------------------------------------------------------
+#   anonymous registration calls will return:
+#
+#   registration_token: a human readable string the user will need to claim printer ownership
+#   token_duration: the lifetime of the registration_token, in seconds (the whole registration has to finish within this time frame)
+#   invite_url: the url that a user will need to visit to claim ownership of the printer
+#   complete_invite_url: same thing of invite_url but already containing the registration_token, so that the user doesn't have to insert it manually
+#   invite_page_url: the url of a printable page containing the user's registration_token and url. (The page can be retrieved by the printer in PDF or PWG-raster format based on the HTTP header of the request, as for getting print jobs. At the moment the page size is letter and the resolution for the raster format is 300dpi. In the near future the page will have the page size and resolution based on the printer defaults.)
+#   polling_url: the url that the printer will need to poll for the OAuth2 authorization_code
 # ------------------------------------------------------------------------------
 # gcp_anonymous_register - posts /register for anon printer; returns response hash
 # args:
@@ -202,19 +227,34 @@ SSL_CERT_PATH = "/usr/lib/ssl/certs"
   end
 
 # ------------------------------------------------------------------------------
+# From GCP documentation:
+#   If the user has successfully claimed the token then the poll_response hash is:
+#   success: is true
+#   authorization_code: the OAuth2 authorization_code to be used to get OAuth2 
+#     refresh_token and access_token. See details at gcp_get_oauth2_tokens
+#   xmpp_jid: this is the jabber id or email address that needs to be used with 
+#     Google Talk to subscribe for print notifications. 
+#     This needs to be retained in the printer memory forever.
+#   user_email: the email address of the user that claimed the 
+#     registration_token at the previous step
+#   confirmation_page_url: the url of a printable page that confirms to the user 
+#     that the printer has been registered to him/herself. 
+#     The same notes relative to retrieving the invite_page_url above apply here too.
+# ------------------------------------------------------------------------------
 # gcp_anonymous_poll - polls GCP server to see if user has claimed token
+# returns polling response hash
 # args:
   # response - gcp response hash
-  # params  - hash with parameters: 
-  #           :id, :printer_name, :capability_ppd, :default_ppd
-  # block   - asynchronously will get oauth2 info if user submits token
 # ------------------------------------------------------------------------------
-  def gcp_anonymous_poll(response, params,&block)
+  def gcp_anonymous_poll(response)
 
+      # countdown timer for polling loop
     0.step( response['token_duration'], POLLING_SECS ) do |i|
-      sleep POLLING_SECS
 
-      oauth_response = @connection.post response['polling_url'] do |req|
+      sleep POLLING_SECS    # sleep here until next poll
+
+        # poll GCP to see if printer claimed yet?
+      poll_response = @connection.post response['polling_url'] do |req|
         req.headers['X-CloudPrint-Proxy'] = MY_PROXY_ID 
         req.body =  {
           :printer => params[:printer],
@@ -222,28 +262,82 @@ SSL_CERT_PATH = "/usr/lib/ssl/certs"
         }
       end  # connection poll request
 
-      if oauth_response.success
-        yield( params[:id], oauth_response )
+      if  poll_response[:success] # user claimed printer success
+        info( "polling response success" )   # log that
 
-        info( "oauth responsed" ) 
-        return true
-
+        return poll_response
       end  # success
 
       #else failure,, continue to poll
 
     end  # sleep/polling loop
 
-    info( "polling timed out"
-    return nil
+    info( "polling timed out"  # log failure
+    return { 'success' => false }   # return failure
 
   end
 
 # ------------------------------------------------------------------------------
 # ------------------------------------------------------------------------------
 # ------------------------------------------------------------------------------
+# From GCP documentation:
+#   the printer must use the authorization_code to obtain OAuth2 Auth tokens, 
+#   themselves used to authenticate subsequent API calls to Google Cloud Print. 
 
+#   There are two types of tokens involved:
 
+#     The refresh_token should be retained in printer memory forever. 
+#       It can then be used to retrieve a temporary access_token.
+#     The access_token needs to be refreshed every hour, 
+#       and is used as authentication credentials in subsequent API calls.
+  #
+#   The printer can initially retrieve both tokens together by POSTing 
+#   the authorization_code to the OAuth2 token endpoint at 
+#   https://accounts.google.com/o/oauth2/token, 
+#     
+#   along with the following parameters:
+
+#     client_id (the same that you appended to polling_url when fetching
+#         the authorization_code)
+#     redirect_uri (set it to 'oob')
+#     client_secret (obtained along with client_id as part of your 
+#         client credentials)
+#     grant_type=authorization_code
+#     scope=https://www.googleapis.com/auth/cloudprint 
+#       (scope identifies the Google service being accessed, in this case GCP)
+
+#   If this request succeeds, a refresh token and short-lived access token 
+#   will be returned via JSON. You can then use the access token to make 
+#   API calls by attaching the following Authorization HTTP header to each of 
+#   your API calls: Authorization: OAuth YOUR_ACCESS_TOKEN. 
+#   You can retrieve additional access tokens once the first expires 
+#   (after an hour) by using the token endpoint with your refresh token, 
+#   client credentials, and the parameter grant_type=refresh_token.
+# ------------------------------------------------------------------------------
+# gcp_get_oauth2_tokens -- returns succcess/fail, oauth_response hash
+# ------------------------------------------------------------------------------
+  def gcp_get_oauth2_tokens( poll_response )
+
+    return @connection.post OAUTH2_TOKEN_ENDPOINT do |req|
+      req.headers['X-CloudPrint-Proxy'] = MY_PROXY_ID 
+      req.body =  {
+        :printer => params[:printer],
+        :proxy   => MY_PROXY_ID,
+
+        :client_id =>  ,
+        :redirect_uri => AUTHORIZATION_REDIRECT_URI,
+        :client_secret => ,
+        :grant_type => poll_response[ 'authorization_code' ],
+        :scope => AUTHORIZATION_SCOPE
+      }
+    end  # request do
+
+  end
+
+# ------------------------------------------------------------------------------
+# ------------------------------------------------------------------------------
+# ------------------------------------------------------------------------------
+# From GCP documentation:
 # ------------------------------------------------------------------------------
 # ------------------------------------------------------------------------------
 # ------------------------------------------------------------------------------
