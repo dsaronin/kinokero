@@ -14,6 +14,8 @@ module Kinokero
 
   class Cloudprint
 
+    extend Forwardable
+
 # #########################################################################
 CRLF = '\r\n'
 
