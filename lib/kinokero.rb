@@ -258,7 +258,7 @@ POLLING_SECS = 30     # number of secs to sleep before polling again
     printer_id = response['printers'][0]['id']
 
       # countdown timer for polling loop
-    0.step( response['token_duration'], POLLING_SECS ) do |i|
+    0.step( response['token_duration'].to_i, POLLING_SECS ) do |i|
 
       sleep POLLING_SECS    # sleep here until next poll
 
