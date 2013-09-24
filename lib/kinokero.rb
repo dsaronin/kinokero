@@ -279,7 +279,7 @@ POLLING_SECS = 30     # number of secs to sleep before polling again
 
     end  # sleep/polling loop
 
-    debug( "polling timed out" if @options[:verbose] # log failure
+    debug( "polling timed out" ) if @options[:verbose] # log failure
     return { 'success' => false }   # return failure
 
   end
