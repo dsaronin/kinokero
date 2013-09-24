@@ -216,9 +216,9 @@ POLLING_SECS = 30     # number of secs to sleep before polling again
     response =  @connection.post GCP_SERVICE + GCP_REGISTER do |req|
       req.headers['X-CloudPrint-Proxy'] = MY_PROXY_ID 
       req.body =  {
-        :printer => params[:printer],
+        :printer => params[:printer_name],
         :proxy   => MY_PROXY_ID,
-        :default_display_name => params[:printer],
+        :default_display_name => params[:printer_name],
         :capabilities => Faraday::UploadIO.new( 
                   params[:capability_filename], 
                   MIMETYPE_PPD 
@@ -226,7 +226,7 @@ POLLING_SECS = 30     # number of secs to sleep before polling again
       }
     end  # request do
 
-    debug( 'anon-reg', response.inspect ) if @options[:verbose]
+    debug( 'anon-reg' ) { response.inspect ) } if @options[:verbose]
 
     return response
 
@@ -271,7 +271,7 @@ POLLING_SECS = 30     # number of secs to sleep before polling again
         }
       end  # connection poll request
 
-      debug( 'anon-reg', poll_response.inspect ) if @options[:verbose]
+      debug( 'anon-poll' ) { poll_response.inspect ) } if @options[:verbose]
 
         # user claimed printer success ?
       # if reg_id == printer_id  ?????????
@@ -281,7 +281,8 @@ POLLING_SECS = 30     # number of secs to sleep before polling again
 
     end  # sleep/polling loop
 
-    debug( "polling timed out" ) if @options[:verbose] # log failure
+      # log failure
+    debug( 'anon-poll' ) { "polling timed out" ) } if @options[:verbose]
     return { 'success' => false }   # return failure
 
   end
@@ -341,7 +342,7 @@ POLLING_SECS = 30     # number of secs to sleep before polling again
       }
     end  # request do
 
-    debug( 'anon-reg', oauth_response.inspect ) if @options[:verbose]
+    debug( 'anon-oauth2' ) { oauth_response.inspect ) } if @options[:verbose]
 
   end
 
