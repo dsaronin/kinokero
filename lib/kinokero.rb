@@ -68,7 +68,8 @@ POLLING_SECS = 30     # number of secs to sleep before polling again
   DEFAULT_OPTIONS = {
     :url => GCP_URL    ,
     :oauth_token => nil,
-    :ssl_ca_path => SSL_CERT_PATH
+    :ssl_ca_path => SSL_CERT_PATH,
+    :verbose => true,   # log all responses
   }
 
 # #########################################################################
@@ -159,10 +160,11 @@ POLLING_SECS = 30     # number of secs to sleep before polling again
   # block   - asynchronously will get oauth2 info if user submits token
 # ------------------------------------------------------------------------------
   def register_anonymous_printer(params,&block)
+
       # step 1: issue /register to GCP server
     response = gcp_anonymous_register(params)
 
-    if (status = response[:success])  # success; continues
+    if (status = response[ 'success' ])  # success; continues
 
       pid = fork {
         # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
@@ -170,7 +172,7 @@ POLLING_SECS = 30     # number of secs to sleep before polling again
         # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
         poll_response = gcp_anonymous_poll(response)
 
-        if poll_response[:success]  # successful polling registration
+        if poll_response[ 'success' ]  # successful polling registration
 
             # step 4, obtain OAuth2 authorization tokens
           oauth_response = gcp_get_oauth2_tokens( poll_response )
@@ -211,7 +213,7 @@ POLLING_SECS = 30     # number of secs to sleep before polling again
 # ------------------------------------------------------------------------------
   def gcp_anonymous_register(params)
 
-    return @connection.post GCP_SERVICE + GCP_REGISTER do |req|
+    response =  @connection.post GCP_SERVICE + GCP_REGISTER do |req|
       req.headers['X-CloudPrint-Proxy'] = MY_PROXY_ID 
       req.body =  {
         :printer => params[:printer],
@@ -223,6 +225,10 @@ POLLING_SECS = 30     # number of secs to sleep before polling again
         ),
       }
     end  # request do
+
+    debug( 'anon-reg', response.inspect ) if @options[:verbose]
+
+    return response
 
   end
 
@@ -248,13 +254,16 @@ POLLING_SECS = 30     # number of secs to sleep before polling again
 # ------------------------------------------------------------------------------
   def gcp_anonymous_poll(response)
 
+    poll_url = response['polling_url'] + @options[:oauth]
+    printer_id = response['printers'][0]['id']
+
       # countdown timer for polling loop
     0.step( response['token_duration'], POLLING_SECS ) do |i|
 
       sleep POLLING_SECS    # sleep here until next poll
 
         # poll GCP to see if printer claimed yet?
-      poll_response = @connection.post response['polling_url'] do |req|
+      poll_response = @connection.post :url => poll_url do |req|
         req.headers['X-CloudPrint-Proxy'] = MY_PROXY_ID 
         req.body =  {
           :printer => params[:printer],
@@ -262,17 +271,17 @@ POLLING_SECS = 30     # number of secs to sleep before polling again
         }
       end  # connection poll request
 
-      if  poll_response[:success] # user claimed printer success
-        info( "polling response success" )   # log that
+      debug( 'anon-reg', poll_response.inspect ) if @options[:verbose]
 
-        return poll_response
-      end  # success
+        # user claimed printer success ?
+      # if reg_id == printer_id  ?????????
+      return poll_response if poll_response[ 'success' ] 
 
       #else failure,, continue to poll
 
     end  # sleep/polling loop
 
-    info( "polling timed out"  # log failure
+    debug( "polling timed out" if @options[:verbose] # log failure
     return { 'success' => false }   # return failure
 
   end
@@ -318,7 +327,7 @@ POLLING_SECS = 30     # number of secs to sleep before polling again
 # ------------------------------------------------------------------------------
   def gcp_get_oauth2_tokens( poll_response )
 
-    return @connection.post OAUTH2_TOKEN_ENDPOINT do |req|
+    oauth_response = @connection.post OAUTH2_TOKEN_ENDPOINT do |req|
       req.headers['X-CloudPrint-Proxy'] = MY_PROXY_ID 
       req.body =  {
         :printer => params[:printer],
@@ -331,6 +340,8 @@ POLLING_SECS = 30     # number of secs to sleep before polling again
         :scope => AUTHORIZATION_SCOPE
       }
     end  # request do
+
+    debug( 'anon-reg', oauth_response.inspect ) if @options[:verbose]
 
   end
 
