@@ -226,7 +226,7 @@ POLLING_SECS = 30     # number of secs to sleep before polling again
       }
     end  # request do
 
-    debug( 'anon-reg' ) { response.inspect ) } if @options[:verbose]
+    debug( 'anon-reg' ) { response.inspect } if @options[:verbose]
 
     return response
 
@@ -271,7 +271,7 @@ POLLING_SECS = 30     # number of secs to sleep before polling again
         }
       end  # connection poll request
 
-      debug( 'anon-poll' ) { poll_response.inspect ) } if @options[:verbose]
+      debug( 'anon-poll' ) { poll_response.inspect } if @options[:verbose]
 
         # user claimed printer success ?
       # if reg_id == printer_id  ?????????
@@ -282,7 +282,7 @@ POLLING_SECS = 30     # number of secs to sleep before polling again
     end  # sleep/polling loop
 
       # log failure
-    debug( 'anon-poll' ) { "polling timed out" ) } if @options[:verbose]
+    debug( 'anon-poll' ) { "polling timed out" } if @options[:verbose]
     return { 'success' => false }   # return failure
 
   end
@@ -342,7 +342,7 @@ POLLING_SECS = 30     # number of secs to sleep before polling again
       }
     end  # request do
 
-    debug( 'anon-oauth2' ) { oauth_response.inspect ) } if @options[:verbose]
+    debug( 'anon-oauth2' ) { oauth_response.inspect } if @options[:verbose]
 
   end
 
