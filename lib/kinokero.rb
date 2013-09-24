@@ -162,7 +162,7 @@ POLLING_SECS = 30     # number of secs to sleep before polling again
   def register_anonymous_printer(params,&block)
 
       # step 1: issue /register to GCP server
-    response = gcp_anonymous_register(params)
+    response = gcp_anonymous_register(params).body
 
     if (status = response[ 'success' ])  # success; continues
 
@@ -170,12 +170,12 @@ POLLING_SECS = 30     # number of secs to sleep before polling again
         # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
         # step 3: poll GCP asynchronously as a separate process
         # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-        poll_response = gcp_anonymous_poll(response)
+        poll_response = gcp_anonymous_poll(response).body
 
         if poll_response[ 'success' ]  # successful polling registration
 
             # step 4, obtain OAuth2 authorization tokens
-          oauth_response = gcp_get_oauth2_tokens( poll_response )
+          oauth_response = gcp_get_oauth2_tokens( poll_response ).body
 
             # let calling module save the response for us
           yield( params[:id], oauth_response )  # save the oauth info
@@ -275,7 +275,7 @@ POLLING_SECS = 30     # number of secs to sleep before polling again
 
         # user claimed printer success ?
       # if reg_id == printer_id  ?????????
-      return poll_response if poll_response[ 'success' ] 
+      return poll_response if poll_response.body[ 'success' ] 
 
       #else failure,, continue to poll
 
