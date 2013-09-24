@@ -123,7 +123,7 @@ POLLING_SECS = 30     # number of secs to sleep before polling again
       end
       faraday.use      :cookie_jar       # cookiejar handling
       faraday.request  :multipart        # multipart files
-      # faraday.response :json             # json en/decoding
+      faraday.response :json             # json en/decoding
       faraday.request  :url_encoded      # form-encode POST params
       faraday.response :logger           # log requests to STDOUT
       faraday.adapter  :typhoeus         # make requests with typhoeus
