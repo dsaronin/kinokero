@@ -60,6 +60,7 @@ GCP_UPDATE   = '/update'
 MIMETYPE_PPD     = 'application/vnd.cups.ppd'
 
 POLLING_SECS = 30     # number of secs to sleep before polling again
+TRUNCATE_LOG = 400    # number of characters before truncate response logs
 
 # #########################################################################
     # default options and configurations for cloudprinting
@@ -67,7 +68,7 @@ POLLING_SECS = 30     # number of secs to sleep before polling again
     :url => GCP_URL    ,
     :oauth_token => nil,
     :ssl_ca_path => '',
-    :verbose => true,   # log all responses
+    :verbose => true,  # log all responses 
     :client_id => '',
     :client_secret => ''
   }
@@ -226,7 +227,7 @@ POLLING_SECS = 30     # number of secs to sleep before polling again
       }
     end  # request do
 
-    debug( 'anon-reg' ) { response.inspect } if @options[:verbose]
+    debug( 'anon-reg' ) { response.inspect[0,TRUNCATE_LOG] } if @options[:verbose]
 
     return response
 
@@ -263,15 +264,9 @@ POLLING_SECS = 30     # number of secs to sleep before polling again
       sleep POLLING_SECS    # sleep here until next poll
 
         # poll GCP to see if printer claimed yet?
-      poll_response = @connection.post :url => poll_url do |req|
-        req.headers['X-CloudPrint-Proxy'] = MY_PROXY_ID 
-        req.body =  {
-          :printer => params[:printer],
-          :proxy   => MY_PROXY_ID,
-        }
-      end  # connection poll request
+      poll_response = @connection.post poll_url   # connection poll request
 
-      debug( 'anon-poll' ) { poll_response.inspect } if @options[:verbose]
+      debug( 'anon-poll' ) { poll_response.inspect[0,TRUNCATE_LOG] } if @options[:verbose]
 
         # user claimed printer success ?
       # if reg_id == printer_id  ?????????
@@ -342,7 +337,7 @@ POLLING_SECS = 30     # number of secs to sleep before polling again
       }
     end  # request do
 
-    debug( 'anon-oauth2' ) { oauth_response.inspect } if @options[:verbose]
+    debug( 'anon-oauth2' ) { oauth_response.inspect[0,TRUNCATE_LOG] } if @options[:verbose]
 
   end
 
