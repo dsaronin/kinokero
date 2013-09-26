@@ -60,7 +60,7 @@ GCP_UPDATE   = '/update'
 MIMETYPE_PPD     = 'application/vnd.cups.ppd'
 
 POLLING_SECS = 30     # number of secs to sleep before polling again
-TRUNCATE_LOG = 400    # number of characters before truncate response logs
+TRUNCATE_LOG = 600    # number of characters before truncate response logs
 
 # #########################################################################
     # default options and configurations for cloudprinting
