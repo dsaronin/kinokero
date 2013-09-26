@@ -56,6 +56,11 @@ GCP_LIST     = '/list'
 GCP_REGISTER = '/register'
 GCP_UPDATE   = '/update'
 
+# GCP ERROR CODES
+GCP_ERR_NOT_REG_YET = 502    # "Token not registered yet." 
+GCP_ERR_NO_GET_AUTH = 505    # "Unable to get the authorization code." 
+GCP_ERR_EXPIRED     = 506    # "Token not registered yet." 
+
 # mimetype for how to encode PPD files
 MIMETYPE_PPD     = 'application/vnd.cups.ppd'
 
@@ -253,24 +258,28 @@ TRUNCATE_LOG = 600    # number of characters before truncate response logs
 # args:
   # response - gcp response hash
 # ------------------------------------------------------------------------------
-  def gcp_anonymous_poll(response)
+  def gcp_anonymous_poll(anon_response)
 
-    poll_url = response['polling_url'] + @options[:client_id]
-    printer_id = response['printers'][0]['id']
+    poll_url = anon_response['polling_url'] + @options[:client_id]
+    printer_id = anon_response['printers'][0]['id']
 
       # countdown timer for polling loop
-    0.step( response['token_duration'].to_i, POLLING_SECS ) do |i|
+    0.step( anon_response['token_duration'].to_i, POLLING_SECS ) do |i|
 
       sleep POLLING_SECS    # sleep here until next poll
 
         # poll GCP to see if printer claimed yet?
-      poll_response = @connection.post poll_url   # connection poll request
+      poll_response = @connection.post poll_url do |req|  # connection poll request
+        req.headers['X-CloudPrint-Proxy'] = MY_PROXY_ID 
+      end  # post poll response request
 
       debug( 'anon-poll' ) { poll_response.inspect[0,TRUNCATE_LOG] } if @options[:verbose]
 
         # user claimed printer success ?
       # if reg_id == printer_id  ?????????
-      return poll_response if poll_response.body[ 'success' ] 
+      return poll_response if 
+        poll_response.body[ 'success' ] ||
+        poll_response.body["errorCode"] != GCP_ERR_NOT_REG_YET
 
       #else failure,, continue to poll
 
@@ -278,7 +287,7 @@ TRUNCATE_LOG = 600    # number of characters before truncate response logs
 
       # log failure
     debug( 'anon-poll' ) { "polling timed out" } if @options[:verbose]
-    return { 'success' => false }   # return failure
+    return { 'success' => false, 'message' =>  "polling timed out" }   # return failure
 
   end
 
