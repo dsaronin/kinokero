@@ -45,8 +45,8 @@ CLIENT_NAME = MY_PROXY_ID + " cloudprint controller v"+ Kinokero::VERSION
 # GCP_SERVICE = '/'
 # GCP_REGISTER = ''
 
-GCP_URL = 'https://www.google.com'
-GCP_SERVICE = '/cloudprint'
+GCP_URL = 'https://www.google.com/'
+GCP_SERVICE = 'cloudprint'
 
 # GCP API actions
 GCP_CONTROL  = '/control'
@@ -57,6 +57,7 @@ GCP_REGISTER = '/register'
 GCP_UPDATE   = '/update'
 
 # GCP ERROR CODES
+GCP_ERR_XSRF_FAIL   =   9    # "XSRF token validation failed."
 GCP_ERR_NOT_REG_YET = 502    # "Token not registered yet." 
 GCP_ERR_NO_GET_AUTH = 505    # "Unable to get the authorization code." 
 GCP_ERR_EXPIRED     = 506    # "Token not registered yet." 
@@ -352,6 +353,19 @@ TRUNCATE_LOG = 600    # number of characters before truncate response logs
 
 # ------------------------------------------------------------------------------
 # ------------------------------------------------------------------------------
+  def gcp_get_auth_tokens(email, password)
+    auth_response = @connection.post( LOGIN_URL ) do |req|
+      #  req.headers['X-CloudPrint-Proxy'] = MY_PROXY_ID 
+      req.body =  {
+        :accountType => 'GOOGLE',
+        :Email       => email,
+        :Passwd      => password,
+        :service     => GCP_SERVICE,
+        :source      => CLIENT_NAME
+      }
+    end  # request do
+
+  end
 # ------------------------------------------------------------------------------
 # From GCP documentation:
 # ------------------------------------------------------------------------------
