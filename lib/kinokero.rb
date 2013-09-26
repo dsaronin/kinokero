@@ -130,7 +130,7 @@ TRUNCATE_LOG = 600    # number of characters before truncate response logs
       end
       faraday.use      :cookie_jar       # cookiejar handling
       faraday.request  :multipart        # multipart files
-      faraday.response :json             # json en/decoding
+      # faraday.response :json             # json en/decoding
       faraday.request  :url_encoded      # form-encode POST params
       faraday.response :logger           # log requests to STDOUT
       faraday.adapter  :typhoeus         # make requests with typhoeus
