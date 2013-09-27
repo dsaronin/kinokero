@@ -239,6 +239,7 @@ TRUNCATE_LOG = 600    # number of characters before truncate response logs
 
   end
 
+  # req.headers['Authorization'] = "GoogleLogin auth=" + AuthAccessToken
 # ------------------------------------------------------------------------------
 # From GCP documentation:
 #   If the user has successfully claimed the token then the poll_response hash is:
