@@ -130,7 +130,7 @@ TRUNCATE_LOG = 600    # number of characters before truncate response logs
       end
       faraday.use      :cookie_jar       # cookiejar handling
       faraday.request  :multipart        # multipart files
-      # faraday.response :json             # json en/decoding
+      faraday.response :json             # json en/decoding
       faraday.request  :url_encoded      # form-encode POST params
       faraday.response :logger           # log requests to STDOUT
       faraday.adapter  :typhoeus         # make requests with typhoeus
@@ -270,7 +270,7 @@ TRUNCATE_LOG = 600    # number of characters before truncate response logs
       sleep POLLING_SECS    # sleep here until next poll
 
         # poll GCP to see if printer claimed yet?
-      poll_response = @connection.post poll_url do |req|  # connection poll request
+      poll_response = @connection.post( poll_url ) do |req|  # connection poll request
         req.headers['X-CloudPrint-Proxy'] = MY_PROXY_ID 
       end  # post poll response request
 
@@ -282,7 +282,7 @@ TRUNCATE_LOG = 600    # number of characters before truncate response logs
         poll_response.body[ 'success' ] ||
         poll_response.body["errorCode"] != GCP_ERR_NOT_REG_YET
 
-      #else failure,, continue to poll
+      #else, continue to poll
 
     end  # sleep/polling loop
 
@@ -333,7 +333,7 @@ TRUNCATE_LOG = 600    # number of characters before truncate response logs
 # ------------------------------------------------------------------------------
   def gcp_get_oauth2_tokens( poll_response )
 
-    oauth_response = @connection.post OAUTH2_TOKEN_ENDPOINT do |req|
+    oauth_response = @connection.post( OAUTH2_TOKEN_ENDPOINT ) do |req|
       req.headers['X-CloudPrint-Proxy'] = MY_PROXY_ID 
       req.body =  {
         :printer => params[:printer],
@@ -352,10 +352,12 @@ TRUNCATE_LOG = 600    # number of characters before truncate response logs
   end
 
 # ------------------------------------------------------------------------------
+# gcp_get_auth_tokens -- simple auth token requester
+  # won't work for accounts that require two-step 
 # ------------------------------------------------------------------------------
   def gcp_get_auth_tokens(email, password)
-    auth_response = @connection.post( LOGIN_URL ) do |req|
-      #  req.headers['X-CloudPrint-Proxy'] = MY_PROXY_ID 
+
+    return @connection.post( LOGIN_URL ) do |req|
       req.body =  {
         :accountType => 'GOOGLE',
         :Email       => email,
