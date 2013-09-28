@@ -225,6 +225,7 @@ TRUNCATE_LOG = 600    # number of characters before truncate response logs
       req.body =  {
         :printer => params[:printer_name],
         :proxy   => MY_PROXY_ID,
+        :auth_client_id => @options[:client_id],   
         :default_display_name => params[:printer_name],
         :capabilities => Faraday::UploadIO.new( 
                   params[:capability_filename], 
@@ -271,14 +272,10 @@ TRUNCATE_LOG = 600    # number of characters before truncate response logs
       sleep POLLING_SECS    # sleep here until next poll
 
         # poll GCP to see if printer claimed yet?
-      poll_response = @connection.post( poll_url ) do |req|  # connection poll request
-        req.headers['X-CloudPrint-Proxy'] = MY_PROXY_ID 
-      end  # post poll response request
-
-      debug( 'anon-poll' ) { poll_response.inspect[0,TRUNCATE_LOG] } if @options[:verbose]
+      poll_response = gcp_poll_request( poll_url )
 
         # user claimed printer success ?
-      # if reg_id == printer_id  ?????????
+        # if reg_id == printer_id  ?????????
       return poll_response if 
         poll_response.body[ 'success' ] ||
         poll_response.body["errorCode"] != GCP_ERR_NOT_REG_YET
@@ -294,6 +291,19 @@ TRUNCATE_LOG = 600    # number of characters before truncate response logs
   end
 
 # ------------------------------------------------------------------------------
+# ------------------------------------------------------------------------------
+  def gcp_poll_request( poll_url )
+        
+    poll_response = @connection.post( poll_url ) do |req|  # connection poll request
+      req.headers['X-CloudPrint-Proxy'] = MY_PROXY_ID 
+    end  # post poll response request
+
+    debug( 'anon-poll' ) { poll_response.inspect[0,TRUNCATE_LOG] } if @options[:verbose]
+
+    return poll_response
+
+  end
+
 # ------------------------------------------------------------------------------
 # ------------------------------------------------------------------------------
 # From GCP documentation:
