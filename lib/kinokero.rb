@@ -384,7 +384,7 @@ TRUNCATE_LOG = 600    # number of characters before truncate response logs
 # ------------------------------------------------------------------------------
   def gcp_get_printer_list(  )
 
-    return @connection.post( GCP_LIST ) do |req|
+    return @connection.post( GCP_SERVICE + GCP_LIST ) do |req|
       req.headers['X-CloudPrint-Proxy'] = MY_PROXY_ID 
       req.body =  {
         :proxy   => MY_PROXY_ID
