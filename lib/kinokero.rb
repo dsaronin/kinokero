@@ -163,7 +163,7 @@ TRUNCATE_LOG = 600    # number of characters before truncate response logs
 # ------------------------------------------------------------------------------
 # args:
   # params  - hash with parameters: 
-  #           :id, :printer_name, :capability_ppd, :default_ppd
+  #           :id, :printer_name, :capability_ppd, :default_ppd, :status
   # block   - asynchronously will get oauth2 info if user submits token
 # ------------------------------------------------------------------------------
   def register_anonymous_printer(params,&block)
@@ -216,7 +216,7 @@ TRUNCATE_LOG = 600    # number of characters before truncate response logs
 # gcp_anonymous_register - posts /register for anon printer; returns response hash
 # args:
   # params  - hash with parameters: 
-  #           :id, :printer_name, :capability_ppd, :default_ppd
+  #           :id, :printer_name, :capability_ppd, :default_ppd, :status
 # ------------------------------------------------------------------------------
   def gcp_anonymous_register(params)
 
@@ -225,10 +225,15 @@ TRUNCATE_LOG = 600    # number of characters before truncate response logs
       req.body =  {
         :printer => params[:printer_name],
         :proxy   => MY_PROXY_ID,
-        :auth_client_id => @options[:client_id],   
+        :description => params[:printer_name],
         :default_display_name => params[:printer_name],
+        :status => params[:status],
         :capabilities => Faraday::UploadIO.new( 
-                  params[:capability_filename], 
+                  params[:capability_ppd], 
+                  MIMETYPE_PPD 
+        ),
+        :defaults => Faraday::UploadIO.new( 
+                  params[:default_ppd], 
                   MIMETYPE_PPD 
         ),
       }
@@ -384,8 +389,7 @@ TRUNCATE_LOG = 600    # number of characters before truncate response logs
 # ------------------------------------------------------------------------------
   def gcp_get_printer_list(  )
 
-    return @connection.post( "http://www.google.com/cloudprint/list" ) do |req|
-    # return @connection.post( GCP_SERVICE + GCP_LIST ) do |req|
+    return @connection.post( GCP_SERVICE + GCP_LIST ) do |req|
       req.body =  {
         :proxy   => MY_PROXY_ID
       }
@@ -395,7 +399,6 @@ TRUNCATE_LOG = 600    # number of characters before truncate response logs
 
 # ------------------------------------------------------------------------------
 # ------------------------------------------------------------------------------
-"http://www.google.com/cloudprint/list"
 
 # #########################################################################
   end  # class Cloudprint
