@@ -352,9 +352,6 @@ TRUNCATE_LOG = 600    # number of characters before truncate response logs
     oauth_response = @connection.post( OAUTH2_TOKEN_ENDPOINT ) do |req|
       req.headers['X-CloudPrint-Proxy'] = MY_PROXY_ID 
       req.body =  {
-        :printer => params[:printer],
-        :proxy   => MY_PROXY_ID,
-
         :client_id =>  @options[:client_id],
         :redirect_uri => AUTHORIZATION_REDIRECT_URI,
         :client_secret => @options[:client_secret],
