@@ -30,6 +30,7 @@ LOGIN_URL = 'https://www.google.com/accounts/ClientLogin'
 AUTHORIZATION_SCOPE = "https://www.googleapis.com/auth/cloudprint"
 AUTHORIZATION_REDIRECT_URI = 'oob'
 OAUTH2_TOKEN_ENDPOINT = "https://accounts.google.com/o/oauth2/token"
+MIMETYPE_OAUTH = "application/x-pkcs12"
 
 # unique name for this running of the GCP connector client
 # formed with gem name + machine-node name (expected to be  unique)
@@ -355,10 +356,13 @@ TRUNCATE_LOG = 600    # number of characters before truncate response logs
       req.body =  {
         :client_id =>  @options[:client_id],
         :redirect_uri => AUTHORIZATION_REDIRECT_URI,
-        :client_secret => @options[:client_secret] ,
         :code => auth_code,
         :grant_type => "authorization_code",
-        :scope => AUTHORIZATION_SCOPE
+        :scope => AUTHORIZATION_SCOPE,
+        :client_secret =>  Faraday::UploadIO.new( 
+                  @options[:client_secret], 
+                  MIMETYPE_OAUTH 
+        )
       }
       
       puts "----------"
