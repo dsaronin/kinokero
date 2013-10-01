@@ -134,8 +134,8 @@ TRUNCATE_LOG = 600    # number of characters before truncate response logs
       faraday.response :json             # json en/decoding
       faraday.request  :url_encoded      # form-encode POST params
       faraday.response :logger           # log requests to STDOUT
-      faraday.adapter  :typhoeus         # make requests with typhoeus
-      # faraday.adapter Faraday.default_adapter # useful for debugging
+      # faraday.adapter  :typhoeus         # make requests with typhoeus
+      faraday.adapter Faraday.default_adapter # useful for debugging
     end # do faraday setup
     
   end
