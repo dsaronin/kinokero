@@ -359,10 +359,7 @@ TRUNCATE_LOG = 600    # number of characters before truncate response logs
         :code => auth_code,
         :grant_type => "authorization_code",
         :scope => AUTHORIZATION_SCOPE,
-        :client_secret =>  Faraday::UploadIO.new( 
-                  @options[:client_secret], 
-                  MIMETYPE_OAUTH 
-        )
+        :client_secret =>  @options[:client_secret], 
       }
       
       puts "----------"
