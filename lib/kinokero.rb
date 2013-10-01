@@ -77,7 +77,8 @@ TRUNCATE_LOG = 600    # number of characters before truncate response logs
     :ssl_ca_path => '',
     :verbose => true,  # log all responses 
     :client_id => '',
-    :client_secret => ''
+    :client_secret => '',
+    :client_redirect_uri => AUTHORIZATION_REDIRECT_URI
   }
 
 # #########################################################################
@@ -355,11 +356,11 @@ TRUNCATE_LOG = 600    # number of characters before truncate response logs
     oauth_response = @connection.post( OAUTH2_TOKEN_ENDPOINT ) do |req|
       req.body =  {
         :client_id =>  @options[:client_id],
-        :redirect_uri => AUTHORIZATION_REDIRECT_URI,
+        :client_secret =>  @options[:client_secret], 
+        :redirect_uri => @options[:client_redirect_uri],
         :code => auth_code,
         :grant_type => "authorization_code",
         :scope => AUTHORIZATION_SCOPE,
-        :client_secret =>  @options[:client_secret], 
       }
       
       puts "----------"
