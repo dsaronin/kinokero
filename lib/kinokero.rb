@@ -30,7 +30,7 @@ LOGIN_URL = 'https://www.google.com/accounts/ClientLogin'
 AUTHORIZATION_SCOPE = "https://www.googleapis.com/auth/cloudprint"
 AUTHORIZATION_REDIRECT_URI = 'oob'
 OAUTH2_TOKEN_ENDPOINT = "https://accounts.google.com/o/oauth2/token"
-MIMETYPE_OAUTH =  "application/octet-stream"     #  "application/x-pkcs12"
+MIMETYPE_OAUTH =  "application/x-pkcs12"
 
 # unique name for this running of the GCP connector client
 # formed with gem name + machine-node name (expected to be  unique)
