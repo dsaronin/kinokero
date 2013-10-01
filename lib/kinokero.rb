@@ -182,7 +182,7 @@ TRUNCATE_LOG = 600    # number of characters before truncate response logs
         if poll_response[ 'success' ]  # successful polling registration
 
             # step 4, obtain OAuth2 authorization tokens
-          oauth_response = gcp_get_oauth2_tokens( poll_response ).body
+          oauth_response = gcp_get_oauth2_tokens( poll_response[ 'authorization_code' ] ).body
 
             # let calling module save the response for us
           yield( params[:id], oauth_response )  # save the oauth info
@@ -347,16 +347,22 @@ TRUNCATE_LOG = 600    # number of characters before truncate response logs
 # ------------------------------------------------------------------------------
 # gcp_get_oauth2_tokens -- returns succcess/fail, oauth_response hash
 # ------------------------------------------------------------------------------
-  def gcp_get_oauth2_tokens( poll_response )
+  def gcp_get_oauth2_tokens( auth_code )
+
+    req_params = {}
 
     oauth_response = @connection.post( OAUTH2_TOKEN_ENDPOINT ) do |req|
       req.body =  {
         :client_id =>  @options[:client_id],
         :redirect_uri => AUTHORIZATION_REDIRECT_URI,
         :client_secret => @options[:client_secret],
-        :grant_type => poll_response[ 'authorization_code' ],
+        :grant_type => auth_code,
+        :proxy   => MY_PROXY_ID,
         :scope => AUTHORIZATION_SCOPE
       }
+      
+      debug( 'oauth2 get' ) { req.body.inspect }
+
     end  # request do
 
     debug( 'anon-oauth2' ) { oauth_response.inspect[0,TRUNCATE_LOG] } if @options[:verbose]
