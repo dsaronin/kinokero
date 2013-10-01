@@ -370,6 +370,8 @@ TRUNCATE_LOG = 600    # number of characters before truncate response logs
 
     debug( 'anon-oauth2' ) { oauth_response.inspect[0,TRUNCATE_LOG] } if @options[:verbose]
 
+    return oauth_response
+
   end
 
 # ------------------------------------------------------------------------------
