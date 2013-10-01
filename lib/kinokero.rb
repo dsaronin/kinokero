@@ -358,7 +358,6 @@ TRUNCATE_LOG = 600    # number of characters before truncate response logs
         :client_secret => @options[:client_secret] ,
         :code => auth_code,
         :grant_type => "authorization_code",
-        :proxy   => MY_PROXY_ID,
         :scope => AUTHORIZATION_SCOPE
       }
       
