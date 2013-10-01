@@ -356,12 +356,15 @@ TRUNCATE_LOG = 600    # number of characters before truncate response logs
         :client_id =>  @options[:client_id],
         :redirect_uri => AUTHORIZATION_REDIRECT_URI,
         :client_secret => @options[:client_secret],
-        :grant_type => auth_code,
-        :proxy   => MY_PROXY_ID,
+        :code => auth_code,
+        :grant_type => "authorization_code",
+        #  :proxy   => MY_PROXY_ID,
         :scope => AUTHORIZATION_SCOPE
       }
       
+      puts "----------"
       debug( 'oauth2 get' ) { req.body.inspect }
+      puts "----------"
 
     end  # request do
 
