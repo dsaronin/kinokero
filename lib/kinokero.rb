@@ -354,13 +354,11 @@ TRUNCATE_LOG = 600    # number of characters before truncate response logs
 # ------------------------------------------------------------------------------
   def gcp_get_oauth2_tokens( auth_code )
 
-    req_params = {}
-
     oauth_response = @connection.post( OAUTH2_TOKEN_ENDPOINT ) do |req|
       req.body =  {
         :client_id =>  @options[:client_id],
         :client_secret =>  @options[:client_secret], 
-        :redirect_uri => @options[:client_redirect_uri],
+        :redirect_uri => AUTHORIZATION_REDIRECT_URI,
         :code => auth_code,
         :grant_type => "authorization_code",
         :scope => AUTHORIZATION_SCOPE,
