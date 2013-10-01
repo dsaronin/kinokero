@@ -239,6 +239,9 @@ TRUNCATE_LOG = 600    # number of characters before truncate response logs
                   MIMETYPE_PPD 
         ),
       }
+
+      log_request( 'get register', req )
+
     end  # request do
 
     debug( 'anon-reg' ) { response.inspect[0,TRUNCATE_LOG] } if @options[:verbose]
@@ -362,11 +365,9 @@ TRUNCATE_LOG = 600    # number of characters before truncate response logs
         :grant_type => "authorization_code",
         :scope => AUTHORIZATION_SCOPE,
       }
-      
-      puts "----------"
-      debug( 'oauth2 get' ) { req.body.inspect }
-      puts "----------"
 
+      log_request( 'get oauth2 code', req )
+      
     end  # request do
 
     debug( 'anon-oauth2' ) { oauth_response.inspect[0,TRUNCATE_LOG] } if @options[:verbose]
@@ -387,6 +388,9 @@ TRUNCATE_LOG = 600    # number of characters before truncate response logs
         :service     => GCP_SERVICE,
         :source      => CLIENT_NAME
       }
+
+      log_request( 'get auth tokens', req )
+      
     end  # request do
 
   end
@@ -399,9 +403,35 @@ TRUNCATE_LOG = 600    # number of characters before truncate response logs
       req.body =  {
         :proxy   => MY_PROXY_ID
       }
+
+      log_request( 'get printer list', req )
+      
     end  # request do
 
   end
+
+# ------------------------------------------------------------------------------
+# log_request -- will log the farady request params if verbose setting
+# ------------------------------------------------------------------------------
+  def log_request( msg, req )
+    if @options[:verbose]
+      puts "\n----------"
+      debug( msg ) { req.body.inspect }
+      puts "----------"
+    end  # if verbose
+  end
+
+# ------------------------------------------------------------------------------
+# ------------------------------------------------------------------------------
+
+# ------------------------------------------------------------------------------
+# ------------------------------------------------------------------------------
+
+# ------------------------------------------------------------------------------
+# ------------------------------------------------------------------------------
+
+# ------------------------------------------------------------------------------
+# ------------------------------------------------------------------------------
 
 # ------------------------------------------------------------------------------
 # ------------------------------------------------------------------------------
