@@ -193,18 +193,18 @@ TRUNCATE_LOG = 600    # number of characters before truncate response logs
             # let calling module save the response for us
           yield( 
             {
-              id: params[:id],
+              printer_id: params[:id],
               success: oauth_response['error'].nil?,
               message: oauth_response['error'].to_s,
-              xmpp_jid: poll_response['xmpp_jid'],
-              printerid: reg_response['printers'][0]['id'],
-              confirmation_url: poll_response['confirmation_page_url'],
-              owner_email: poll_response['user_email'],
+              gcp_xmpp_jid: poll_response['xmpp_jid'],
+              gcp_printerid: reg_response['printers'][0]['id'],
+              gcp_confirmation_url: poll_response['confirmation_page_url'],
+              gcp_owner_email: poll_response['user_email'],
 
-              access_token: oauth_response['access_token'],
-              refresh_token: oauth_response['refresh_token'],
-              token_type: oauth_response['token_type'],
-              expiry_datetime: Time.now + oauth_response['expires_in'].to_i,
+              gcp_access_token: oauth_response['access_token'],
+              gcp_refresh_token: oauth_response['refresh_token'],
+              gcp_token_type: oauth_response['token_type'],
+              gcp_token_expiry_time: Time.now + oauth_response['expires_in'].to_i,
             }
           )  # save the oauth info
         end
@@ -221,13 +221,13 @@ TRUNCATE_LOG = 600    # number of characters before truncate response logs
       # continue on asynchronously with whatever
       # step 2: tell user where to claim printer
     return {
-      success:         status, 
-      invite_page_url: reg_response['invite_page_url'],
-      easy_reg_url:    reg_response['complete_invite_url'],
-      auto_invite_url: reg_response['automated_invite_url'],
-      claim_token_url: reg_response['invite_url'],
-      printer_reg_token: reg_response['registration_token'],
-      token_duration:    reg_response['token_duration']
+      success:               status, 
+      gcp_invite_page_url:   reg_response['invite_page_url'],
+      gcp_easy_reg_url:      reg_response['complete_invite_url'],
+      gcp_auto_invite_url:   reg_response['automated_invite_url'],
+      gcp_claim_token_url:   reg_response['invite_url'],
+      gcp_printer_reg_token: reg_response['registration_token'],
+      gcp_reg_token_duration:    reg_response['token_duration']
     }
 
   end
