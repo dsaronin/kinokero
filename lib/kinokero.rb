@@ -75,7 +75,9 @@ TRUNCATE_LOG = 600    # number of characters before truncate response logs
     :url => GCP_URL    ,
     :oauth_token => nil,
     :ssl_ca_path => '',
-    :verbose => true,  # log all responses 
+    :verbose => true,         # log everything?
+    :log_truncate => false,   # truncate long responses?
+    :log_response => true,    # log the responses?
     :client_id => '',
     :client_secret => '',
     :client_redirect_uri => AUTHORIZATION_REDIRECT_URI
@@ -145,49 +147,66 @@ TRUNCATE_LOG = 600    # number of characters before truncate response logs
 # Anonymous registration requires registering without any login credentials, 
 # and then taking some of the returning tokens to complete the registration. 
 # Here are the steps required:
-
   # Access registration URL using HTTPS without authentication tokens
   # Get token back from Cloud Print Service
   # Use the token to claim the printer (with authentication tokens)
-  # Get the auth token back from the claim printer step
-  # Send auth token to polling URL
-
-
-#   and will require some of this information to be displayed to the user
-#   as part of a manual step to go and claim the user's printer.
+  # Send query to polling URL; 
+  # receive an authentication_code, jabber_url
+  # Send authentication_code together with our client_id, etc to oauth2
+  # receive access_token, refresh_token
+# ------------------------------------------------------------------------------
+#  Display to user following information to claim the user's printer.
 #   
 #       print 'Go claim your printer at this url:'
 #       print 'http://www.google.com/cloudprint/claimprinter.html'
 #       print 'Use token: response['registration_token']
-  
+# ------------------------------------------------------------------------------
 # ------------------------------------------------------------------------------
 # register_anonymous_printer -- returns success/failure, response hash
 # ------------------------------------------------------------------------------
 # args:
   # params  - hash with parameters: 
-  #           :id, :printer_name, :capability_ppd, :default_ppd, :status
+  #       :id, :printer_name, :status (of printer: string),
+  #       :capability_ppd (filename), :default_ppd (filename)
   # block   - asynchronously will get oauth2 info if user submits token
 # ------------------------------------------------------------------------------
   def register_anonymous_printer(params,&block)
 
       # step 1: issue /register to GCP server
-    response = gcp_anonymous_register(params).body
+    reg_response = gcp_anonymous_register(params).body
 
-    if (status = response[ 'success' ])  # success; continues
+    if (status = reg_response[ 'success' ])  # success; continues
 
       pid = fork {
         # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
         # step 3: poll GCP asynchronously as a separate process
         # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-        poll_response = gcp_anonymous_poll(response).body
+        poll_response = gcp_anonymous_poll(reg_response).body
 
         if poll_response[ 'success' ]  # successful polling registration
 
             # step 4, obtain OAuth2 authorization tokens
-          oauth_response = gcp_get_oauth2_tokens( poll_response[ 'authorization_code' ] ).body
+          oauth_response = gcp_get_oauth2_tokens( 
+                poll_response[ 'authorization_code' ] 
+          ).body
 
             # let calling module save the response for us
-          yield( params[:id], oauth_response )  # save the oauth info
+          yield( 
+            {
+              id: params[:id],
+              success: oauth_response['error'].nil?,
+              message: oauth_response['error'].to_s,
+              xmpp_jid: poll_response['xmpp_jid'],
+              printerid: reg_response['printers'][0]['id'],
+              confirmation_url: poll_response['confirmation_page_url'],
+              owner_email: poll_response['user_email'],
+
+              access_token: oauth_response['access_token'],
+              refresh_token: oauth_response['refresh_token'],
+              token_type: oauth_response['token_type'],
+              expiry_datetime: Time.now + oauth_response['expires_in'].to_i,
+            }
+          )  # save the oauth info
         end
 
         exit
@@ -201,7 +220,15 @@ TRUNCATE_LOG = 600    # number of characters before truncate response logs
 
       # continue on asynchronously with whatever
       # step 2: tell user where to claim printer
-    return status, response
+    return {
+      success:         status, 
+      invite_page_url: reg_response['invite_page_url'],
+      easy_reg_url:    reg_response['complete_invite_url'],
+      auto_invite_url: reg_response['automated_invite_url'],
+      claim_token_url: reg_response['invite_url'],
+      printer_reg_token: reg_response['registration_token'],
+      token_duration:    reg_response['token_duration']
+    }
 
   end
 
@@ -222,7 +249,7 @@ TRUNCATE_LOG = 600    # number of characters before truncate response logs
 # ------------------------------------------------------------------------------
   def gcp_anonymous_register(params)
 
-    response =  @connection.post GCP_SERVICE + GCP_REGISTER do |req|
+    reg_response =  @connection.post GCP_SERVICE + GCP_REGISTER do |req|
       req.headers['X-CloudPrint-Proxy'] = MY_PROXY_ID 
       req.body =  {
         :printer => params[:printer_name],
@@ -240,13 +267,13 @@ TRUNCATE_LOG = 600    # number of characters before truncate response logs
         ),
       }
 
-      log_request( 'get register', req )
+      log_request( 'get anon-reg', req )
 
     end  # request do
 
-    debug( 'anon-reg' ) { response.inspect[0,TRUNCATE_LOG] } if @options[:verbose]
+    log_response( 'anon-reg', reg_response )
 
-    return response
+    return reg_response
 
   end
 
@@ -296,11 +323,13 @@ TRUNCATE_LOG = 600    # number of characters before truncate response logs
 
       # log failure
     debug( 'anon-poll' ) { "polling timed out" } if @options[:verbose]
+
     return { 'success' => false, 'message' =>  "polling timed out" }   # return failure
 
   end
 
 # ------------------------------------------------------------------------------
+# gcp_poll_request -- returns response hash after trying a polling POST
 # ------------------------------------------------------------------------------
   def gcp_poll_request( poll_url )
         
@@ -308,7 +337,7 @@ TRUNCATE_LOG = 600    # number of characters before truncate response logs
       req.headers['X-CloudPrint-Proxy'] = MY_PROXY_ID 
     end  # post poll response request
 
-    debug( 'anon-poll' ) { poll_response.inspect[0,TRUNCATE_LOG] } if @options[:verbose]
+    log_response( 'anon-poll', poll_response )
 
     return poll_response
 
@@ -338,7 +367,7 @@ TRUNCATE_LOG = 600    # number of characters before truncate response logs
 #     redirect_uri (set it to 'oob')
 #     client_secret (obtained along with client_id as part of your 
 #         client credentials)
-#     grant_type=authorization_code
+#     grant_type="authorization_code"
 #     scope=https://www.googleapis.com/auth/cloudprint 
 #       (scope identifies the Google service being accessed, in this case GCP)
 
@@ -368,7 +397,7 @@ TRUNCATE_LOG = 600    # number of characters before truncate response logs
       
     end  # request do
 
-    debug( 'anon-oauth2' ) { oauth_response.inspect[0,TRUNCATE_LOG] } if @options[:verbose]
+    log_response( 'oauth2 code', oauth_response )
 
     return oauth_response
 
@@ -415,7 +444,7 @@ TRUNCATE_LOG = 600    # number of characters before truncate response logs
 # ------------------------------------------------------------------------------
   def log_request( msg, req )
     if @options[:verbose]
-      puts "\n----------"
+      puts "\n---------- REQUEST ------------"
       debug( msg ) { req.body.inspect }
       puts "----------"
     end  # if verbose
@@ -423,6 +452,14 @@ TRUNCATE_LOG = 600    # number of characters before truncate response logs
 
 # ------------------------------------------------------------------------------
 # ------------------------------------------------------------------------------
+  def log_response( msg, response )
+    if @options[:verbose] && @options[:log_response]
+      puts "\n---------- RESPONSE ------------"
+      debug( msg ) { response.body.inspect[0, ( @options[:log_truncate] ? TRUNCATE_LOG : 20000 )] } 
+      puts "----------"
+    end  # if verbose
+  end
+
 
 # ------------------------------------------------------------------------------
 # ------------------------------------------------------------------------------
