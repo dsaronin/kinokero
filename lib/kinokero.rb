@@ -91,14 +91,19 @@ TRUNCATE_LOG = 600    # number of characters before truncate response logs
 
 # #########################################################################
 
-  attr_reader :connection
+  attr_reader :connection, :gcp_control
 
 
 # ------------------------------------------------------------------------------
+# instantiate new object
+# args:
+#   gcp_control -- nil or hash of persistent GCP attributes for managed printer
+#   options     -- hash of optional settings
 # ------------------------------------------------------------------------------
-  def initialize( options )
+  def initialize( gcp_control, options )
     @options = DEFAULT_OPTIONS.merge(options)
     validate_cloudprint_options(@options)
+    validate_gcp_control( gcp_control )
     @connection = setup_connection(@options)
     @logger = ::Logger.new(STDOUT)  # in case we need error logging
   end
@@ -118,6 +123,13 @@ TRUNCATE_LOG = 600    # number of characters before truncate response logs
 #      raise ArgumentError,":any_key must exist"
 #    end
     
+  end
+
+# ------------------------------------------------------------------------------
+# TODO: validate the options
+# ------------------------------------------------------------------------------
+  def validate_gcp_control( gcp_control )
+    @gcp_control = gcp_control
   end
 
 # ------------------------------------------------------------------------------
@@ -177,7 +189,7 @@ TRUNCATE_LOG = 600    # number of characters before truncate response logs
 
     if (status = reg_response[ 'success' ])  # success; continues
 
-      pid = fork {
+      pid = fork do
         # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
         # step 3: poll GCP asynchronously as a separate process
         # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
@@ -187,31 +199,33 @@ TRUNCATE_LOG = 600    # number of characters before truncate response logs
 
             # step 4, obtain OAuth2 authorization tokens
           oauth_response = gcp_get_oauth2_tokens( 
-                poll_response[ 'authorization_code' ] 
+            poll_response[ 'authorization_code' ] 
           ).body
+          
+          @gcp_control = {
+            printer_id: params[:id],
+            success: oauth_response['error'].nil?,
+            message: oauth_response['error'].to_s,
+            gcp_xmpp_jid: poll_response['xmpp_jid'],
+            gcp_printerid: reg_response['printers'][0]['id'],
+            gcp_confirmation_url: poll_response['confirmation_page_url'],
+            gcp_owner_email: poll_response['user_email'],
+
+            gcp_access_token: oauth_response['access_token'],
+            gcp_refresh_token: oauth_response['refresh_token'],
+            gcp_token_type: oauth_response['token_type'],
+            gcp_token_expiry_time: Time.now + oauth_response['expires_in'].to_i,
+          }
 
             # let calling module save the response for us
-          yield( 
-            {
-              printer_id: params[:id],
-              success: oauth_response['error'].nil?,
-              message: oauth_response['error'].to_s,
-              gcp_xmpp_jid: poll_response['xmpp_jid'],
-              gcp_printerid: reg_response['printers'][0]['id'],
-              gcp_confirmation_url: poll_response['confirmation_page_url'],
-              gcp_owner_email: poll_response['user_email'],
-
-              gcp_access_token: oauth_response['access_token'],
-              gcp_refresh_token: oauth_response['refresh_token'],
-              gcp_token_type: oauth_response['token_type'],
-              gcp_token_expiry_time: Time.now + oauth_response['expires_in'].to_i,
-            }
-          )  # save the oauth info
-        end
+          yield( @gcp_control )  # persistence
+          
+        end  # if polling succeeded
 
         exit
         # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-      }
+
+      end  # fork block
 
       Process.detach(pid) # we are not interested in the exit
       # code of this child and it should become independent
@@ -221,13 +235,13 @@ TRUNCATE_LOG = 600    # number of characters before truncate response logs
       # continue on asynchronously with whatever
       # step 2: tell user where to claim printer
     return {
-      success:               status, 
-      gcp_invite_page_url:   reg_response['invite_page_url'],
-      gcp_easy_reg_url:      reg_response['complete_invite_url'],
-      gcp_auto_invite_url:   reg_response['automated_invite_url'],
-      gcp_claim_token_url:   reg_response['invite_url'],
-      gcp_printer_reg_token: reg_response['registration_token'],
-      gcp_reg_token_duration:    reg_response['token_duration']
+      success:                 status, 
+      gcp_invite_page_url:     reg_response['invite_page_url'],
+      gcp_easy_reg_url:        reg_response['complete_invite_url'],
+      gcp_auto_invite_url:     reg_response['automated_invite_url'],
+      gcp_claim_token_url:     reg_response['invite_url'],
+      gcp_printer_reg_token:   reg_response['registration_token'],
+      gcp_reg_token_duration:  reg_response['token_duration']
     }
 
   end
