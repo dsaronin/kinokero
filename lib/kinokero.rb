@@ -199,9 +199,11 @@ TRUNCATE_LOG = 600    # number of characters before truncate response logs
 
             # step 4, obtain OAuth2 authorization tokens
           oauth_response = gcp_get_oauth2_tokens( 
-            poll_response[ 'authorization_code' ] 
+            poll_response[ 'authorization_code' ]
           ).body
           
+            # complete self instantiation by making this the printer
+            # which we control
           @gcp_control = {
             printer_id: params[:id],
             success: oauth_response['error'].nil?,
@@ -219,6 +221,9 @@ TRUNCATE_LOG = 600    # number of characters before truncate response logs
 
             # let calling module save the response for us
           yield( @gcp_control )  # persistence
+
+          # TODO: start listening for work
+          gcp_listen_jabber()
           
         end  # if polling succeeded
 
@@ -245,6 +250,9 @@ TRUNCATE_LOG = 600    # number of characters before truncate response logs
     }
 
   end
+
+# ------------------------------------------------------------------------------
+# ------------------------------------------------------------------------------
 
 # ------------------------------------------------------------------------------
 #   anonymous registration calls will return:
@@ -393,7 +401,7 @@ TRUNCATE_LOG = 600    # number of characters before truncate response logs
 #   (after an hour) by using the token endpoint with your refresh token, 
 #   client credentials, and the parameter grant_type=refresh_token.
 # ------------------------------------------------------------------------------
-# gcp_get_oauth2_tokens -- returns succcess/fail, oauth_response hash
+# gcp_get_oauth2_tokens -- returns oauth_response hash
 # ------------------------------------------------------------------------------
   def gcp_get_oauth2_tokens( auth_code )
 
@@ -416,6 +424,53 @@ TRUNCATE_LOG = 600    # number of characters before truncate response logs
     return oauth_response
 
   end
+# ------------------------------------------------------------------------------
+# gcp_refresh_tokens -- returns succcess/fail, oauth_response hash
+# ------------------------------------------------------------------------------
+  def gcp_refresh_tokens( )
+
+    oauth_response = @connection.post( OAUTH2_TOKEN_ENDPOINT ) do |req|
+      req.body =  {
+        :client_id =>  @options[:client_id],
+        :client_secret =>  @options[:client_secret], 
+        :redirect_uri => AUTHORIZATION_REDIRECT_URI,
+        :refresh_token => @gcp_control[:gcp_refresh_token],
+        :grant_type => "refresh_token",
+        :scope => AUTHORIZATION_SCOPE,
+      }
+
+      log_request( 'get refresh token', req )
+      
+    end  # request do
+
+    if oauth_response[ 'success' ]
+
+      @gcp_control[:gcp_access_token] = oauth_response['access_token']
+
+    else  # failed to refresh token
+
+      error( 'refresh fail' )  { "**********************************" }
+
+    end  # if..then..else success
+
+    log_response( 'refresh token', oauth_response )
+
+    return oauth_response
+
+  end
+
+# ------------------------------------------------------------------------------
+# ------------------------------------------------------------------------------
+  def gcp_listen_jabber()
+  end
+
+# ------------------------------------------------------------------------------
+# ------------------------------------------------------------------------------
+
+
+# ------------------------------------------------------------------------------
+# ------------------------------------------------------------------------------
+
 
 # ------------------------------------------------------------------------------
 # gcp_get_auth_tokens -- simple auth token requester
