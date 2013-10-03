@@ -433,10 +433,8 @@ TRUNCATE_LOG = 600    # number of characters before truncate response logs
       req.body =  {
         :client_id =>  @options[:client_id],
         :client_secret =>  @options[:client_secret], 
-        :redirect_uri => AUTHORIZATION_REDIRECT_URI,
         :refresh_token => @gcp_control[:gcp_refresh_token],
-        :grant_type => "refresh_token",
-        :scope => AUTHORIZATION_SCOPE,
+        :grant_type => "refresh_token"
       }
 
       log_request( 'get refresh token', req )
