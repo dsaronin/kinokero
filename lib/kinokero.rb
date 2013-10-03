@@ -119,29 +119,7 @@ HTTP_RESPONSE_NOT_FOUND      = 404
     @logger = ::Logger.new(STDOUT)  # in case we need error logging
   end
 
-    def_delegators :@logger, :debug, :info, :warn, :error, :fatal
-
-# ------------------------------------------------------------------------------
-# validate_cloudprint_options -- validates user's options
-# raises exception if invalid
-# ------------------------------------------------------------------------------
-  def validate_cloudprint_options(options)
-# init stuff goes here; options validations;
-    options.assert_valid_keys(VALID_CLOUDPRINT_OPTIONS)
-
-# future options checking using following pattern
-#    unless (options[:any_key].nil?
-#      raise ArgumentError,":any_key must exist"
-#    end
-    
-  end
-
-# ------------------------------------------------------------------------------
-# TODO: validate the options
-# ------------------------------------------------------------------------------
-  def validate_gcp_control( gcp_control )
-    @gcp_control = gcp_control
-  end
+  def_delegators :@logger, :debug, :info, :warn, :error, :fatal
 
 # ------------------------------------------------------------------------------
 # setup_connection -- establishes Faraday connection based on settings
@@ -154,9 +132,10 @@ HTTP_RESPONSE_NOT_FOUND      = 404
           :ssl => { :ca_path => options[:ssl_ca_path] }
     ) do |faraday|
       #   faraday.request  :retry
-      unless options[:oauth_token].blank?
-        faraday.request  :oauth2, { :token => options[:oauth_token] } 
+      unless @gcp_control.blank?
+        faraday.request  :oauth2, { :token => form_auth_token() } 
       end
+
       faraday.use      :cookie_jar       # cookiejar handling
       faraday.request  :multipart        # multipart files
       faraday.response :json             # json en/decoding
@@ -542,6 +521,13 @@ HTTP_RESPONSE_NOT_FOUND      = 404
     end  # if verbose
   end
 
+# ------------------------------------------------------------------------------
+# form_auth_token -- returns string for current auth type & token
+# ------------------------------------------------------------------------------
+  def form_auth_token()
+    return '' if @gcp_control.nil?
+    return "#{ @gcp_control[:gcp_token_type] } #{ @gcp_control[:gcp_access_token] }"
+  end
 
 # ------------------------------------------------------------------------------
 # ------------------------------------------------------------------------------
@@ -552,8 +538,34 @@ HTTP_RESPONSE_NOT_FOUND      = 404
 # ------------------------------------------------------------------------------
 # ------------------------------------------------------------------------------
 
+# #########################################################################
+
+  protected
+
+# #########################################################################
+
 # ------------------------------------------------------------------------------
+# validate_cloudprint_options -- validates user's options
+# raises exception if invalid
 # ------------------------------------------------------------------------------
+  def validate_cloudprint_options(options)
+# init stuff goes here; options validations;
+    options.assert_valid_keys(VALID_CLOUDPRINT_OPTIONS)
+
+# future options checking using following pattern
+#    unless (options[:any_key].nil?
+#      raise ArgumentError,":any_key must exist"
+#    end
+    
+  end
+
+# ------------------------------------------------------------------------------
+# TODO: validate the options
+# ------------------------------------------------------------------------------
+  def validate_gcp_control( gcp_control )
+    @gcp_control = gcp_control
+  end
+
 
 # #########################################################################
   end  # class Cloudprint
