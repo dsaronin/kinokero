@@ -70,6 +70,17 @@ POLLING_SECS = 30     # number of secs to sleep before polling again
 TRUNCATE_LOG = 600    # number of characters before truncate response logs
 
 # #########################################################################
+# HTTP RESPONSE CODES
+
+HTTP_RESPONSE_OK             = 200
+HTTP_RESPONSE_BAD_REQUEST    = 400
+HTTP_RESPONSE_UNAUTHORIZED   = 401
+HTTP_RESPONSE_FORBIDDEN      = 403
+HTTP_RESPONSE_NOT_FOUND      = 404
+
+
+# #########################################################################
+# #########################################################################
     # default options and configurations for cloudprinting
   DEFAULT_OPTIONS = {
     :url => GCP_URL    ,
@@ -441,9 +452,11 @@ TRUNCATE_LOG = 600    # number of characters before truncate response logs
       
     end  # request do
 
-    if oauth_response[ 'success' ]
+    if oauth_response[:status] == HTTP_RESPONSE_OK
 
-      @gcp_control[:gcp_access_token] = oauth_response['access_token']
+      @gcp_control[:gcp_access_token] = oauth_response.body['access_token']
+      @gcp_control[:gcp_token_expiry_time] = 
+                  Time.now + oauth_response.body['expires_in'].to_i
 
     else  # failed to refresh token
 
@@ -453,7 +466,7 @@ TRUNCATE_LOG = 600    # number of characters before truncate response logs
 
     log_response( 'refresh token', oauth_response )
 
-    return oauth_response
+    return oauth_response.body
 
   end
 
