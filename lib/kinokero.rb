@@ -144,6 +144,8 @@ HTTP_RESPONSE_NOT_FOUND      = 404
   end
 
 # ------------------------------------------------------------------------------
+# setup_connection -- establishes Faraday connection based on settings
+# ASSUMES: @gcp_control set up (to determine oauth2 needs)
 # ------------------------------------------------------------------------------
   def setup_connection( options )
 
@@ -466,7 +468,7 @@ HTTP_RESPONSE_NOT_FOUND      = 404
 
     log_response( 'refresh token', oauth_response )
 
-    return oauth_response.body
+    return oauth_response  #  .body
 
   end
 
