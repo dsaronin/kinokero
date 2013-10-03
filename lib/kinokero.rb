@@ -454,7 +454,7 @@ HTTP_RESPONSE_NOT_FOUND      = 404
       
     end  # request do
 
-    if oauth_response[:status] == HTTP_RESPONSE_OK
+    if oauth_response.status == HTTP_RESPONSE_OK
 
       @gcp_control[:gcp_access_token] = oauth_response.body['access_token']
       @gcp_control[:gcp_token_expiry_time] = 
@@ -468,7 +468,7 @@ HTTP_RESPONSE_NOT_FOUND      = 404
 
     log_response( 'refresh token', oauth_response )
 
-    return oauth_response  #  .body
+    return oauth_response.body
 
   end
 
