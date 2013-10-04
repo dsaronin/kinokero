@@ -133,7 +133,10 @@ HTTP_RESPONSE_NOT_FOUND      = 404
     ) do |faraday|
       #   faraday.request  :retry
       unless @gcp_control.blank?
-        faraday.request  :oauth2, { :token => form_auth_token() } 
+        faraday.request  :oauth2, { 
+          :client_id => @options[ :client_id ],
+          :token => form_auth_token() 
+        } 
       end
 
       faraday.use      :cookie_jar       # cookiejar handling
