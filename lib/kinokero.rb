@@ -135,7 +135,7 @@ HTTP_RESPONSE_NOT_FOUND      = 404
       unless @gcp_control.blank?
         faraday.request  :oauth2, { 
           :client_id => @options[ :client_id ],
-          :token => form_auth_token() 
+          :token     => @gcp_control[ :gcp_access_token ]
         } 
       end
 
@@ -493,6 +493,7 @@ HTTP_RESPONSE_NOT_FOUND      = 404
   def gcp_get_printer_list(  )
 
     return @connection.post( GCP_SERVICE + GCP_LIST ) do |req|
+      req.headers['Authorization'] = form_auth_token()
       req.body =  {
         :proxy   => MY_PROXY_ID
       }
