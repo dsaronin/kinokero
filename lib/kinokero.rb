@@ -134,7 +134,6 @@ HTTP_RESPONSE_NOT_FOUND      = 404
       #   faraday.request  :retry
       unless @gcp_control.blank?
         faraday.request  :oauth2, { 
-          :client_id => @options[ :client_id ],
           :token     => @gcp_control[ :gcp_access_token ]
         } 
       end
