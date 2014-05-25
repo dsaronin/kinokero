@@ -508,9 +508,9 @@ HTTP_RESPONSE_NOT_FOUND      = 404
 # ------------------------------------------------------------------------------
   def log_request( msg, req )
     if @options[:verbose]
-      puts "\n---------- REQUEST ------------"
+      puts "\n---------- REQUEST ------------ #{req.body.class.name} --------------"
       debug( msg ) { req.body.inspect }
-      puts "----------"
+      puts "----------" * 4
     end  # if verbose
   end
 
@@ -518,9 +518,10 @@ HTTP_RESPONSE_NOT_FOUND      = 404
 # ------------------------------------------------------------------------------
   def log_response( msg, response )
     if @options[:verbose] && @options[:log_response]
-      puts "\n---------- RESPONSE ------------"
+      puts "\n---------- RESPONSE ------------ #{response.body.class.name} --------------"
+      puts response.body.keys
       debug( msg ) { response.body.inspect[0, ( @options[:log_truncate] ? TRUNCATE_LOG : 20000 )] } 
-      puts "----------"
+      puts "----------" * 4
     end  # if verbose
   end
 
