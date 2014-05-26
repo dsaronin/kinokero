@@ -127,6 +127,8 @@ HTTP_RESPONSE_NOT_FOUND      = 404
 # ------------------------------------------------------------------------------
 # setup_connection -- establishes Faraday connection based on settings
 # ASSUMES: @gcp_control set up (to determine oauth2 needs)
+# NOTE: GCP returns responses as content-type: "text/plain", so we want faraday
+# to parse all responses from JSON to HASH regardless of content-type
 # ------------------------------------------------------------------------------
   def setup_connection( options )
 
