@@ -240,6 +240,9 @@ HTTP_RESPONSE_NOT_FOUND      = 404
       # step 2: tell user where to claim printer
     return {
       success:                 status, 
+      swalapala_printer_id:    params[:id],
+      gcp_printer_name:        reg_response['printers'][0]['name'],
+      gcp_invite_page_url:     reg_response['invite_page_url'],
       gcp_invite_page_url:     reg_response['invite_page_url'],
       gcp_easy_reg_url:        reg_response['complete_invite_url'],
       gcp_auto_invite_url:     reg_response['automated_invite_url'],
