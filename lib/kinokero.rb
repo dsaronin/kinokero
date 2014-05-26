@@ -519,7 +519,7 @@ HTTP_RESPONSE_NOT_FOUND      = 404
   def log_response( msg, response )
     if @options[:verbose] && @options[:log_response]
       puts "\n---------- RESPONSE ------------ #{response.body.class.name} --------------"
-      puts response.body.keys
+      #  puts response.body.keys
       debug( msg ) { response.body.inspect[0, ( @options[:log_truncate] ? TRUNCATE_LOG : 20000 )] } 
       puts "----------" * 4
     end  # if verbose
