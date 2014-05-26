@@ -140,7 +140,7 @@ HTTP_RESPONSE_NOT_FOUND      = 404
 
       faraday.use      :cookie_jar       # cookiejar handling
       faraday.request  :multipart        # multipart files
-      faraday.response :json, { :content_type => /\bjson$/ }             # json en/decoding
+      faraday.response :json,  :content_type => /\bjson$/
       faraday.request  :url_encoded      # form-encode POST params
       faraday.response :logger           # log requests to STDOUT
       # faraday.adapter  :typhoeus         # make requests with typhoeus
