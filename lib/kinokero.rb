@@ -9,6 +9,9 @@ require "faraday_middleware"
 require "simple_oauth"
 require 'typhoeus/adapters/faraday'
 
+require 'json'    # i don't see why this is needed?
+#                   why isn't faraday doing the json conversion on response?
+
 module Kinokero
 # #########################################################################
 
@@ -140,9 +143,9 @@ HTTP_RESPONSE_NOT_FOUND      = 404
 
       faraday.use      :cookie_jar       # cookiejar handling
       faraday.request  :multipart        # multipart files
-      faraday.response :json,  :content_type => /\bjson$/
       faraday.request  :url_encoded      # form-encode POST params
       faraday.response :logger           # log requests to STDOUT
+      faraday.response :json,  :content_type => /\bjson$/
       # faraday.adapter  :typhoeus         # make requests with typhoeus
       faraday.adapter Faraday.default_adapter # useful for debugging
     end # do faraday setup
@@ -519,7 +522,6 @@ HTTP_RESPONSE_NOT_FOUND      = 404
   def log_response( msg, response )
     if @options[:verbose] && @options[:log_response]
       puts "\n---------- RESPONSE ------------ #{response.body.class.name} --------------"
-      #  puts response.body.keys
       debug( msg ) { response.body.inspect[0, ( @options[:log_truncate] ? TRUNCATE_LOG : 20000 )] } 
       puts "----------" * 4
     end  # if verbose
