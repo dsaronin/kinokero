@@ -9,9 +9,6 @@ require "faraday_middleware"
 require "simple_oauth"
 require 'typhoeus/adapters/faraday'
 
-require 'json'    # i don't see why this is needed?
-#                   why isn't faraday doing the json conversion on response?
-
 module Kinokero
 # #########################################################################
 
