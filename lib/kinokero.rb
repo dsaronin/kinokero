@@ -239,7 +239,7 @@ HTTP_RESPONSE_NOT_FOUND      = 404
       success:                 status, 
       swalapala_printer_id:    params[:id],
       gcp_printer_name:        reg_response['printers'][0]['name'],
-      gcp_invite_page_url:     reg_response['invite_page_url'],
+      gcp_printer_id:          reg_response['printers'][0]['id'],
       gcp_invite_page_url:     reg_response['invite_page_url'],
       gcp_easy_reg_url:        reg_response['complete_invite_url'],
       gcp_auto_invite_url:     reg_response['automated_invite_url'],
