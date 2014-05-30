@@ -10,29 +10,37 @@ require "simple_oauth"
 require 'typhoeus/adapters/faraday'
 
 module Kinokero
+
 # #########################################################################
 
+  # == Cloudprint class
+  #
+  # handles all interactions with Google Cloud Print server
+  # but not the jingle-XMPP related connections
   class Cloudprint
 
     extend Forwardable
 
 # #########################################################################
+
 CRLF = '\r\n'
 
-# The following are used for authentication functions.
+# == authentication function constants
+
 FOLLOWUP_HOST = 'www.google.com/cloudprint'
 FOLLOWUP_URI = 'select%2Fgaiaauth'
 GAIA_HOST = 'www.google.com'
 LOGIN_URI = '/accounts/ServiceLoginAuth'
 LOGIN_URL = 'https://www.google.com/accounts/ClientLogin'
 
-  # from GCP documentation
+# == GCP documentation constants
+
 AUTHORIZATION_SCOPE = "https://www.googleapis.com/auth/cloudprint"
 AUTHORIZATION_REDIRECT_URI = 'oob'
 OAUTH2_TOKEN_ENDPOINT = "https://accounts.google.com/o/oauth2/token"
 MIMETYPE_OAUTH =  "application/x-pkcs12"
 
-# unique name for this running of the GCP connector client
+# MY_PROXY_ID is a unique name for this running of the GCP connector client
 # formed with gem name + machine-node name (expected to be  unique)
 # TODO: make sure machine nodename is unique
 MY_PROXY_ID = "kinokero::"+`uname -n`.chop
@@ -40,7 +48,8 @@ MY_PROXY_ID = "kinokero::"+`uname -n`.chop
 # CLIENT_NAME should be some string identifier for the client you are writing.
 CLIENT_NAME = MY_PROXY_ID + " cloudprint controller v"+ Kinokero::VERSION
 
-# a GCP path is composed of URL + SERVICE + ACTION
+# == GCP URL path
+# The GCP URL path is composed of URL + SERVICE + ACTION
 # below three are used when testing locally
 # GCP_URL = 'http://0.0.0.0:3000'
 # GCP_SERVICE = '/'
@@ -49,7 +58,8 @@ CLIENT_NAME = MY_PROXY_ID + " cloudprint controller v"+ Kinokero::VERSION
 GCP_URL = 'https://www.google.com/'
 GCP_SERVICE = 'cloudprint'
 
-# GCP API actions
+# === GCP API actions
+
 GCP_CONTROL  = '/control'
 GCP_DELETE   = '/delete'
 GCP_FETCH    = '/fetch'
@@ -57,7 +67,8 @@ GCP_LIST     = '/list'
 GCP_REGISTER = '/register'
 GCP_UPDATE   = '/update'
 
-# GCP ERROR CODES
+# === GCP ERROR CODES
+
 GCP_ERR_XSRF_FAIL   =   9    # "XSRF token validation failed."
 GCP_ERR_NOT_REG_YET = 502    # "Token not registered yet." 
 GCP_ERR_NO_GET_AUTH = 505    # "Unable to get the authorization code." 
@@ -66,11 +77,15 @@ GCP_ERR_EXPIRED     = 506    # "Token not registered yet."
 # mimetype for how to encode PPD files
 MIMETYPE_PPD     = 'application/vnd.cups.ppd'
 
-POLLING_SECS = 30     # number of secs to sleep before polling again
-TRUNCATE_LOG = 600    # number of characters before truncate response logs
+# number of secs to sleep before polling again
+POLLING_SECS = 30     
+
+# number of characters before truncate response logs
+TRUNCATE_LOG = 600    
 
 # #########################################################################
-# HTTP RESPONSE CODES
+
+# == HTTP RESPONSE CODES
 
 HTTP_RESPONSE_OK             = 200
 HTTP_RESPONSE_BAD_REQUEST    = 400
@@ -78,9 +93,20 @@ HTTP_RESPONSE_UNAUTHORIZED   = 401
 HTTP_RESPONSE_FORBIDDEN      = 403
 HTTP_RESPONSE_NOT_FOUND      = 404
 
+# #########################################################################
+# #########################################################################
 
-# #########################################################################
-# #########################################################################
+# == CloudPrint options
+# * +:url+ - GCP URL (as formed in constants above)
+# * +:oauth_token+ - supplied OAUTH from GCP
+# * +:ssl_ca_path+ - local SSL certificates path
+# * +:verbose+ - true if verbose logging
+# * +:log_truncate+ - true if truncate long responses from the log
+# * +:log_response+ - true if log responses from GCP
+# * +:client_id+ - the ID we use with GCP for authorized proxy services
+# * +:client_secret+ - secret key for the same
+# * +:client_redirect_uri+ - redirect URL for the same
+
     # default options and configurations for cloudprinting
   DEFAULT_OPTIONS = {
     :url => GCP_URL    ,
@@ -95,6 +121,7 @@ HTTP_RESPONSE_NOT_FOUND      = 404
   }
 
 # #########################################################################
+
     # will be used to determine if user options valid
     # if (in future) any default options were to be off-limits,
     # then a specific sets of keys will have to be enumerated below 
@@ -105,12 +132,11 @@ HTTP_RESPONSE_NOT_FOUND      = 404
   attr_reader :connection, :gcp_control
 
 
-# ------------------------------------------------------------------------------
 # instantiate new object
-# args:
-#   gcp_control -- nil or hash of persistent GCP attributes for managed printer
-#   options     -- hash of optional settings
-# ------------------------------------------------------------------------------
+#
+# * +gcp_control+ - nil or hash of persistent GCP attributes for managed printer
+# * +options+     - hash of optional settings (see above)
+#
   def initialize( gcp_control, options )
     @options = DEFAULT_OPTIONS.merge(options)
     validate_cloudprint_options(@options)
