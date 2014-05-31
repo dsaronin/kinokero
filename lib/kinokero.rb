@@ -227,6 +227,15 @@ HTTP_RESPONSE_NOT_FOUND      = 404
 # * Send authentication_code together with our client_id, etc to oauth2
 # * receive access_token, refresh_token
 # 
+# == anonymous registration calls will return:
+#
+# registration_token: a human readable string the user will need to claim printer ownership
+# token_duration: the lifetime of the registration_token, in seconds (the whole registration has to finish within this time frame)
+# invite_url: the url that a user will need to visit to claim ownership of the printer
+# complete_invite_url: same thing of invite_url but already containing the registration_token, so that the user doesn't have to insert it manually
+# invite_page_url: the url of a printable page containing the user's registration_token and url. (The page can be retrieved by the printer in PDF or PWG-raster format based on the HTTP header of the request, as for getting print jobs. At the moment the page size is letter and the resolution for the raster format is 300dpi. In the near future the page will have the page size and resolution based on the printer defaults.)
+# polling_url: the url that the printer will need to poll for the OAuth2 authorization_code
+#
 # ------------------------------------------------------------------------------
 # Display to user following information to claim the user's printer.
 #   
@@ -308,23 +317,20 @@ HTTP_RESPONSE_NOT_FOUND      = 404
   end
 
 # ------------------------------------------------------------------------------
-# ------------------------------------------------------------------------------
 
-# ------------------------------------------------------------------------------
-#   anonymous registration calls will return:
-#
-#   registration_token: a human readable string the user will need to claim printer ownership
-#   token_duration: the lifetime of the registration_token, in seconds (the whole registration has to finish within this time frame)
-#   invite_url: the url that a user will need to visit to claim ownership of the printer
-#   complete_invite_url: same thing of invite_url but already containing the registration_token, so that the user doesn't have to insert it manually
-#   invite_page_url: the url of a printable page containing the user's registration_token and url. (The page can be retrieved by the printer in PDF or PWG-raster format based on the HTTP header of the request, as for getting print jobs. At the moment the page size is letter and the resolution for the raster format is 300dpi. In the near future the page will have the page size and resolution based on the printer defaults.)
-#   polling_url: the url that the printer will need to poll for the OAuth2 authorization_code
-# ------------------------------------------------------------------------------
 # gcp_anonymous_register - posts /register for anon printer; returns response hash
 # args:
   # params  - hash with parameters: 
   #           :id, :printer_name, :capability_ppd, :default_ppd, :status
-# ------------------------------------------------------------------------------
+#
+# * *Args*    :
+#   - ++ - 
+#   - ++ - 
+# * *Returns* :
+#   - 
+# * *Raises* :
+#   - 
+#
   def gcp_anonymous_register(params)
 
     reg_response =  @connection.post GCP_SERVICE + GCP_REGISTER do |req|
@@ -376,6 +382,15 @@ HTTP_RESPONSE_NOT_FOUND      = 404
 # args:
   # response - gcp response hash
 # ------------------------------------------------------------------------------
+#
+# * *Args*    :
+#   - ++ - 
+#   - ++ - 
+# * *Returns* :
+#   - 
+# * *Raises* :
+#   - 
+#
   def gcp_anonymous_poll(anon_response)
 
     poll_url = anon_response['polling_url'] + @options[:client_id]
@@ -409,6 +424,15 @@ HTTP_RESPONSE_NOT_FOUND      = 404
 # ------------------------------------------------------------------------------
 # gcp_poll_request -- returns response hash after trying a polling POST
 # ------------------------------------------------------------------------------
+#
+# * *Args*    :
+#   - ++ - 
+#   - ++ - 
+# * *Returns* :
+#   - 
+# * *Raises* :
+#   - 
+#
   def gcp_poll_request( poll_url )
         
     poll_response = @connection.post( poll_url ) do |req|  # connection poll request
@@ -422,43 +446,47 @@ HTTP_RESPONSE_NOT_FOUND      = 404
   end
 
 # ------------------------------------------------------------------------------
-# ------------------------------------------------------------------------------
+
+# * *Args*    :
+#   - +auth_code+ - 
+#   - ++ - 
+# * *Returns* :
+#   - oauth_response hash
+# * *Raises* :
+#   - 
+#
 # From GCP documentation:
-#   the printer must use the authorization_code to obtain OAuth2 Auth tokens, 
-#   themselves used to authenticate subsequent API calls to Google Cloud Print. 
-
-#   There are two types of tokens involved:
-
-#     The refresh_token should be retained in printer memory forever. 
-#       It can then be used to retrieve a temporary access_token.
-#     The access_token needs to be refreshed every hour, 
-#       and is used as authentication credentials in subsequent API calls.
-  #
-#   The printer can initially retrieve both tokens together by POSTing 
-#   the authorization_code to the OAuth2 token endpoint at 
-#   https://accounts.google.com/o/oauth2/token, 
+# the printer must use the authorization_code to obtain OAuth2 Auth tokens, 
+# themselves used to authenticate subsequent API calls to Google Cloud Print. 
+#
+# There are two types of tokens involved:
+#
+# * The refresh_token should be retained in printer memory forever. 
+#   It can then be used to retrieve a temporary access_token.
+# * The access_token needs to be refreshed every hour, 
+#   and is used as authentication credentials in subsequent API calls.
+#
+# The printer can initially retrieve both tokens together by POSTing 
+# the authorization_code to the OAuth2 token endpoint at 
+# https://accounts.google.com/o/oauth2/token, 
 #     
-#   along with the following parameters:
-
-#     client_id (the same that you appended to polling_url when fetching
-#         the authorization_code)
-#     redirect_uri (set it to 'oob')
-#     client_secret (obtained along with client_id as part of your 
-#         client credentials)
-#     grant_type="authorization_code"
-#     scope=https://www.googleapis.com/auth/cloudprint 
-#       (scope identifies the Google service being accessed, in this case GCP)
-
-#   If this request succeeds, a refresh token and short-lived access token 
-#   will be returned via JSON. You can then use the access token to make 
-#   API calls by attaching the following Authorization HTTP header to each of 
-#   your API calls: Authorization: OAuth YOUR_ACCESS_TOKEN. 
-#   You can retrieve additional access tokens once the first expires 
-#   (after an hour) by using the token endpoint with your refresh token, 
-#   client credentials, and the parameter grant_type=refresh_token.
-# ------------------------------------------------------------------------------
-# gcp_get_oauth2_tokens -- returns oauth_response hash
-# ------------------------------------------------------------------------------
+# along with the following parameters:
+# * client_id (the same that you appended to polling_url when fetching
+#   the authorization_code)
+# * redirect_uri (set it to 'oob')
+# * client_secret (obtained along with client_id as part of your 
+# * client credentials)
+# * grant_type="authorization_code"
+# * scope=https://www.googleapis.com/auth/cloudprint 
+#   (scope identifies the Google service being accessed, in this case GCP)
+# If this request succeeds, a refresh token and short-lived access token 
+# will be returned via JSON. You can then use the access token to make 
+# API calls by attaching the following Authorization HTTP header to each of 
+# your API calls: Authorization: OAuth YOUR_ACCESS_TOKEN. 
+# You can retrieve additional access tokens once the first expires 
+# (after an hour) by using the token endpoint with your refresh token, 
+# client credentials, and the parameter grant_type=refresh_token.
+#
   def gcp_get_oauth2_tokens( auth_code )
 
     oauth_response = @connection.post( OAUTH2_TOKEN_ENDPOINT ) do |req|
@@ -480,9 +508,18 @@ HTTP_RESPONSE_NOT_FOUND      = 404
     return oauth_response
 
   end
+
 # ------------------------------------------------------------------------------
-# gcp_refresh_tokens -- returns succcess/fail, oauth_response hash
-# ------------------------------------------------------------------------------
+
+# refresh an expired gcp auth token
+#
+# * *Args*    :
+#   - 
+# * *Returns* :
+#   - oauth_response hash showing succcess/fail 
+# * *Raises* :
+#   - 
+#
   def gcp_refresh_tokens( )
 
     oauth_response = @connection.post( OAUTH2_TOKEN_ENDPOINT ) do |req|
@@ -516,22 +553,33 @@ HTTP_RESPONSE_NOT_FOUND      = 404
   end
 
 # ------------------------------------------------------------------------------
-# ------------------------------------------------------------------------------
+
+# TBD: listen for jabber notification of print jobs
+#
+# * *Args*    :
+#   - ++ - 
+#   - ++ - 
+# * *Returns* :
+#   - 
+# * *Raises* :
+#   - 
+#
   def gcp_listen_jabber()
   end
 
 # ------------------------------------------------------------------------------
-# ------------------------------------------------------------------------------
 
-
-# ------------------------------------------------------------------------------
-# ------------------------------------------------------------------------------
-
-
-# ------------------------------------------------------------------------------
-# gcp_get_auth_tokens -- simple auth token requester
-  # won't work for accounts that require two-step 
-# ------------------------------------------------------------------------------
+# simple auth token requester;
+# won't work for accounts that require two-step 
+#
+# * *Args*    :
+#   - +email+ - proxy owner's email 
+#   - +password+ - proxy owner's password
+# * *Returns* :
+#   - gcp response hash
+# * *Raises* :
+#   - 
+#
   def gcp_get_auth_tokens(email, password)
 
     return @connection.post( LOGIN_URL ) do |req|
@@ -550,7 +598,16 @@ HTTP_RESPONSE_NOT_FOUND      = 404
   end
 
 # ------------------------------------------------------------------------------
-# ------------------------------------------------------------------------------
+
+# gcp protocol to get the list of registered printers for the proxy
+#
+# * *Args*    :
+#   - 
+# * *Returns* :
+#   - 
+# * *Raises* :
+#   - 
+#
   def gcp_get_printer_list(  )
 
     return @connection.post( GCP_SERVICE + GCP_LIST ) do |req|
@@ -566,8 +623,18 @@ HTTP_RESPONSE_NOT_FOUND      = 404
   end
 
 # ------------------------------------------------------------------------------
+
+#
 # log_request -- will log the farady request params if verbose setting
-# ------------------------------------------------------------------------------
+#
+# * *Args*    :
+#   - +msg+ - string to identify position in protocol sequence
+#   - +req+ - gcp request hash
+# * *Returns* :
+#   - 
+# * *Raises* :
+#   - 
+#
   def log_request( msg, req )
     if @options[:verbose]
       puts "\n---------- REQUEST ------------ #{req.body.class.name} --------------"
@@ -577,7 +644,17 @@ HTTP_RESPONSE_NOT_FOUND      = 404
   end
 
 # ------------------------------------------------------------------------------
-# ------------------------------------------------------------------------------
+
+# log the GCP response
+# 
+# * *Args*    :
+#   - +msg+ - string to identify position in protocol sequence
+#   - +response+ - gcp response hash
+# * *Returns* :
+#   - 
+# * *Raises* :
+#   - 
+#
   def log_response( msg, response )
     if @options[:verbose] && @options[:log_response]
       puts "\n---------- RESPONSE ------------ #{response.body.class.name} --------------"
@@ -587,20 +664,25 @@ HTTP_RESPONSE_NOT_FOUND      = 404
   end
 
 # ------------------------------------------------------------------------------
-# form_auth_token -- returns string for current auth type & token
-# ------------------------------------------------------------------------------
+
+# returns string for current auth type & token
+#
+# * *Args*    :
+#   -
+# * *Returns* :
+#   - 
+# * *Raises*  :
+#   - 
+#
   def form_auth_token()
     return '' if @gcp_control.nil?
     return "#{ @gcp_control[:gcp_token_type] } #{ @gcp_control[:gcp_access_token] }"
   end
 
 # ------------------------------------------------------------------------------
-# ------------------------------------------------------------------------------
 
 # ------------------------------------------------------------------------------
-# ------------------------------------------------------------------------------
 
-# ------------------------------------------------------------------------------
 # ------------------------------------------------------------------------------
 
 # #########################################################################
@@ -610,23 +692,41 @@ HTTP_RESPONSE_NOT_FOUND      = 404
 # #########################################################################
 
 # ------------------------------------------------------------------------------
-# validate_cloudprint_options -- validates user's options
-# raises exception if invalid
-# ------------------------------------------------------------------------------
+
+# validates user's options
+#
+# * *Args*    :
+#   - +options+ - described in constants 
+# * *Returns* :
+#   - 
+# * *Raises* :
+#   - ArgumentError if invalid option present 
+#
   def validate_cloudprint_options(options)
-# init stuff goes here; options validations;
+
+    # init stuff goes here; options validations;
     options.assert_valid_keys(VALID_CLOUDPRINT_OPTIONS)
 
-# future options checking using following pattern
-#    unless (options[:any_key].nil?
-#      raise ArgumentError,":any_key must exist"
-#    end
+    # future options checking using following pattern
+    #    unless (options[:any_key].nil?
+    #      raise ArgumentError,":any_key must exist"
+    #    end
     
   end
 
 # ------------------------------------------------------------------------------
-# TODO: validate the options
-# ------------------------------------------------------------------------------
+
+# validate the gcp control options and set object attribute
+#
+# TBD: validate the options
+#
+# * *Args*    :
+#   - +gcp_control+ - options for setting attribute
+# * *Returns* :
+#   - the gcp_control attribute
+# * *Raises*  :
+#   - 
+#
   def validate_gcp_control( gcp_control )
     @gcp_control = gcp_control
   end
