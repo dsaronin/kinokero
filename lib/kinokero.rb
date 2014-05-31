@@ -187,32 +187,54 @@ HTTP_RESPONSE_NOT_FOUND      = 404
   end
 
 # ------------------------------------------------------------------------------
+
+# handles the anonymous printer registration protocol
+#
+# * *Args*    :
+#   - +params+  - hash with parameters: 
+#     - +:id+ - 
+#     - +:printer_name+ - 
+#     - +:status+ - (of printer: string) 
+#     - +:capability_ppd+ -  (filename)
+#     - +:default_ppd+ -  (filename)
+#   - +block+   - asynchronously will receive oauth2 info if user submits token
+# * *Returns* :
+#   - success/failure via response hash
+#     - +:success+               - true or false
+#     - +:swalapala_printer_id+  - any internal record id for the printer
+#     - +:gcp_printer_name+      - string of printer name
+#     - +:gcp_printer_id+        - gcp printer id for use in requests
+#     - +:gcp_invite_page_url+   - gcp invite page url (see docs)
+#     - +:gcp_easy_reg_url+      - gcp one-click url (see docs for complete_invite_url)
+#     - +:gcp_auto_invite_url+   - gcp automated_invite_url (see docs)
+#     - +:gcp_claim_token_url+   - gcp invite url (see docs)
+#     - +:gcp_printer_reg_token+ - gcp registration_token for claiming printer
+#     - +:gcp_reg_token_duration+ - gcp token_duration in seconds
+# * *Raises* :
+#   - 
+# 
+# == Anonymous registration protocol
+# 
 # Anonymous registration requires registering without any login credentials, 
 # and then taking some of the returning tokens to complete the registration. 
+# 
 # Here are the steps required:
-  # Access registration URL using HTTPS without authentication tokens
-  # Get token back from Cloud Print Service
-  # Use the token to claim the printer (with authentication tokens)
-  # Send query to polling URL; 
-  # receive an authentication_code, jabber_url
-  # Send authentication_code together with our client_id, etc to oauth2
-  # receive access_token, refresh_token
+# * Access registration URL using HTTPS without authentication tokens
+# * Get token back from Cloud Print Service
+# * Use the token to claim the printer (with authentication tokens)
+# * Send query to polling URL; 
+# * receive an authentication_code, jabber_url
+# * Send authentication_code together with our client_id, etc to oauth2
+# * receive access_token, refresh_token
+# 
 # ------------------------------------------------------------------------------
-#  Display to user following information to claim the user's printer.
+# Display to user following information to claim the user's printer.
 #   
-#       print 'Go claim your printer at this url:'
-#       print 'http://www.google.com/cloudprint/claimprinter.html'
-#       print 'Use token: response['registration_token']
+#   'Go claim your printer at this url:'
+#   'http://www.google.com/cloudprint/claimprinter.html'
+#   'Use token: response['registration_token']
 # ------------------------------------------------------------------------------
-# ------------------------------------------------------------------------------
-# register_anonymous_printer -- returns success/failure, response hash
-# ------------------------------------------------------------------------------
-# args:
-  # params  - hash with parameters: 
-  #       :id, :printer_name, :status (of printer: string),
-  #       :capability_ppd (filename), :default_ppd (filename)
-  # block   - asynchronously will get oauth2 info if user submits token
-# ------------------------------------------------------------------------------
+# 
   def register_anonymous_printer(params,&block)
 
       # step 1: issue /register to GCP server
