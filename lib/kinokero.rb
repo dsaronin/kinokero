@@ -610,8 +610,8 @@ HTTP_RESPONSE_NOT_FOUND      = 404
 #
   def gcp_get_printer_list(  )
 
-    return @connection.post( GCP_SERVICE + GCP_LIST ) do |req|
-      req.headers['Authorization'] = form_auth_token()
+    list_response = @connection.post( GCP_SERVICE + GCP_LIST ) do |req|
+      req.headers['Authorization'] = gcp_form_auth_token()
       req.body =  {
         :proxy   => MY_PROXY_ID
       }
@@ -619,8 +619,30 @@ HTTP_RESPONSE_NOT_FOUND      = 404
       log_request( 'get printer list', req )
       
     end  # request do
+    log_response( 'refresh token', list_response )
+
+    return list_response.body
 
   end
+
+# ------------------------------------------------------------------------------
+
+# refreshes if expired 
+#
+# * *Args*    :
+#   -
+# * *Returns* :
+#   - string for current auth type & token
+# * *Raises*  :
+#   - 
+#
+  def gcp_form_auth_token()
+    return '' if @gcp_control.nil?
+    gcp_refresh_tokens if Time.now >= @gcp_control[:gcp_token_expiry_time] 
+    return "#{ @gcp_control[:gcp_token_type] } #{ @gcp_control[:gcp_access_token] }"
+  end
+# TODO: check if stale; refresh if needed
+
 
 # ------------------------------------------------------------------------------
 
@@ -664,23 +686,6 @@ HTTP_RESPONSE_NOT_FOUND      = 404
   end
 
 # ------------------------------------------------------------------------------
-
-# returns string for current auth type & token
-#
-# * *Args*    :
-#   -
-# * *Returns* :
-#   - 
-# * *Raises*  :
-#   - 
-#
-  def form_auth_token()
-    return '' if @gcp_control.nil?
-    return "#{ @gcp_control[:gcp_token_type] } #{ @gcp_control[:gcp_access_token] }"
-  end
-
-# ------------------------------------------------------------------------------
-
 # ------------------------------------------------------------------------------
 
 # ------------------------------------------------------------------------------
