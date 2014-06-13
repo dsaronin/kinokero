@@ -25,8 +25,6 @@ module Kinokero
 # * +:verbose+ - true if verbose logging
 # * +:log_truncate+ - true if truncate long responses from the log
 # * +:log_response+ - true if log responses from GCP
-# * +:client_id+ - the ID we use with GCP for authorized proxy services
-# * +:client_secret+ - secret key for the same
 # * +:client_redirect_uri+ - redirect URL for the same
 #
   class Cloudprint
@@ -107,8 +105,6 @@ HTTP_RESPONSE_NOT_FOUND      = 404
     :verbose => true,         # log everything?
     :log_truncate => false,   # truncate long responses?
     :log_response => true,    # log the responses?
-    :client_id => '',
-    :client_secret => '',
     :client_redirect_uri => AUTHORIZATION_REDIRECT_URI
   }
 
@@ -393,7 +389,7 @@ HTTP_RESPONSE_NOT_FOUND      = 404
 #
   def gcp_anonymous_poll(anon_response)
 
-    poll_url = anon_response['polling_url'] + @options[:client_id]
+    poll_url = anon_response['polling_url'] + @gcp_control[:proxy_client_id]
     printer_id = anon_response['printers'][0]['id']
 
       # countdown timer for polling loop
@@ -491,8 +487,8 @@ HTTP_RESPONSE_NOT_FOUND      = 404
 
     oauth_response = @connection.post( OAUTH2_TOKEN_ENDPOINT ) do |req|
       req.body =  {
-        :client_id =>  @options[:client_id],
-        :client_secret =>  @options[:client_secret], 
+        :client_id =>  @gcp_control[:proxy_client_id],
+        :client_secret =>  @gcp_control[:proxy_client_secret], 
         :redirect_uri => AUTHORIZATION_REDIRECT_URI,
         :code => auth_code,
         :grant_type => "authorization_code",
@@ -524,8 +520,8 @@ HTTP_RESPONSE_NOT_FOUND      = 404
 
     oauth_response = @connection.post( OAUTH2_TOKEN_ENDPOINT ) do |req|
       req.body =  {
-        :client_id =>  @options[:client_id],
-        :client_secret =>  @options[:client_secret], 
+        :client_id =>  @gcp_control[:proxy_client_id],
+        :client_secret =>  @gcp_control[:proxy_client_secret], 
         :refresh_token => @gcp_control[:gcp_refresh_token],
         :grant_type => "refresh_token"
       }
