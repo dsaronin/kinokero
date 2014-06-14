@@ -550,17 +550,30 @@ HTTP_RESPONSE_NOT_FOUND      = 404
 
 # ------------------------------------------------------------------------------
 
-# TBD: listen for jabber notification of print jobs
+# gets a list of jobs queued for a printer
 #
 # * *Args*    :
-#   - ++ - 
 #   - ++ - 
 # * *Returns* :
 #   - 
 # * *Raises* :
 #   - 
 #
-  def gcp_listen_jabber()
+  def gcp_get_printer_fetch( printerid )
+
+    fetch_response = @connection.post( GCP_SERVICE + GCP_FETCH ) do |req|
+      req.headers['Authorization'] = gcp_form_auth_token()
+      req.body =  {
+        :printerid   => printerid
+      }
+
+      log_request( 'fetch queue', req )
+      
+    end  # request do
+    log_response( 'fetch queue', fetch_response )
+
+    return fetch_response.body
+
   end
 
 # ------------------------------------------------------------------------------
