@@ -623,7 +623,7 @@ HTTP_RESPONSE_NOT_FOUND      = 404
 
 # ------------------------------------------------------------------------------
 
-# refreshes if expired 
+# forms a fresh TOKEN_TYPE + AUTH_TOKEN string
 #
 # * *Args*    :
 #   -
@@ -637,7 +637,23 @@ HTTP_RESPONSE_NOT_FOUND      = 404
     gcp_refresh_tokens if Time.now >= @gcp_control[:gcp_token_expiry_time] 
     return "#{ @gcp_control[:gcp_token_type] } #{ @gcp_control[:gcp_access_token] }"
   end
-# TODO: check if stale; refresh if needed
+
+# ------------------------------------------------------------------------------
+
+# forms a fresh AUTH_TOKEN string
+#
+# * *Args*    :
+#   -
+# * *Returns* :
+#   - string for current auth token
+# * *Raises*  :
+#   - 
+#
+  def gcp_form_jingle_auth_token()
+    return '' if @gcp_control.nil?
+    gcp_refresh_tokens if Time.now >= @gcp_control[:gcp_token_expiry_time] 
+    return @gcp_control[:gcp_access_token]
+  end
 
 
 # ------------------------------------------------------------------------------
