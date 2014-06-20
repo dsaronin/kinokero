@@ -418,8 +418,8 @@ HTTP_RESPONSE_NOT_FOUND      = 404
   end
 
 # ------------------------------------------------------------------------------
+
 # gcp_poll_request -- returns response hash after trying a polling POST
-# ------------------------------------------------------------------------------
 #
 # * *Args*    :
 #   - ++ - 
@@ -440,6 +440,33 @@ HTTP_RESPONSE_NOT_FOUND      = 404
     return poll_response
 
   end
+
+# ------------------------------------------------------------------------------
+
+# gcp_get_job_file -- returns the job file to be printed
+#
+# * *Args*    :
+#   - +file_url+ - url to get the file for printing 
+# * *Returns* :
+#   - nil if failed to get file; else file itself
+# * *Raises* :
+#   - 
+#
+  def gcp_get_job_file( file_url )
+        
+    file_response = @connection.get( file_url ) do |req|  # connection get job file request
+      req.headers['X-CloudPrint-Proxy'] = MY_PROXY_ID 
+      # req.body =  { :printer => params[:printer_name] }
+
+      log_request( 'get job file', req )
+     end  # post poll response request
+
+    #  log_response( 'job file', file_response )
+
+    return ( file_response[ 'success' ] ?  file_response.body  :  nil )
+
+  end
+
 
 # ------------------------------------------------------------------------------
 
@@ -553,9 +580,9 @@ HTTP_RESPONSE_NOT_FOUND      = 404
 # gets a list of jobs queued for a printer
 #
 # * *Args*    :
-#   - ++ - 
+#   - +printerid+ - gcp printer_id for the printer
 # * *Returns* :
-#   - 
+#   - fetch hash including queue
 # * *Raises* :
 #   - 
 #
@@ -575,6 +602,36 @@ HTTP_RESPONSE_NOT_FOUND      = 404
     return fetch_response.body
 
   end
+
+# ------------------------------------------------------------------------------
+
+# report status for a print job
+#
+# * *Args*    :
+#   - +jobid+ - gcp job_id
+#   - +status+ - 
+# * *Returns* :
+#   - 
+# * *Raises* :
+#   - 
+#
+  def gcp_job_status( jobid, status )
+
+    status_response = @connection.post( GCP_SERVICE + GCP_CONTROL ) do |req|
+      req.headers['Authorization'] = gcp_form_auth_token()
+      req.body =  {
+        :jobid   => jobid
+      }
+
+      log_request( 'status control', req )
+      
+    end  # request do
+    log_response( 'status control', status_response )
+
+    return status_response.body
+
+  end
+
 
 # ------------------------------------------------------------------------------
 
