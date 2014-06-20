@@ -94,6 +94,20 @@ HTTP_RESPONSE_UNAUTHORIZED   = 401
 HTTP_RESPONSE_FORBIDDEN      = 403
 HTTP_RESPONSE_NOT_FOUND      = 404
 
+# GCP Job States
+GCP_JOBSTATE_DRAFT = 0 # Job is being created and is not ready for processing yet.;
+GCP_JOBSTATE_HELD = 1  # Submitted and ready, but should not be processed yet.;
+GCP_JOBSTATE_QUEUED = 2 # Ready for processing.;
+GCP_JOBSTATE_IN_PROGRESS = 3 # Currently being processed.
+GCP_JOBSTATE_STOPPED = 4   # Was in progress, but stopped due to error or user intervention.;
+GCP_JOBSTATE_DONE = 5  # Processed successfully.;
+GCP_JOBSTATE_ABORTED = 6  # Aborted due to error or by user action (cancelled).;
+
+# GCP User action causes
+GCP_USER_ACTION_CANCELLED = 0  # User has cancelled the job 
+GCP_USER_ACTION_PAUSED    = 1  # User has paused the job 
+GCP_USER_ACTION_OTHER     = 100  # User has performed some other action 
+
 # #########################################################################
 # #########################################################################
 
@@ -609,18 +623,53 @@ HTTP_RESPONSE_NOT_FOUND      = 404
 #
 # * *Args*    :
 #   - +jobid+ - gcp job_id
-#   - +status+ - 
+#   - +status+ - GCP_JOBSTATUS_  type
+#   - +nbr_pages+ - number of pages printed
 # * *Returns* :
 #   - 
 # * *Raises* :
 #   - 
 #
-  def gcp_job_status( jobid, status )
+  def gcp_job_status( jobid, status, nbr_pages )
 
     status_response = @connection.post( GCP_SERVICE + GCP_CONTROL ) do |req|
       req.headers['Authorization'] = gcp_form_auth_token()
       req.body =  {
-        :jobid   => jobid
+        :jobid   => jobid,
+        :state   => { type: status },
+        :pages_printed => nbr_pages
+      }
+
+      log_request( 'status control', req )
+      
+    end  # request do
+    log_response( 'status control', status_response )
+
+    return status_response.body
+
+  end
+
+# ------------------------------------------------------------------------------
+
+# report abort status for a print job
+#
+# * *Args*    :
+#   - +jobid+ - gcp job_id
+#   - +status+ - GCP_USER_ACTION status
+#   - +nbr_pages+ - number of pages printed
+# * *Returns* :
+#   - 
+# * *Raises* :
+#   - 
+#
+  def gcp_job_status_abort( jobid, status, nbr_pages )
+
+    status_response = @connection.post( GCP_SERVICE + GCP_CONTROL ) do |req|
+      req.headers['Authorization'] = gcp_form_auth_token()
+      req.body =  {
+        :jobid   => jobid,
+        :state   => { type: GCP_JOBSTATE_ABORT, user_action_cause: status },
+        :pages_printed => nbr_pages
       }
 
       log_request( 'status control', req )
