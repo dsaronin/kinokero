@@ -478,7 +478,7 @@ GCP_USER_ACTION_OTHER     = 100  # User has performed some other action
 
     #  log_response( 'job file', file_response )
 
-    return ( file_response[ 'success' ] ?  file_response.body  :  nil )
+    return ( file_response[ 'success' ] ?  file_response  :  nil )
 
   end
 
@@ -669,7 +669,7 @@ GCP_USER_ACTION_OTHER     = 100  # User has performed some other action
       req.headers['Authorization'] = gcp_form_auth_token()
       req.body =  {
         :jobid   => jobid,
-        :state   => { type: GCP_JOBSTATE_ABORT, user_action_cause: status },
+        :state   => { type: GCP_JOBSTATE_ABORTED, user_action_cause: status },
         :pages_printed => nbr_pages
       }
 
@@ -791,8 +791,9 @@ GCP_USER_ACTION_OTHER     = 100  # User has performed some other action
 #
   def log_request( msg, req )
     if @options[:verbose]
-      puts "\n---------- REQUEST ------------ #{req.body.class.name} --------------"
-      debug( msg ) { req.body.inspect }
+      body = ( req.body.nil?  ?  req  :  req.body )
+      puts "\n---------- REQUEST ------------ #{body.class.name} --------------"
+      debug( msg ) { body.inspect }
       puts "----------" * 4
     end  # if verbose
   end
@@ -811,8 +812,9 @@ GCP_USER_ACTION_OTHER     = 100  # User has performed some other action
 #
   def log_response( msg, response )
     if @options[:verbose] && @options[:log_response]
-      puts "\n---------- RESPONSE ------------ #{response.body.class.name} --------------"
-      debug( msg ) { response.body.inspect[0, ( @options[:log_truncate] ? TRUNCATE_LOG : 20000 )] } 
+      body = ( response.body.nil?  ?  response  :  response.body )
+      puts "\n---------- RESPONSE ------------ #{body.class.name} --------------"
+      debug( msg ) { body.inspect[0, ( @options[:log_truncate] ? TRUNCATE_LOG : 20000 )] } 
       puts "----------" * 4
     end  # if verbose
   end
