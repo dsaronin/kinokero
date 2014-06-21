@@ -188,7 +188,7 @@ GCP_USER_ACTION_OTHER     = 100  # User has performed some other action
       faraday.use      :cookie_jar       # cookiejar handling
       faraday.request  :multipart        # multipart files
       faraday.request  :url_encoded      # form-encode POST params
-      faraday.response :json  #, { :content_type => /\bjson$/  }
+      faraday.response :json, { :content_type => [ /\bjson$/, /\bplain$/, /\btext$/ ]  }
       faraday.response :logger           # log requests to STDOUT
       # faraday.adapter  :typhoeus         # make requests with typhoeus
       faraday.adapter Faraday.default_adapter # useful for debugging
