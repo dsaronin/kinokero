@@ -476,12 +476,10 @@ GCP_USER_ACTION_OTHER     = 100  # User has performed some other action
       log_request( 'get job file', req )
      end  # post poll response request
 
-    puts @connection.inspect
-
     #  log_response( 'job file', file_response )
 
-    return nil
-    # ( file_response[ 'success' ] ?  file_response  :  nil )
+      # TODO: can we check the RESPONSE_HEADER for SUCCESS???
+    return file_response
 
   end
 
