@@ -471,15 +471,15 @@ GCP_USER_ACTION_OTHER     = 100  # User has performed some other action
     file_response = @connection.get( file_url ) do |req|  # connection get job file request
       req.headers['X-CloudPrint-Proxy'] = MY_PROXY_ID 
       req.headers['Authorization'] = gcp_form_auth_token()
-      # req.body =  { :printer => params[:printer_name] }
 
       log_request( 'get job file', req )
      end  # post poll response request
 
-    #  log_response( 'job file', file_response )
-
-      # TODO: can we check the RESPONSE_HEADER for SUCCESS???
-    return file_response
+      # check the RESPONSE_HEADER for SUCCESS
+    return ( file_response.env.status == HTTP_RESPONSE_OK  ?
+                file_response.env.body  :
+                nil
+           )
 
   end
 
