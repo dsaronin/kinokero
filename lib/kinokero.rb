@@ -95,6 +95,7 @@ HTTP_RESPONSE_FORBIDDEN      = 403
 HTTP_RESPONSE_NOT_FOUND      = 404
 
 # GCP Job States
+GCP_JOBSTATES = %w(DRAFT HELD QUEUED IN_PROGRESS STOPPED DONE ABORTED)
 GCP_JOBSTATE_DRAFT = 0 # Job is being created and is not ready for processing yet.;
 GCP_JOBSTATE_HELD = 1  # Submitted and ready, but should not be processed yet.;
 GCP_JOBSTATE_QUEUED = 2 # Ready for processing.;
@@ -104,6 +105,7 @@ GCP_JOBSTATE_DONE = 5  # Processed successfully.;
 GCP_JOBSTATE_ABORTED = 6  # Aborted due to error or by user action (cancelled).;
 
 # GCP User action causes
+GCP_USER_ACTIONS = %(CANCELLED PAUSED OTHER)
 GCP_USER_ACTION_CANCELLED = 0  # User has cancelled the job 
 GCP_USER_ACTION_PAUSED    = 1  # User has paused the job 
 GCP_USER_ACTION_OTHER     = 100  # User has performed some other action 
@@ -639,7 +641,7 @@ GCP_USER_ACTION_OTHER     = 100  # User has performed some other action
       req.body =  {
         :jobid   => jobid,
         :semantic_state_diff => {
-          :state   => { type: status },
+          :state   => { type: status_to_code(status) },
           :pages_printed => nbr_pages
         }
       }
@@ -673,7 +675,10 @@ GCP_USER_ACTION_OTHER     = 100  # User has performed some other action
       req.body =  {
         :jobid   => jobid,
         :semantic_state_diff => {
-          :state   => { type: GCP_JOBSTATE_ABORTED, user_action_cause: status },
+          :state   => { 
+            type: status_to_code(GCP_JOBSTATE_ABORTED), 
+            user_action_cause: abort_status_to_code(status)
+          },
           :pages_printed => nbr_pages
         }
       }
@@ -834,6 +839,42 @@ GCP_USER_ACTION_OTHER     = 100  # User has performed some other action
   protected
 
 # #########################################################################
+
+# ------------------------------------------------------------------------------
+
+# converts a status enum to GCP code word
+#
+# * *Args*    :
+#   - +status+ - enum value for status
+# * *Returns* :
+#   - string of the GCP code
+# * *Raises* :
+#   - 
+#
+  def status_to_code(status)
+    return GCP_JOBSTATES[ status ]
+  end
+
+# ------------------------------------------------------------------------------
+
+# converts an abort status enum to GCP code word
+#
+# * *Args*    :
+#   - +status+ - enum value for abort status
+# * *Returns* :
+#   - string of the GCP user action code
+# * *Raises* :
+#   - 
+#
+  def abort_status_to_code(status)
+    status = 2 if status == GCP_USER_ACTION_OTHER
+    return  GCP_USER_ACTIONS[ status ]
+  end
+
+
+
+# ------------------------------------------------------------------------------
+
 
 # ------------------------------------------------------------------------------
 
