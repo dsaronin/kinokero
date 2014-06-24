@@ -640,7 +640,8 @@ GCP_USER_ACTION_OTHER     = 100  # User has performed some other action
       req.headers['Authorization'] = gcp_form_auth_token()
       req.body =  {
         :jobid   => jobid,
-        :semantic_state_diff   => { type: status_to_code(status) },
+        :status  => status_to_code(status),
+        :state   => { type: status_to_code(status) },
         :pages_printed => nbr_pages
       }
 
@@ -672,7 +673,8 @@ GCP_USER_ACTION_OTHER     = 100  # User has performed some other action
       req.headers['Authorization'] = gcp_form_auth_token()
       req.body =  {
         :jobid   => jobid,
-        :semantic_state_diff   => { 
+        :status  => status_to_code(GCP_JOBSTATE_ABORTED),
+        :state   => { 
           type: status_to_code(GCP_JOBSTATE_ABORTED), 
           user_action_cause: abort_status_to_code(status)
         },
