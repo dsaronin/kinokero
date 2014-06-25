@@ -26,5 +26,6 @@ Gem::Specification.new do |spec|
   spec.add_dependency 'simple_oauth'
   spec.add_dependency 'typhoeus'
   spec.add_dependency 'logger'
+  spec.add_dependency 'beefcake'
   spec.add_dependency 'faraday-cookie_jar'
 end

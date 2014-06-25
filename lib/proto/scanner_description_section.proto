@@ -1,0 +1,5 @@
+// Section of a CDD that describes the capabilities and physical units of a
+// cloud-connected scanner.
+message ScannerDescriptionSection {
+
+}
