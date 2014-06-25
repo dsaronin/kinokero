@@ -1,0 +1,35 @@
+// Contains one UI state item for each CDS state item using the information
+// obtained from cross-referencing the CDD.
+message PrinterUiStateSection {
+
+  // A UI state item with a severity level and either:
+  // (1) a localized message and UI-displayable data from the properties and
+  //     state of a particular unit of the device, or
+  // (2) a possibly non-localized vendor state message.
+  message Item {
+
+    // The severity of this individual state item (required).
+    optional CloudDeviceUiState.Severity severity = 1;
+
+    // A message produced from a state item, e.g. Black ink level is 60%. This
+    // message may not be localized if it is from a VendorState.Item (required).
+    optional string message = 2;
+
+    // A non-localized vendor-specific message that provides additional
+    // information about the state of the device unit described by this item.
+    optional string vendor_message = 3;
+
+    // The fullness level of an input tray, output bin or marker.
+    optional int32 level_percent = 4;
+
+    // The color of a marker.
+    optional cloudprint.capabilities.Marker.Color.Type color = 5;
+  }
+
+  repeated Item vendor_item = 1;
+  repeated Item input_tray_item = 2;
+  repeated Item output_bin_item = 3;
+  repeated Item marker_item = 4;
+  repeated Item cover_item = 5;
+  repeated Item media_path_item = 6;
+}

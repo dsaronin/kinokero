@@ -1,0 +1,18 @@
+// Represents the current state of a print job on a cloud device.
+message PrintJobState {
+
+  // Version of the PJS in the form "X.Y" where changes to Y are backwards
+  // compatible, and changes to X are not (required).
+  optional string version = 1;
+
+  // Current state of the job (required).
+  optional JobState state = 2;
+
+  // Number of successfully printed pages. Printer should use this value to
+  // restart interrupted/suspended print jobs from the next page.
+  // Printer can only increase the number of pages printed.
+  optional int32 pages_printed = 3;
+
+  // Number of attempts to deliver the print job.
+  optional int32 delivery_attempts = 4;
+}

@@ -1,0 +1,24 @@
+// Represents a print job's state in a form convenient for display in a UI.
+message PrintJobUiState {
+
+  enum Summary {
+    DRAFT = 0;
+    QUEUED = 1;
+    IN_PROGRESS = 2;
+    PAUSED = 3;
+    DONE = 4;
+    CANCELLED = 5;
+    ERROR = 6;
+    EXPIRED = 7;
+  }
+
+  // Job state summary (required).
+  optional Summary summary = 1;
+
+  // Localized string describing the progress of the job, e.g. the number of
+  // attempts to deliver it or the number of pages which have been printed.
+  optional string progress = 2;
+
+  // Localized string describing the cause of an abnormal state of the job.
+  optional string cause = 3;
+}

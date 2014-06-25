@@ -1,0 +1,31 @@
+// State of the device's output bins.
+message OutputBinState {
+
+  message Item {
+
+    enum StateType {
+      // Bin is functional.
+      OK = 0;
+      // Bin is full and cannot receive any more output. Treated as error.
+      FULL = 1;
+      // Bin is open. Treated as error.
+      OPEN = 2;
+      // Bin is installed, but turned off or disconnected. Treated as error.
+      OFF = 3;
+      // Bin is present, but not functioning properly. Treated as error.
+      FAILURE = 4;
+    }
+
+    // ID of the bin (refers to CDD model) (required).
+    optional string vendor_id = 1;
+
+    // Current bin state (required).
+    optional StateType state = 2;
+    // Used space, percent. Ranges from 0 (empty) to 100 (full).
+    optional int32 level_percent = 3;
+    // Vendor-specific message, ignored when state == OK.
+    optional string vendor_message = 101;
+  }
+
+  repeated Item item = 1;
+}

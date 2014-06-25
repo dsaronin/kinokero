@@ -1,0 +1,15 @@
+// Capability that defines the duplexing options available on a device.
+message Duplex {
+  enum Type {
+    NO_DUPLEX = 0;
+    LONG_EDGE = 1;
+    SHORT_EDGE = 2;
+  }
+
+  message Option {
+    optional Type type = 1 [default = NO_DUPLEX];
+    optional bool is_default = 2 [default = false];
+  }
+
+  repeated Option option = 1;
+}

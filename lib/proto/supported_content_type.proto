@@ -1,0 +1,12 @@
+// Property that defines what content types the printer can print natively.
+message SupportedContentType {
+  // Content type (e.g. "image/png" or "application/pdf"). Use */* if your
+  // printer supports all formats (required).
+  optional string content_type = 1;
+
+  // Minimum supported version of the content type if applicable (e.g. "1.5").
+  optional string min_version = 2;
+
+  // Maximum supported version of the content type if applicable (e.g. "1.5").
+  optional string max_version = 3;
+}

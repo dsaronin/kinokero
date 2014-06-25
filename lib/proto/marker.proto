@@ -1,0 +1,59 @@
+// Physical model of a printer marker.
+message Marker {
+  // Enumeration of types of printer markers.
+  enum Type {
+    CUSTOM = 0;
+    TONER = 1;
+    INK = 2;
+    STAPLES = 3;
+  }
+
+  // Message that describes the color of a marker.
+  message Color {
+    // Enumeration of color types of the printer marker.
+    enum Type {
+      CUSTOM = 0;
+      BLACK = 1;
+      COLOR = 2;
+      CYAN = 3;
+      MAGENTA = 4;
+      YELLOW = 5;
+      LIGHT_CYAN = 6;
+      LIGHT_MAGENTA = 7;
+      GRAY = 8;
+      LIGHT_GRAY = 9;
+    }
+
+    // Required.
+    optional Type type = 1;
+
+    // Non-localized custom display name of the color.
+    // New CDDs should use custom_display_name_localized instead. It is required
+    // that either custom_display_name or custom_display_name_localized is set
+    // if the color's type is CUSTOM.
+    optional string custom_display_name = 2;
+
+    // Translations of custom display name of the color.
+    // If not empty, must contain an entry with locale == EN.
+    repeated LocalizedString custom_display_name_localized = 3;
+  }
+
+  // Vendor-provided ID of the marker (required).
+  optional string vendor_id = 1;
+
+  // Type of marker (required).
+  optional Type type = 2;
+
+  // Color of the marker. Only needed if marker type is INK or TONER.
+  optional Color color = 3;
+
+  // Non-localized custom display name of the marker.
+  // New CDDs should use custom_display_name_localized instead. It is required
+  // that either custom_display_name or custom_display_name_localized is set
+  // if the marker's type is CUSTOM.
+  optional string custom_display_name = 4;
+
+  // Translations of custom display name of the marker.
+  // If not empty, must contain an entry with locale == EN.
+  repeated LocalizedString custom_display_name_localized = 5;
+}

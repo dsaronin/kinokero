@@ -1,0 +1,36 @@
+// Contains current and pending local settings.
+message LocalSettings {
+
+  // Contains settings that do not change with normal use of the device.
+  message Settings {
+
+    // Whether Privet local discovery is enabled (required).
+    optional bool local_discovery = 1;
+
+    // Whether Privet access token API should be exposed on the local network.
+    optional bool access_token_enabled = 2;
+
+    // Whether Privet local printing API should be exposed on the local network.
+    optional bool printer/local_printing_enabled = 3;
+
+    // Whether Privet local printing may send jobs to the server for conversion.
+    optional bool printer/conversion_printing_enabled = 4;
+
+    // Number of seconds between XMPP channel pings.
+    optional int32 xmpp_timeout_value = 5;
+  }
+
+  // Current local settings.
+  // Required (for GCP 2.0) to be provided by the device via the /register
+  // interface. Should be provided or confirmed by the device via the /update
+  // interface as necessary. Prohibited to be provided by clients. Always
+  // present in the local_settings field returned by the /printer interface.
+  optional Settings current = 1;
+
+  // Pending local settings.
+  // Prohibited to be provided by the device. Provided by clients via the
+  // /update interface. Present in the local_settings field returned by the
+  // /printer interface if a client has provided pending local settings but the
+  // device has not yet confirmed them as current.
+  optional Settings pending = 2;
+}

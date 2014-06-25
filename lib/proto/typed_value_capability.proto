@@ -1,0 +1,15 @@
+// Message that stores capability information specific to typed-value-based
+// capabilities.
+message TypedValueCapability {
+  enum ValueType {
+    BOOLEAN = 0;
+    FLOAT = 1;
+    INTEGER = 2;
+    STRING = 3;
+  }
+
+  // Type of data of the typed-value capability (required).
+  optional ValueType value_type = 1;
+  // Default value of the typed-value capability.
+  optional string default = 2;
+}

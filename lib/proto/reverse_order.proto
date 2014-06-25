@@ -1,0 +1,5 @@
+// Capability that defines the default reverse-printing-order setting on a
+// device.
+message ReverseOrder {
+  optional bool default = 1 [default = false];
+}

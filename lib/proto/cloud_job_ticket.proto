@@ -1,0 +1,14 @@
+// Description of how a cloud job (e.g. print job, scan job) should be handled
+// by the cloud device. Also known as CJT.
+message CloudJobTicket {
+
+  // Version of the CJT in the form "X.Y" where changes to Y are backwards
+  // compatible, and changes to X are not (required).
+  optional string version = 1;
+
+  // Section of CJT pertaining to cloud printer ticket items.
+  optional PrintTicketSection print = 101;
+
+  // Section of CJT pertaining to cloud scanner ticket items.
+  optional ScanTicketSection scan = 102;
+}

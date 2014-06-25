@@ -1,0 +1,16 @@
+// Capability that defines the page orientation options available on a device.
+message PageOrientation {
+  enum Type {
+    PORTRAIT = 0;
+    LANDSCAPE = 1;
+    AUTO = 2;
+  }
+
+  message Option {
+    // Type of page orientation (required).
+    optional Type type = 1;
+    optional bool is_default = 2 [default = false];
+  }
+
+  repeated Option option = 1;
+}

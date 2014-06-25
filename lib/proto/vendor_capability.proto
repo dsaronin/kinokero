@@ -1,0 +1,34 @@
+// Flexible capability that can represent range-based, selection-based, or
+// typed-value-based capabilities.
+message VendorCapability {
+  enum Type {
+    RANGE = 0;
+    SELECT = 1;
+    TYPED_VALUE = 2;
+  }
+
+  // ID of the capability. Used in CJT to associate a ticket item with this
+  // capability (required).
+  optional string id = 1;
+
+  // Non-localized user-friendly string to represent this capability.
+  // New CDDs should use display_name_localized instead. It is required that
+  // either display_name or display_name_localized is set.
+  optional string display_name = 2;
+
+  // Type of this capability (required).
+  optional Type type = 3;
+
+  // Range-based capability definition.
+  optional RangeCapability range_cap = 4;
+
+  // Selection-based capability definition.
+  optional SelectCapability select_cap = 5;
+
+  // Typed-value-based capability definition.
+  optional TypedValueCapability typed_value_cap = 6;
+
+  // Translations of display name of this capability.
+  // If not empty, must contain an entry with locale == EN.
+  repeated LocalizedString display_name_localized = 7;
+}

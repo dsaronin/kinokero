@@ -1,0 +1,44 @@
+// Represents a cloud device's state in a form convenient for display in a UI.
+message CloudDeviceUiState {
+
+  enum Summary {
+    IDLE = 0;
+    PROCESSING = 1;
+    STOPPED = 2;
+    OFFLINE = 3;
+  }
+
+  enum Severity {
+    NONE = 0;
+    LOW = 1;
+    MEDIUM = 2;
+    HIGH = 3;
+  }
+
+  // Device state summary (required).
+  optional Summary summary = 1 [default = IDLE];
+
+  // Overall severity (error level) of the device state (required).
+  // Must only be HIGH in the case that the device is STOPPED.
+  optional Severity severity = 2 [default = NONE];
+
+  // In the descriptions of the following three fields, "CDS is nontrivial"
+  // means that CDS is present and there is at least one state item in its
+  // PrinterStateSection or ScannerStateSection which is "interesting" enough
+  // to produce a UI state item for.
+
+  // Number of issues detected.
+  // Present if and only if CDS is nontrivial.
+  optional int32 num_issues = 3 [default = 0];
+
+  // Heuristically determined most relevant message from a state item.
+  // Present if and only if CDS is nontrivial, the device is not OFFLINE, and
+  // the maximum severity of a state item is at least MEDIUM if the device is
+  // IDLE or PROCESSING, or at least LOW if the device is STOPPED.
+  optional string caption = 4;
+
+  // State items specific to the printing capability of the device.
+  // Present if and only if CDS is nontrivial and this CloudDeviceUiState object
+  // is being returned in a single printer lookup or in a recent printer search.
+  optional PrinterUiStateSection printer = 5;
+}

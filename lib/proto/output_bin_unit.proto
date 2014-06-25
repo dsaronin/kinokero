@@ -1,0 +1,29 @@
+// Physical model of a printer output bin.
+message OutputBinUnit {
+  // Enumeration of output bin types.
+  enum Type {
+    CUSTOM = 0;
+    OUTPUT_BIN = 1;
+    MAILBOX = 2;
+    STACKER = 3;
+  }
+
+  // Vendor-provided ID of the output bin (required).
+  optional string vendor_id = 1;
+
+  // Type of output bin (required).
+  optional Type type = 2;
+
+  // Index of the output bin.
+  optional int64 index = 3;
+
+  // Non-localized custom display name of the output bin.
+  // New CDDs should use custom_display_name_localized instead. It is required
+  // that either custom_display_name or custom_display_name_localized is set if
+  // the bin's type is CUSTOM.
+  optional string custom_display_name = 4;
+
+  // Translations of custom display name of the output bin.
+  // If not empty, must contain an entry with locale == EN.
+  repeated LocalizedString custom_display_name_localized = 5;
+}

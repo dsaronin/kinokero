@@ -1,0 +1,24 @@
+// Vendor-specific state.
+message VendorState {
+
+  message Item {
+
+    enum StateType {
+      ERROR = 0;
+      WARNING = 1;
+      INFO = 2;
+    }
+
+    // Severity of the state (required).
+    optional StateType state = 1;
+    // Non-localized user-readable state description.
+    // New vendor state items should use description_localized instead. It is
+    // required that either description or description_localized is set.
+    optional string description = 2;
+    // Translations of state description.
+    // If not empty, must contain an entry with locale == EN.
+    repeated LocalizedString description_localized = 3;
+  }
+
+  repeated Item item = 1;
+}

@@ -1,0 +1,5 @@
+// Ticket item indicating what page-fitting algorithm to use.
+message FitToPageTicketItem {
+  // Type of page fitting (required).
+  optional FitToPage.Type type = 1;
+}

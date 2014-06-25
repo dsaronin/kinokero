@@ -1,0 +1,31 @@
+// State of the device's input trays.
+message InputTrayState {
+
+  message Item {
+
+    enum StateType {
+      // Tray is functional.
+      OK = 0;
+      // Tray is out of media. Treated as error.
+      EMPTY = 1;
+      // Tray is open. Treated as error.
+      OPEN = 2;
+      // Tray is installed, but turned off or disconnected. Treated as error.
+      OFF = 3;
+      // Tray is present, but not functioning properly. Treated as error.
+      FAILURE = 4;
+    }
+
+    // ID of the tray (refers to CDD model) (required).
+    optional string vendor_id = 1;
+
+    // Current tray state (required).
+    optional StateType state = 2;
+    // Loaded media level, percent. Ranges from 0 (empty) to 100 (fully loaded).
+    optional int32 level_percent = 3;
+    // Vendor-specific message, ignored when state == OK.
+    optional string vendor_message = 101;
+  }
+
+  repeated Item item = 1;
+}

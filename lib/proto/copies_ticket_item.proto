@@ -1,0 +1,5 @@
+// Ticket item indicating how many copies to produce.
+message CopiesTicketItem {
+  // Number of copies to print (required).
+  optional int32 copies = 1;
+}

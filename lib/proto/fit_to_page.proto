@@ -1,0 +1,20 @@
+// Capability that defines the page fitting options available on a device.
+message FitToPage {
+  // Enumeration of page fitting algorithms. The "page" is defined as the media
+  // size minus any given margins.
+  enum Type {
+    NO_FITTING = 0;
+    FIT_TO_PAGE = 1;
+    GROW_TO_PAGE = 2;
+    SHRINK_TO_PAGE = 3;
+    FILL_PAGE = 4;
+  }
+
+  message Option {
+    // Type of fitting algorithm (required).
+    optional Type type = 1;
+    optional bool is_default = 2 [default = false];
+  }
+
+  repeated Option option = 1;
+}

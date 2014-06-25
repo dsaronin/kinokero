@@ -1,0 +1,143 @@
+// Contains the device-agnostic state of a job on a cloud device.
+message JobState {
+
+  // Supported job state types.
+  enum Type {
+
+    // Job is being created and is not ready for processing yet.
+    DRAFT = 0;
+
+    // Submitted and ready, but should not be processed yet.
+    HELD = 1;
+
+    // Ready for processing.
+    QUEUED = 2;
+
+    // Currently being processed.
+    IN_PROGRESS = 3;
+
+    // Was in progress, but stopped due to error or user intervention.
+    STOPPED = 4;
+
+    // Processed successfully.
+    DONE = 5;
+
+    // Aborted due to error or by user action (cancelled).
+    ABORTED = 6;
+  }
+
+  message UserActionCause {
+
+    // Next number = 2.
+    enum ActionCode {
+      // User has cancelled the job.
+      CANCELLED = 0;
+      // User has paused the job.
+      PAUSED = 1;
+      // User has performed some other action.
+      OTHER = 100;
+    }
+
+    // Code for the user action which caused the current job state (required).
+    optional ActionCode action_code = 1;
+  }
+
+  message DeviceStateCause {
+
+    // Next number = 5.
+    enum ErrorCode {
+      // Error due to input tray problem.
+      INPUT_TRAY = 0;
+      // Error due to marker problem.
+      MARKER = 1;
+      // Error due to a problem in the media path.
+      MEDIA_PATH = 2;
+      // Error due to media size problem.
+      MEDIA_SIZE = 3;
+      // Error due to media type problem.
+      MEDIA_TYPE = 4;
+      // Error due to some other device state.
+      OTHER = 100;
+    }
+
+    // Error code for the device state which caused the current job state
+    // (required).
+    optional ErrorCode error_code = 1;
+  }
+
+  message DeviceActionCause {
+
+    // Next number = 3.
+    enum ErrorCode {
+      // Error while downloading job.
+      DOWNLOAD_FAILURE = 0;
+      // Error due to invalid job ticket.
+      INVALID_TICKET = 1;
+      // A generic printing error occurred.
+      PRINT_FAILURE = 2;
+      // Error due to some other device action.
+      OTHER = 100;
+    }
+
+    // Error code for the device action which caused the current job state
+    // (required).
+    optional ErrorCode error_code = 1;
+  }
+
+  message ServiceActionCause {
+
+    // Next number = 16.
+    enum ErrorCode {
+      COMMUNICATION_WITH_DEVICE_ERROR = 0;
+      CONVERSION_ERROR = 1;
+      CONVERSION_FILE_TOO_BIG = 2;
+      CONVERSION_UNSUPPORTED_CONTENT_TYPE = 3;
+      DELIVERY_FAILURE = 11;
+      EXPIRATION = 14;
+      FETCH_DOCUMENT_FORBIDDEN = 4;
+      FETCH_DOCUMENT_NOT_FOUND = 5;
+      GOOGLE_DRIVE_QUOTA = 15;
+      INCONSISTENT_JOB = 6;
+      INCONSISTENT_PRINTER = 13;
+      PRINTER_DELETED = 12;
+      REMOTE_JOB_NO_LONGER_EXISTS = 7;
+      REMOTE_JOB_ERROR = 8;
+      REMOTE_JOB_TIMEOUT = 9;
+      REMOTE_JOB_ABORTED = 10;
+      OTHER = 100;
+    }
+
+    // Error code for the service action which caused the current job state
+    // (required).
+    optional ErrorCode error_code = 1;
+  }
+
+  // Current job state type (required).
+  optional Type type = 1;
+
+  // Exactly one of the following four fields must be set if and only if the
+  // state type is ABORTED or STOPPED.
+  // For example:
+  // - {"type": "ABORTED", "user_action_cause": {"action_code": "CANCELLED"}}
+  //   interpreted as the job was cancelled by the user.
+  // - {"type": "STOPPED", "device_state_cause": {"error_code": "MEDIA_PATH"}}
+  //   interpreted as the job was stopped due to a temporary problem with the
+  //   media path, such as paper jam (the specific cause will be discerned from
+  //   the device state by the server).
+  // - {"type": "ABORTED",
+  //    "device_action_cause": {"error_code": "DOWNLOAD_FAILURE"}}
+  //   interpreted as the job was aborted due to a download failure.
+
+  // If present, job state was changed due to user action.
+  optional UserActionCause user_action_cause = 2;
+
+  // If present, job state was changed due to device state change.
+  optional DeviceStateCause device_state_cause = 3;
+
+  // If present, job state was changed due to device action.
+  optional DeviceActionCause device_action_cause = 4;
+
+  // If present, job state was changed due to service (Cloud Print) action.
+  // Should only be set by the Cloud Print server.
+  optional ServiceActionCause service_action_cause = 5;
+}

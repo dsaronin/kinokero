@@ -1,0 +1,17 @@
+// Ticket item indicating what media size to use.
+message MediaSizeTicketItem {
+  // Width (in microns) of the media to print to.
+  optional int32 width_microns = 1;
+
+  // Height (in microns) of the media to print to.
+  optional int32 height_microns = 2;
+
+  // Whether the media size selection is continuously fed. If false, both width
+  // and height must be set. If true, only one need be set.
+  optional bool is_continuous_feed = 3 [default = false];
+
+  // Vendor-provided ID of the MediaSize option. Needed to disambiguate media
+  // sizes that may have the same width and height, but may have a different
+  // effect for the printer.
+  optional string vendor_id = 4;
+}

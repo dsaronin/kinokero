@@ -1,0 +1,4 @@
+// Ticket item indicating what pages to use.
+message PageRangeTicketItem {
+  repeated PageRange.Interval interval = 1;
+}

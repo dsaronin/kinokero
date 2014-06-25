@@ -1,0 +1,24 @@
+// Represents the printer state.
+message PrinterStateSection {
+
+  // Current printer state (required).
+  optional CloudDeviceState.StateType state = 1;
+
+  // State of the input trays.
+  optional InputTrayState input_tray_state = 2;
+
+  // State of the output bins.
+  optional OutputBinState output_bin_state = 3;
+
+  // State of the markers.
+  optional MarkerState marker_state = 4;
+
+  // State of the printer doors/covers/etc.
+  optional CoverState cover_state = 5;
+
+  // State of the printer media paths.
+  optional MediaPathState media_path_state = 6;
+
+  // Vendor-specific printer state.
+  optional VendorState vendor_state = 101;
+}

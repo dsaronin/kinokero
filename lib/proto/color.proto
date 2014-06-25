@@ -1,0 +1,39 @@
+// Capability that defines the color options available on a device.
+message Color {
+  enum Type {
+    STANDARD_COLOR = 0;
+    STANDARD_MONOCHROME = 1;
+    CUSTOM_COLOR = 2;
+    CUSTOM_MONOCHROME = 3;
+    AUTO = 4;
+  }
+
+  message Option {
+    // ID to help vendor identify the color option (required for options of type
+    // CUSTOM_COLOR and CUSTOM_MONOCHROME).
+    optional string vendor_id = 1;
+
+    // Type of color option used in UIs to differentiate color and non-color
+    // options (required). Note that there can be any number of options of type
+    // CUSTOM_COLOR and CUSTOM_MONOCHROME, but there should be at most one
+    // option of each of the other types.
+    optional Type type = 2;
+
+    // Non-localized user-friendly string that represents this option.
+    // New CDDs should use custom_display_name_localized instead. It is required
+    // that either custom_display_name or custom_display_name_localized is set
+    // for options of type CUSTOM_COLOR and CUSTOM_MONOCHROME. Options of each
+    // of the other types will have their display name localized by the server.
+    optional string custom_display_name = 3;
+
+    // Whether this option should be selected by default. Only one option
+    // should be set as default.
+    optional bool is_default = 4 [default = false];
+
+    // Translations of custom display name of the option.
+    // If not empty, must contain an entry with locale == EN.
+    repeated LocalizedString custom_display_name_localized = 5;
+  }
+
+  repeated Option option = 1;
+}

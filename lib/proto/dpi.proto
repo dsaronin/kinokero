@@ -1,0 +1,27 @@
+// Capability that defines the 2D image quality levels available on a device.
+message Dpi {
+  message Option {
+    // Horizontal DPI (required).
+    optional int32 horizontal_dpi = 1;
+
+    // Vertical DPI (required).
+    optional int32 vertical_dpi = 2;
+
+    optional bool is_default = 3 [default = false];
+
+    // Custom display name to override the default display name which consists
+    // of "{$horizontal_dpi}x{$vertical_dpi} dpi".
+    optional string custom_display_name = 4;
+
+    // Vendor-provided ID for the dpi option. Used to disambiguate dpi options
+    // that may have the same horizontal and vertical dpi but a different effect
+    // on the printer.
+    optional string vendor_id = 5;
+  }
+
+  repeated Option option = 1;
+  optional int32 min_horizontal_dpi = 2;
+  optional int32 max_horizontal_dpi = 3;
+  optional int32 min_vertical_dpi = 4;
+  optional int32 max_vertical_dpi = 5;
+}

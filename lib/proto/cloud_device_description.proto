@@ -1,0 +1,14 @@
+// Description of a cloud-enabled device's capabilities and properties. Also
+// known as CDD.
+message CloudDeviceDescription {
+
+  // Version of the CDD in the form "X.Y" where changes to Y are backwards
+  // compatible, and changes to X are not (required).
+  optional string version = 1;
+
+  // Section of the CDD that specifically describes printers.
+  optional PrinterDescriptionSection printer = 101;
+
+  // Section of the CDD that specifically describes scanners.
+  optional ScannerDescriptionSection scanner = 102;
+}

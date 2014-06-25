@@ -1,0 +1,5 @@
+// Ticket item indicating whether to print in reverse.
+message ReverseOrderTicketItem {
+  // Whether to print in reverse (required).
+  optional bool reverse_order = 1;
+}

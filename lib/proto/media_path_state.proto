@@ -1,0 +1,25 @@
+// State of the device media paths.
+message MediaPathState {
+
+  message Item {
+
+    enum StateType {
+      // Path is functioning.
+      OK = 0;
+      // Media is jammed. Treated as error.
+      MEDIA_JAM = 1;
+      // Path is present, but not functioning properly. Treated as error.
+      FAILURE = 2;
+    }
+
+    // ID of the media path (refers to CDD model) (required).
+    optional string vendor_id = 1;
+
+    // Current state (required).
+    optional StateType state = 2;
+    // Vendor-specific message, ignored when state == OK.
+    optional string vendor_message = 101;
+  }
+
+  repeated Item item = 1;
+}

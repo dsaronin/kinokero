@@ -1,0 +1,85 @@
+// Section of a CDD that describes the capabilities and physical units of a
+// cloud-connected printer.
+message PrinterDescriptionSection {
+
+  // Content types (sometimes referred to as MIME types) that are supported by
+  // the printer.
+  //
+  // The order of these types determines which content type the document should
+  // be converted to. For example, if the types are ordered as:
+  //
+  //   [
+  //     {"content_type": "application/pdf"},
+  //     {"content_type": "image/pwg-raster"}
+  //   ]
+  //
+  // Then the document's content type will first be matched to any content type
+  // in the list. If there is a match, then the document will be sent to the
+  // printer as is. If there is no match, then the document will be converted to
+  // a content type which the server supports starting from the first option. In
+  // this example, if the document is sent as "text/html" and the printer
+  // supports "application/pdf" and "image/pwg-raster", then the document will
+  // be converted to "application/pdf" and not "image/pwg-raster", because
+  // "application/pdf" is declared earlier in this list.
+  repeated SupportedContentType supported_content_type = 1;
+
+  // Printing speeds that the printer can operate at.
+  optional PrintingSpeed printing_speed = 2;
+
+  // PWG raster configuration of the printer. Required if the printer supports
+  // image/pwg-raster content type, and it should be omitted otherwise.
+  // This allows a cloud service to understand how to rasterize a document in
+  // PWG-raster for the printer.
+  optional PwgRasterConfig pwg_raster_config = 3;
+
+  // Physical model of the printer's input trays.
+  repeated InputTrayUnit input_tray_unit = 4;
+
+  // Physical model of the printer's output bins.
+  repeated OutputBinUnit output_bin_unit = 5;
+
+  // Physical model of the printer's markers.
+  repeated Marker marker = 6;
+
+  // Physical model of the printer's covers.
+  repeated Cover cover = 7;
+
+  // Physical model of the printer's media paths.
+  repeated MediaPath media_path = 8;
+
+  // Vendor-provided printer capabilities.
+  repeated VendorCapability vendor_capability = 101;
+
+  // Color printing capabilities of the printer.
+  optional Color color = 102;
+
+  // Duplexing capabilities of the printer.
+  optional Duplex duplex = 103;
+
+  // Page/paper orientation capabilities of the printer.
+  optional PageOrientation page_orientation = 104;
+
+  // Multiple copy capability of the printer.
+  optional Copies copies = 105;
+
+  // Page margins capability of the printer.
+  optional Margins margins = 106;
+
+  // Printing quality or dots-per-inch (DPI) capabilities of the printer.
+  optional Dpi dpi = 107;
+
+  // Page fitting capabilities of the printer.
+  optional FitToPage fit_to_page = 108;
+
+  // Page range selection capability of the printer.
+  optional PageRange page_range = 109;
+
+  // Page or media size capabilities of the printer.
+  optional MediaSize media_size = 110;
+
+  // Paper collation capability of the printer.
+  optional Collate collate = 111;
+
+  // Reverse order printing capability of the printer.
+  optional ReverseOrder reverse_order = 112;
+}

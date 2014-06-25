@@ -1,0 +1,33 @@
+// Capability that defines the margins available on a device (including a custom
+// one). Margins are measured in microns.
+message Margins {
+  // Enumerates the set of predefined types of margins. Devices should use these
+  // types to semantically describe the margins option. This type will be used
+  // for UI purposes only.
+  enum Type {
+    BORDERLESS = 0;
+    STANDARD = 1;
+    CUSTOM = 2;
+  }
+
+  message Option {
+    // Type of margin option (required).
+    optional Type type = 1;
+
+    // Top margin of the page (required).
+    optional int32 top_microns = 2;
+
+    // Right margin of the page (required).
+    optional int32 right_microns = 3;
+
+    // Bottom margin of the page (required).
+    optional int32 bottom_microns = 4;
+
+    // Left margin of the page (required).
+    optional int32 left_microns = 5;
+
+    optional bool is_default = 6 [default = false];
+  }
+
+  repeated Option option = 1;
+}

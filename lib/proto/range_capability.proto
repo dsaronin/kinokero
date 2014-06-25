@@ -1,0 +1,14 @@
+// Message that stores capability information specific to range-based
+// capabilities.
+message RangeCapability {
+  enum ValueType {
+    FLOAT = 0;
+    INTEGER = 1;
+  }
+
+  // Data type of the value of the range capability (required).
+  optional ValueType value_type = 1;
+  optional string default = 2;
+  optional string min = 3;
+  optional string max = 4;
+}

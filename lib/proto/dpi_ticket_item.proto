@@ -1,0 +1,13 @@
+// Ticket item indicating what image resolution to use.
+message DpiTicketItem {
+  // Horizontal DPI to print at (required).
+  optional int32 horizontal_dpi = 1;
+
+  // Vertical DPI to print at (required).
+  optional int32 vertical_dpi = 2;
+
+  // Vendor-provided ID of the Dpi option. Needed to disambiguate Dpi options
+  // that have the same DPI values, but may have a different effect for the
+  // printer.
+  optional string vendor_id = 3;
+}

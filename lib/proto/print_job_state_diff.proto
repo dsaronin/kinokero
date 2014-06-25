@@ -1,0 +1,10 @@
+// Diff that can be applied to a PrintJobState message. Any omitted field will
+// not be changed.
+message PrintJobStateDiff {
+
+  // New job state.
+  optional JobState state = 1;
+
+  // New number of pages printed.
+  optional int32 pages_printed = 2;
+}

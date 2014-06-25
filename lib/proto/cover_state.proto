@@ -1,0 +1,25 @@
+// State of the device covers (door/cover/etc).
+message CoverState {
+
+  message Item {
+
+    enum StateType {
+      // Default cover state (closed, does not need any attention).
+      OK = 0;
+      // Cover is open. Treated as error.
+      OPEN = 1;
+      // Cover is not functioning properly. Treated as error.
+      FAILURE = 2;
+    }
+
+    // ID of the cover (refers to CDD model) (required).
+    optional string vendor_id = 1;
+
+    // Current cover state (required).
+    optional StateType state = 2;
+    // Vendor-specific message, ignored when state == OK.
+    optional string vendor_message = 101;
+  }
+
+  repeated Item item = 1;
+}

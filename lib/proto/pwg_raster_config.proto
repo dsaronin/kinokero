@@ -1,0 +1,173 @@
+// Configuration of how printer should receive PWG raster images.
+message PwgRasterConfig {
+
+  message Resolution {
+    optional int32 cross_feed_dir = 1;  // Horizontal resolution in DPI.
+    optional int32 feed_dir = 2;  // Vertical resolution in DPI.
+  }
+
+  // Resolutions (in DPI) of the pages that the printer supports in PWG-raster
+  // format. The resolution MUST be supported for every page media supported by
+  // the printer. (Same as PwgRasterDocumentResolutionSupported PWG-raster
+  // semantic model element.) This field is strongly recommended, as it helps
+  // GCP to decide which resolutions are supported by the printer for PWG-raster
+  // documents if it has to downscale the document to a lower resolution.
+  //
+  // This list can be a subset of the full set of resolutions supported by the
+  // printer (in formats different from PWG-raster, e.g. PDF), but it MUST
+  // include an NxN DPI resolution where N <= 360 and N evenly divides all
+  // resolutions supported by the printer. A resolution NxN where N >= 600
+  // (possibly 600 or 720) is also strongly recommended.
+  //
+  // GCP will generate PWG-raster pages not necessarily at the resolution
+  // reported in the ticket, but the actual DPIs of the page (horizontal and
+  // vertical) will always perfectly divide the corresponding values reported in
+  // the ticket.
+  repeated Resolution document_resolution_supported = 2;
+
+  // List of PWG-raster document types (in terms of color space and bits per
+  // color) supported by the printer. Color printers MUST support SRGB_8 and
+  // possibly SGRAY_8. Monochrome printers must support either SRGB_8 or
+  // SGRAY_8. However, any printer that doesn't support SGRAY_8 must be able
+  // to perform conversion from RGB to grayscale if it receives a PWG-raster
+  // document in SRGB and the print job ticket specifies monochrome printing.
+  //
+  // This field is strongly recommended, and we recommend to include all types
+  // supported by the printer, as GCP may start serving more document types in
+  // the future.
+  repeated PwgDocumentTypeSupported document_type_supported = 3;
+
+  // Describes which transformation needs to be applied to back pages in
+  // duplexing in order to have them printed properly.
+  // The value mainly depends on how duplexing works on the printer, and the
+  // actual effect depends on which duplexing is specified in the ticket.
+  enum DocumentSheetBack {
+    // No special treatment for back pages (same as front page).
+    NORMAL = 0;
+    // Back pages are rotated 180 degrees if the document is portrait
+    // (TwoSidedLongEdge duplexing).
+    ROTATED = 1;
+    // Back pages are rotated 180 degrees if the document is landscape
+    // (TwoSidedShortEdge duplexing, opposite of ROTATED).
+    MANUAL_TUMBLE = 2;
+    // Page is flipped upside-down if portrait (TwoSidedLongEdge duplexing),
+    // left-right if landscape (TwoSidedShortEdge duplexing).
+    FLIPPED = 3;
+  }
+  // Same as PwgRasterDocumentSheetBack PWG-raster semantic model element.
+  // Default value is ROTATED.
+  optional DocumentSheetBack document_sheet_back = 4 [default = ROTATED];
+
+  // Instructs GCP that the printer wants to print pages from the last to the
+  // first. In that case GCP will stream PWG-raster pages in that order.
+  optional bool reverse_order_streaming = 5;
+
+  // Instructs GCP that the printer prefers receiving pages rotated 180 degrees.
+  // This rotation is in addition to possible additional rotations of even pages
+  // based on document_sheet_back in case of duplexing.
+  optional bool rotate_all_pages = 6;
+
+  // PWG-raster document types (in terms of color space and bits per color).
+  // This list is based on the PWG-raster specs of March 14, 2012, and it
+  // will be extended without notice if new types are added to newer versions
+  // of the specs. If a new type is not accepted by GCP capability parser please
+  // inform the GCP team. (This doesn't mean that GCP will start sending
+  // documents of the new kind.)
+  //
+  // The string names are identical to the keyword attribute values in
+  // PWG-raster documentation, except they are uppercase, and dashes are
+  // replaced by underscores.
+  enum PwgDocumentTypeSupported {
+    BLACK_1 = 1;
+    SGRAY_1 = 2;
+    ADOBE_RGB_8 = 3;
+    BLACK_8 = 4;
+    CMYK_8 = 5;
+    DEVICE1_8 = 6;
+    DEVICE2_8 = 7;
+    DEVICE3_8 = 8;
+    DEVICE4_8 = 9;
+    DEVICE5_8 = 10;
+    DEVICE6_8 = 11;
+    DEVICE7_8 = 12;
+    DEVICE8_8 = 13;
+    DEVICE9_8 = 14;
+    DEVICE10_8 = 15;
+    DEVICE11_8 = 16;
+    DEVICE12_8 = 17;
+    DEVICE13_8 = 18;
+    DEVICE14_8 = 19;
+    DEVICE15_8 = 20;
+    RGB_8 = 21;
+    SGRAY_8 = 22;
+    SRGB_8 = 23;
+    ADOBE_RGB_16 = 24;
+    BLACK_16 = 25;
+    CMYK_16 = 26;
+    DEVICE1_16 = 27;
+    DEVICE2_16 = 28;
+    DEVICE3_16 = 29;
+    DEVICE4_16 = 30;
+    DEVICE5_16 = 31;
+    DEVICE6_16 = 32;
+    DEVICE7_16 = 33;
+    DEVICE8_16 = 34;
+    DEVICE9_16 = 35;
+    DEVICE10_16 = 36;
+    DEVICE11_16 = 37;
+    DEVICE12_16 = 38;
+    DEVICE13_16 = 39;
+    DEVICE14_16 = 40;
+    DEVICE15_16 = 41;
+    RGB_16 = 42;
+    SGRAY_16 = 43;
+    SRGB_16 = 44;
+  }
+
+  // [Deprecated: Please use the other fields of PwgRasterConfig.]
+  // Transformation to apply to pages during PWG rasterization.
+  message Transformation {
+    // Types of transformation operations to apply.
+    enum Operation {
+      // Rotate pages 180 degrees.
+      ROTATE_180 = 0;
+
+      // Flip pages along the long edge of the paper.
+      FLIP_ON_LONG_EDGE = 1;
+
+      // Flip pages along the short edge of the paper.
+      FLIP_ON_SHORT_EDGE = 2;
+    }
+
+    // Selectors of which pages to apply the transformation to.
+    enum Operand {
+      // Apply transformation to all pages.
+      ALL_PAGES = 0;
+      // Apply transformation to even pages only when duplexing (deprecated,
+      // instead use EVEN_PAGES and specify appropriate duplex types).
+      ONLY_DUPLEXED_EVEN_PAGES = 1;
+      // Apply transformation to odd pages only when duplexing (deprecated,
+      // instead use ODD_PAGES and specify appropriate duplex types).
+      ONLY_DUPLEXED_ODD_PAGES = 2;
+      // Apply transformation to even pages.
+      EVEN_PAGES = 3;
+      // Apply transformation to odd pages.
+      ODD_PAGES = 4;
+    }
+    // Required.
+    optional Operation operation = 1;
+    // Required.
+    optional Operand operand = 2;
+    // Duplex types that the transformation applies to. Leave empty if the
+    // transformation is applicable to all duplex types.
+    repeated Duplex.Type duplex_type = 3;
+  }
+
+  // [Deprecated and only partially supported. Please use the other fields of
+  // PwgRasterConfig.
+  // Out of all possible transformations GCP will only support rotating all
+  // pages, but for that we strongly recommend using the rotate_all_pages
+  // boolean field instead.]
+  // What transformations to apply to pages in the print job.
+  repeated Transformation transformation = 1;
+}

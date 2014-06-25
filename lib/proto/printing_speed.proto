@@ -1,0 +1,31 @@
+// Property that defines what speeds (in pages per minute) the printer can
+// operate at.
+message PrintingSpeed {
+  // Available speed of the printer.
+  //
+  // Specify settings that are associated with the given speed. If a setting
+  // is left unset, then it will be assumed that the speed is independent of
+  // that setting. For example, the following Option
+  //
+  //   {
+  //     "speed_ppm": 5.5,
+  //     "color_type": ["STANDARD_MONOCHROME"],
+  //     "media_size_name": ["NA_LETTER", "ISO_A4"]
+  //   }
+  //
+  // indicates that the printer prints at 5.5 pages per minute when printing in
+  // STANDARD_MONOCHROME in either NA_LETTER or ISO_A4 paper sizes.
+  message Option {
+    // Speed measured in pages per minute (required).
+    optional float speed_ppm = 1;
+
+    // Types of color settings that operate at this speed.
+    repeated Color.Type color_type = 2;
+
+    // Names of media sizes that operate at this speed.
+    repeated MediaSize.Name media_size_name = 3;
+  }
+
+  // Speeds that the printer can operate at.
+  repeated Option option = 1;
+}

@@ -1,0 +1,31 @@
+// State of the device markers (toner/ink/staples/etc).
+message MarkerState {
+
+  message Item {
+
+    enum StateType {
+      // Marker is functional.
+      OK = 0;
+      // Marker resource is exhausted. Treated as error.
+      EXHAUSTED = 1;
+      // Marker is removed. Treated as error.
+      REMOVED = 2;
+      // Marker is present, but not functioning properly. Treated as error.
+      FAILURE = 3;
+    }
+
+    // ID of the marker (refers to CDD model) (required).
+    optional string vendor_id = 1;
+
+    // Current marker state (required).
+    optional StateType state = 2;
+    // Marker supply amount, percent. Ranges from 0 to 100.
+    optional int32 level_percent = 3;
+    // Estimated number of pages for which the marker supply amount will last.
+    optional int32 level_pages = 4;
+    // Vendor-specific message, ignored when state == OK.
+    optional string vendor_message = 101;
+  }
+
+  repeated Item item = 1;
+}

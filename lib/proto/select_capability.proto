@@ -1,0 +1,28 @@
+// Selection-based device capability. Allows the user to select one or many of
+// a set of options.
+message SelectCapability {
+
+  // A user-selectable option of the vendor capability.
+  message Option {
+
+    // A single string that represents the value of this option. This value
+    // will be used in the VendorTicketItem.value field (required).
+    optional string value = 1;
+
+    // Non-localized user-friendly string to represent this option.
+    // New CDDs should use display_name_localized instead. It is required that
+    // either display_name or display_name_localized is set.
+    optional string display_name = 2;
+
+    // Whether this option is the default option. Only one option should be
+    // marked as default.
+    optional bool is_default = 3 [default = false];
+
+    // Translations of display name of the option.
+    // If not empty, must contain an entry with locale == EN.
+    repeated LocalizedString display_name_localized = 4;
+  }
+
+  // List of options available for this capability.
+  repeated Option option = 1;
+}

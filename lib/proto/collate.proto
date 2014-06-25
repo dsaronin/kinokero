@@ -1,0 +1,4 @@
+// Capability that defines the default collation setting on a device.
+message Collate {
+  optional bool default = 1 [default = true];
+}

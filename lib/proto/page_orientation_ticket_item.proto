@@ -1,0 +1,5 @@
+// Ticket item indicating which page orientation option to use.
+message PageOrientationTicketItem {
+  // Page orientation type (required).
+  optional PageOrientation.Type type = 1;
+}

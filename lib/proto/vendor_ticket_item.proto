@@ -1,0 +1,9 @@
+// Ticket item indicating what value for a vendor-specific capability to use.
+message VendorTicketItem {
+  // ID of vendor-specific capability that this ticket item refers to
+  // (required).
+  optional string id = 1;
+
+  // Value of ticket item (required).
+  optional string value = 2;
+}

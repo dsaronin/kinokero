@@ -1,0 +1,15 @@
+// Capability that defines a default page-range selection on a device.
+message PageRange {
+
+  // Interval of pages in the document to print.
+  message Interval {
+    // Beginning of the interval (inclusive) (required).
+    optional int32 start = 1;
+
+    // End of the interval (inclusive). If not set, then the interval will
+    // include all available pages after start.
+    optional int32 end = 2;
+  }
+
+  repeated Interval default = 1;
+}

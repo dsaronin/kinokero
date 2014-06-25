@@ -1,0 +1,16 @@
+// Section of a CJT which describes how a print job should be handled by a
+// cloud-connected printer.
+message PrintTicketSection {
+  repeated VendorTicketItem vendor_ticket_item = 1;
+  optional ColorTicketItem color = 2;
+  optional DuplexTicketItem duplex = 3;
+  optional PageOrientationTicketItem page_orientation = 4;
+  optional CopiesTicketItem copies = 5;
+  optional MarginsTicketItem margins = 6;
+  optional DpiTicketItem dpi = 7;
+  optional FitToPageTicketItem fit_to_page = 8;
+  optional PageRangeTicketItem page_range = 9;
+  optional MediaSizeTicketItem media_size = 10;
+  optional CollateTicketItem collate = 11;
+  optional ReverseOrderTicketItem reverse_order = 12;
+}

@@ -1,0 +1,14 @@
+// Ticket item indicating what margins to use (in microns).
+message MarginsTicketItem {
+  // Top margin of the page (required).
+  optional int32 top_microns = 1;
+
+  // Top margin of the page (required).
+  optional int32 right_microns = 2;
+
+  // Top margin of the page (required).
+  optional int32 bottom_microns = 3;
+
+  // Top margin of the page (required).
+  optional int32 left_microns = 4;
+}

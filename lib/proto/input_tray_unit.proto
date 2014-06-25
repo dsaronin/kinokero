@@ -1,0 +1,32 @@
+// Physical model of a printer input tray.
+message InputTrayUnit {
+  // Enumeration of input tray types.
+  enum Type {
+    CUSTOM = 0;
+    INPUT_TRAY = 1;
+    BYPASS_TRAY = 2;
+    MANUAL_FEED_TRAY = 3;
+    LCT = 4;  // Large capacity tray.
+    ENVELOPE_TRAY = 5;
+    ROLL = 6;
+  }
+
+  // Vendor-provided ID of the input tray (required).
+  optional string vendor_id = 1;
+
+  // Type of input tray (required).
+  optional Type type = 2;
+
+  // Index of the input tray.
+  optional int64 index = 3;
+
+  // Non-localized custom display name of the input tray.
+  // New CDDs should use custom_display_name_localized instead. It is required
+  // that either custom_display_name or custom_display_name_localized is set if
+  // the tray's type is CUSTOM.
+  optional string custom_display_name = 4;
+
+  // Translations of custom display name of the input tray.
+  // If not empty, must contain an entry with locale == EN.
+  repeated LocalizedString custom_display_name_localized = 5;
+}
