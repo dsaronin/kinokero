@@ -1,8 +1,8 @@
 // Description of how a cloud job (e.g. print job, scan job) should be handled
 // by the cloud device. Also known as CJT.
 
-import 'print_ticket_section';
-import 'scan_ticket_section';
+import 'print_ticket_section.proto';
+import 'scan_ticket_section.proto';
 
 message CloudJobTicket {
 

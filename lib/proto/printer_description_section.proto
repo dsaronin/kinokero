@@ -1,26 +1,26 @@
 // Section of a CDD that describes the capabilities and physical units of a
 // cloud-connected printer.
 
-import 'supported_content_type';
-import 'printing_speed';
-import 'pwg_raster_config';
-import 'input_tray_unit';
-import 'output_bin_unit';
-import 'marker';
-import 'cover';
-import 'media_path';
-import 'vendor_capability';
-import 'color';
-import 'duplex';
-import 'page_orientation';
-import 'copies';
-import 'margins';
-import 'dpi';
-import 'fit_to_page';
-import 'page_range';
-import 'media_size';
-import 'collate';
-import 'reverse_order';
+import 'supported_content_type.proto';
+import 'printing_speed.proto';
+import 'pwg_raster_config.proto';
+import 'input_tray_unit.proto';
+import 'output_bin_unit.proto';
+import 'marker.proto';
+import 'cover.proto';
+import 'media_path.proto';
+import 'vendor_capability.proto';
+import 'color.proto';
+import 'duplex.proto';
+import 'page_orientation.proto';
+import 'copies.proto';
+import 'margins.proto';
+import 'dpi.proto';
+import 'fit_to_page.proto';
+import 'page_range.proto';
+import 'media_size.proto';
+import 'collate.proto';
+import 'reverse_order.proto';
 
 message PrinterDescriptionSection {
 

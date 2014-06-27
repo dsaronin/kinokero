@@ -1,7 +1,7 @@
 // Contains the device-agnostic state of a job on a cloud device.
 
-import 'service_action_cause';
-import 'device_action_cause';
+import 'service_action_cause.proto';
+import 'device_action_cause.proto';
 
 message JobState {
 

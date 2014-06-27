@@ -1,6 +1,6 @@
 // Physical model of a printer marker.
 
-import 'localized_string';
+import 'localized_string.proto';
 
 message Marker {
   // Enumeration of types of printer markers.

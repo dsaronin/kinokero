@@ -1,7 +1,7 @@
 // Contains one UI state item for each CDS state item using the information
 // obtained from cross-referencing the CDD.
 
-import 'cloud_device_ui_state';
+import 'cloud_device_ui_state.proto';
 
 message PrinterUiStateSection {
 

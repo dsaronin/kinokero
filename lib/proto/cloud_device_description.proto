@@ -1,8 +1,8 @@
 // Description of a cloud-enabled device's capabilities and properties. Also
 // known as CDD.
 
-import 'scanner_description_section';
-import 'printer_description_section';
+import 'scanner_description_section.proto';
+import 'printer_description_section.proto';
 
 message CloudDeviceDescription {
 

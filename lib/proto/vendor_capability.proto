@@ -1,10 +1,10 @@
 // Flexible capability that can represent range-based, selection-based, or
 // typed-value-based capabilities.
 
-import 'localized_string';
-import 'typed_value_capability';
-import 'select_capability';
-import 'range_capability';
+import 'localized_string.proto';
+import 'typed_value_capability.proto';
+import 'select_capability.proto';
+import 'range_capability.proto';
 
 message VendorCapability {
   enum Type {

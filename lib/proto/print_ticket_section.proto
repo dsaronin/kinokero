@@ -1,18 +1,18 @@
 // Section of a CJT which describes how a print job should be handled by a
 // cloud-connected printer.
 
-import 'vendor_ticket_item';
-import 'color_ticket_item';
-import 'duplex_ticket_item';
-import 'page_orientation_ticket_item';
-import 'copies_ticket_item';
-import 'margins_ticket_item';
-import 'dpi_ticket_item';
-import 'fit_to_page_ticket_item';
-import 'page_range_ticket_item';
-import 'media_size_ticket_item';
-import 'collate_ticket_item';
-import 'reverse_order_ticket_item';
+import 'vendor_ticket_item.proto';
+import 'color_ticket_item.proto';
+import 'duplex_ticket_item.proto';
+import 'page_orientation_ticket_item.proto';
+import 'copies_ticket_item.proto';
+import 'margins_ticket_item.proto';
+import 'dpi_ticket_item.proto';
+import 'fit_to_page_ticket_item.proto';
+import 'page_range_ticket_item.proto';
+import 'media_size_ticket_item.proto';
+import 'collate_ticket_item.proto';
+import 'reverse_order_ticket_item.proto';
 
 message PrintTicketSection {
   repeated VendorTicketItem vendor_ticket_item = 1;

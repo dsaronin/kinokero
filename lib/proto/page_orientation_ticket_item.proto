@@ -1,6 +1,6 @@
 // Ticket item indicating which page orientation option to use.
 
-import 'page_orientation';
+import 'page_orientation.proto';
 
 
 message PageOrientationTicketItem {

@@ -1,7 +1,7 @@
 // Represents the entire cloud-connected device state.
 
-import 'printer_state_section';
-import 'scanner_state_section';
+import 'printer_state_section.proto';
+import 'scanner_state_section.proto';
 
 message CloudDeviceState {
 

@@ -6,7 +6,7 @@
 // If neither translation is present, the translation for EN (which is required
 // in every list of localized strings) will be displayed.
 
-import 'locale';
+import 'locale.proto';
 
 message LocalizedString {
   // Locale that the string is translated to (required).

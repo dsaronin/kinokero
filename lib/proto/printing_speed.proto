@@ -1,8 +1,8 @@
 // Property that defines what speeds (in pages per minute) the printer can
 // operate at.
 
-import 'color';
-import 'media_size';
+import 'color.proto';
+import 'media_size.proto';
 
 message PrintingSpeed {
   // Available speed of the printer.

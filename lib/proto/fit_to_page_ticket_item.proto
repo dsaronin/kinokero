@@ -1,6 +1,6 @@
 // Ticket item indicating what page-fitting algorithm to use.
 
-import 'fit_to_page';
+import 'fit_to_page.proto';
 
 message FitToPageTicketItem {
   // Type of page fitting (required).

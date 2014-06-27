@@ -1,6 +1,6 @@
 // Ticket item indicating which duplexing option to use.
 
-import 'duplex';
+import 'duplex.proto';
 
 message DuplexTicketItem {
   // Type of duplexing (required).

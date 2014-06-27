@@ -1,6 +1,6 @@
 // Capability that defines the color options available on a device.
 
-import 'localized_string';
+import 'localized_string.proto';
 
 message Color {
   enum Type {

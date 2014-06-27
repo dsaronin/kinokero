@@ -1,6 +1,6 @@
 // Ticket item indicating what pages to use.
 
-import 'page_range';
+import 'page_range.proto';
 
 message PageRangeTicketItem {
   repeated PageRange.Interval interval = 1;

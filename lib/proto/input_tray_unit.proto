@@ -1,6 +1,6 @@
 // Physical model of a printer input tray.
 
-import 'localized_string';
+import 'localized_string.proto';
 
 message InputTrayUnit {
   // Enumeration of input tray types.

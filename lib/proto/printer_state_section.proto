@@ -1,12 +1,12 @@
 // Represents the printer state.
 
-import 'cloud_device_state';
-import 'input_tray_state';
-import 'ouitput_bin_state';
-import 'marker_state';
-import 'cover_state';
-import 'media_path_state';
-import 'vendor_state';
+import 'cloud_device_state.proto';
+import 'input_tray_state.proto';
+import 'ouitput_bin_state.proto';
+import 'marker_state.proto';
+import 'cover_state.proto';
+import 'media_path_state.proto';
+import 'vendor_state.proto';
 
 message PrinterStateSection {
 
