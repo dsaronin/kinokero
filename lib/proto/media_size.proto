@@ -1,4 +1,7 @@
 // Capability that defines the media sizes available on a device.
+
+import 'localized_string.proto';
+
 message MediaSize {
   // Enumeration of media size names. This is used for UI purposes.
   enum Name {
