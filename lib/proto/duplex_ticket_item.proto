@@ -1,4 +1,7 @@
 // Ticket item indicating which duplexing option to use.
+
+import 'duplex';
+
 message DuplexTicketItem {
   // Type of duplexing (required).
   optional Duplex.Type type = 1;

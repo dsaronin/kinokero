@@ -1,4 +1,7 @@
 // Represents a cloud device's state in a form convenient for display in a UI.
+
+import 'printer_ui_state_section';
+
 message CloudDeviceUiState {
 
   enum Summary {

@@ -1,4 +1,13 @@
 // Represents the printer state.
+
+import 'cloud_device_state';
+import 'input_tray_state';
+import 'ouitput_bin_state';
+import 'marker_state';
+import 'cover_state';
+import 'media_path_state';
+import 'vendor_state';
+
 message PrinterStateSection {
 
   // Current printer state (required).

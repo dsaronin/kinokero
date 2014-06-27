@@ -1,4 +1,7 @@
 // Physical model of a printer output bin.
+
+import 'localized_string';
+
 message OutputBinUnit {
   // Enumeration of output bin types.
   enum Type {

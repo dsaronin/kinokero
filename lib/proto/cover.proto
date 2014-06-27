@@ -1,4 +1,7 @@
 // Physical model of a printer cover.
+
+import 'localized_string';
+
 message Cover {
   // Enumeration of cover types.
   enum Type {

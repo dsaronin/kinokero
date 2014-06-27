@@ -1,4 +1,7 @@
 // Ticket item indicating which color option to use.
+
+import 'color';
+
 message ColorTicketItem {
   // Vendor ID of the color (required if the type is CUSTOM_COLOR or
   // CUSTOM_MONOCHROME).

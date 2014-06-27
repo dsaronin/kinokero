@@ -1,4 +1,7 @@
 // Physical model of a printer input tray.
+
+import 'localized_string';
+
 message InputTrayUnit {
   // Enumeration of input tray types.
   enum Type {

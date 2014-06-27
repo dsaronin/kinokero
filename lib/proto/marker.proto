@@ -1,4 +1,7 @@
 // Physical model of a printer marker.
+
+import 'localized_string';
+
 message Marker {
   // Enumeration of types of printer markers.
   enum Type {

@@ -1,5 +1,27 @@
 // Section of a CDD that describes the capabilities and physical units of a
 // cloud-connected printer.
+
+import 'supported_content_type';
+import 'printing_speed';
+import 'pwg_raster_config';
+import 'input_tray_unit';
+import 'output_bin_unit';
+import 'marker';
+import 'cover';
+import 'media_path';
+import 'vendor_capability';
+import 'color';
+import 'duplex';
+import 'page_orientation';
+import 'copies';
+import 'margins';
+import 'dpi';
+import 'fit_to_page';
+import 'page_range';
+import 'media_size';
+import 'collate';
+import 'reverse_order';
+
 message PrinterDescriptionSection {
 
   // Content types (sometimes referred to as MIME types) that are supported by

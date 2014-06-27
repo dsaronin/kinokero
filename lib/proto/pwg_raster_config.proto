@@ -1,4 +1,7 @@
 // Configuration of how printer should receive PWG raster images.
+
+import 'duplex';
+
 message PwgRasterConfig {
 
   message Resolution {

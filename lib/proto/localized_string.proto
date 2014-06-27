@@ -5,6 +5,9 @@
 // present, GCP will display the translation for the base language (e.g. ZH).
 // If neither translation is present, the translation for EN (which is required
 // in every list of localized strings) will be displayed.
+
+import 'locale';
+
 message LocalizedString {
   // Locale that the string is translated to (required).
   optional Locale locale = 1;

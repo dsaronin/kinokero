@@ -1,5 +1,9 @@
 // Description of a cloud-enabled device's capabilities and properties. Also
 // known as CDD.
+
+import 'scanner_description_section';
+import 'printer_description_section';
+
 message CloudDeviceDescription {
 
   // Version of the CDD in the form "X.Y" where changes to Y are backwards
