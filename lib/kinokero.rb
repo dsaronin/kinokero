@@ -878,7 +878,7 @@ GCP_USER_ACTION_OTHER     = 100  # User has performed some other action
       req.headers['Authorization'] = gcp_form_auth_token()
       req.body =  {
         :jobid   => jobid,
-        :semantic_state_diff  => state_diff.encode.to_s
+        :semantic_state_diff  => state_diff.to_json
       }
 
       log_request( 'status control', req )
