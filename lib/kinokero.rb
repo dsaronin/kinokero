@@ -9,8 +9,8 @@ require "faraday_middleware"
 require "simple_oauth"
 require 'typhoeus/adapters/faraday'
 
-require 'print_job_state_diff.pb'
 require 'job_state_diff.pb'
+require 'print_job_state_diff.pb'
 
 module Kinokero
 
