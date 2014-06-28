@@ -640,7 +640,7 @@ GCP_USER_ACTION_OTHER     = 100  # User has performed some other action
   def gcp_job_status( jobid, status, nbr_pages )
 
     state_diff = PrintJobStateDiff.new(
-      state: JobState.new( type: status_to_code(status) ),
+      state: JobState.new( type: status ),
       pages_printed: nbr_pages
     )
 
@@ -665,7 +665,7 @@ GCP_USER_ACTION_OTHER     = 100  # User has performed some other action
 
     state_diff = PrintJobStateDiff.new(
       state: JobState.new( 
-              type: status_to_code(GCP_JOBSTATE_ABORTED),
+              type: GCP_JOBSTATE_ABORTED,
               device_action_cause: DeviceActionCause.new( 
                       error_code: "DOWNLOAD_FAILURE"
               )                   
