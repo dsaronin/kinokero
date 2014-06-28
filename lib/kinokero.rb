@@ -9,6 +9,9 @@ require "faraday_middleware"
 require "simple_oauth"
 require 'typhoeus/adapters/faraday'
 
+require 'proto_lib/print_job_state_diff'
+require 'proto_lib/job_state_diff'
+
 module Kinokero
 
 # #########################################################################
@@ -636,21 +639,12 @@ GCP_USER_ACTION_OTHER     = 100  # User has performed some other action
 #
   def gcp_job_status( jobid, status, nbr_pages )
 
-    status_response = @connection.post( GCP_SERVICE + GCP_CONTROL ) do |req|
-      req.headers['Authorization'] = gcp_form_auth_token()
-      req.body =  {
-        :jobid   => jobid,
-        :status  => status_to_code(status),
-        :state   => { type: status_to_code(status) },
-        :pages_printed => nbr_pages
-      }
+    state_diff = PrintJobStateDiff.new(
+      state: JobState.new( type: status_to_code(status) ),
+      pages_printed: nbr_pages
+    )
 
-      log_request( 'status control', req )
-      
-    end  # request do
-    log_response( 'status control', status_response )
-
-    return status_response.body
+    return generic_job_status( jobid, state_diff )
 
   end
 
@@ -669,24 +663,17 @@ GCP_USER_ACTION_OTHER     = 100  # User has performed some other action
 #
   def gcp_job_status_abort( jobid, status, nbr_pages )
 
-    status_response = @connection.post( GCP_SERVICE + GCP_CONTROL ) do |req|
-      req.headers['Authorization'] = gcp_form_auth_token()
-      req.body =  {
-        :jobid   => jobid,
-        :status  => status_to_code(GCP_JOBSTATE_ABORTED),
-        :state   => { 
-          type: status_to_code(GCP_JOBSTATE_ABORTED), 
-          user_action_cause: abort_status_to_code(status)
-        },
-        :pages_printed => nbr_pages
-      }
+    state_diff = PrintJobStateDiff.new(
+      state: JobState.new( 
+              type: status_to_code(GCP_JOBSTATE_ABORTED),
+              device_action_cause: DeviceActionCause.new( 
+                      error_code: "DOWNLOAD_FAILURE"
+              )                   
+      ),
+      pages_printed: nbr_pages
+    )
 
-      log_request( 'status control', req )
-      
-    end  # request do
-    log_response( 'status control', status_response )
-
-    return status_response.body
+    return generic_job_status( jobid, state_diff )
 
   end
 
@@ -873,6 +860,35 @@ GCP_USER_ACTION_OTHER     = 100  # User has performed some other action
 
 # ------------------------------------------------------------------------------
 
+# ------------------------------------------------------------------------------
+
+# generic job status reporting
+#
+# * *Args*    :
+#   - +jobid+ - job id string
+#   - +state_diff+ - proto_buf JobStateDIff object
+# * *Returns* :
+#   - 
+# * *Raises* :
+#   - 
+#
+  def generic_job_status( jobid, state_diff )
+
+    status_response = @connection.post( GCP_SERVICE + GCP_CONTROL ) do |req|
+      req.headers['Authorization'] = gcp_form_auth_token()
+      req.body =  {
+        :jobid   => jobid,
+        :semantic_state_diff  => state_diff.encode.to_s
+      }
+
+      log_request( 'status control', req )
+      
+    end  # request do
+    log_response( 'status control', status_response )
+
+    return status_response.body
+
+  end
 
 # ------------------------------------------------------------------------------
 

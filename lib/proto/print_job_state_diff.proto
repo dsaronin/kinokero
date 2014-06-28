@@ -1,5 +1,8 @@
 // Diff that can be applied to a PrintJobState message. Any omitted field will
 // not be changed.
+
+import 'job_state.proto';
+
 message PrintJobStateDiff {
 
   // New job state.
