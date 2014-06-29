@@ -22,46 +22,13 @@ module Kinokero
     extend Forwardable
 
 # #########################################################################
-
-CRLF = '\r\n'
-
-# mimetype for how to encode PPD files
-MIMETYPE_PPD     = 'application/vnd.cups.ppd'
-
-# number of secs to sleep before polling again
-POLLING_SECS = 30     
-
-# number of characters before truncate response logs
-TRUNCATE_LOG = 600    
-
-# authentication function constants
-FOLLOWUP_HOST = 'www.google.com/cloudprint'
-FOLLOWUP_URI = 'select%2Fgaiaauth'
-GAIA_HOST = 'www.google.com'
-LOGIN_URI = '/accounts/ServiceLoginAuth'
-LOGIN_URL = 'https://www.google.com/accounts/ClientLogin'
-
-# GCP documentation constants
-AUTHORIZATION_SCOPE = "https://www.googleapis.com/auth/cloudprint"
-AUTHORIZATION_REDIRECT_URI = 'oob'
-OAUTH2_TOKEN_ENDPOINT = "https://accounts.google.com/o/oauth2/token"
-MIMETYPE_OAUTH =  "application/x-pkcs12"
-
 # MY_PROXY_ID is a unique name for this running of the GCP connector client
 # formed with gem name + machine-node name (expected to be  unique)
 # TODO: make sure machine nodename is unique
 MY_PROXY_ID = "kinokero::"+`uname -n`.chop
 
 # CLIENT_NAME should be some string identifier for the client you are writing.
-CLIENT_NAME = MY_PROXY_ID + " cloudprint controller v"+ Kinokero::VERSION
-
-# The GCP URL path is composed of URL + SERVICE + ACTION
-# below three are used when testing locally
-#   GCP_URL = 'http://0.0.0.0:3000'
-#   GCP_SERVICE = '/'
-#   GCP_REGISTER = ''
-GCP_URL = 'https://www.google.com/'
-GCP_SERVICE = 'cloudprint'
+CLIENT_NAME = MY_PROXY_ID + " cloudprint controller v0.0.1"
 
 # GCP API actions
 GCP_CONTROL  = '/control'
