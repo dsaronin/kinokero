@@ -1,3 +1,4 @@
+require "kinokero/cloudprint"
 require "kinokero/version"
 require "kinokero/ruby_extensions"
 require 'faraday-cookie_jar'
