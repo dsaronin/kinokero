@@ -1,6 +1,3 @@
-require "kinokero/cloudprint"
-require "kinokero/version"
-require "kinokero/ruby_extensions"
 require 'faraday-cookie_jar'
 require 'logger'
 require 'forwardable'
@@ -55,6 +52,9 @@ GCP_SERVICE = 'cloudprint'
   }
 
   mattr_reader :config
+require "kinokero/cloudprint"
+require "kinokero/version"
+require "kinokero/ruby_extensions"
 
 # #########################################################################
 end  # module Kinokero
