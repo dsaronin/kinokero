@@ -51,11 +51,7 @@ GCP_SERVICE = 'cloudprint'
     :default_temp        => "temp"   # placeholder for expansion
   }
 
-  class_eval(
-    def config
-      @@config
-    end
-  )
+  class_eval( "def config; @@config; end;" )
 
 require "kinokero/cloudprint"
 require "kinokero/version"
