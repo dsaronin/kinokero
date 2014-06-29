@@ -51,7 +51,12 @@ GCP_SERVICE = 'cloudprint'
     :default_temp        => "temp"   # placeholder for expansion
   }
 
-  mattr_reader :config
+  class_eval(
+    def config
+      @@config
+    end
+  )
+
 require "kinokero/cloudprint"
 require "kinokero/version"
 require "kinokero/ruby_extensions"
