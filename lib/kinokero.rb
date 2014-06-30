@@ -56,6 +56,7 @@ GCP_SERVICE = 'cloudprint'
 require "kinokero/cloudprint"
 require "kinokero/version"
 require "kinokero/ruby_extensions"
+require "kinokero/jingle"
 
 # #########################################################################
 end  # module Kinokero
