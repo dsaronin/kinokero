@@ -9,6 +9,7 @@ require 'typhoeus/adapters/faraday'
 
 require 'job_state.pb'
 require 'print_job_state_diff.pb'
+require 'xmpp4r/client'
 
 module Kinokero
 
@@ -53,9 +54,11 @@ GCP_SERVICE = 'cloudprint'
 
   class_eval( "def config; @@config; end;" )
 
+# these requires for kinokero modules must occur AFTER the above constants defined
 require "kinokero/cloudprint"
 require "kinokero/version"
 require "kinokero/ruby_extensions"
+require 'kinokero/sasl_xoauth2'
 require "kinokero/jingle"
 
 # #########################################################################
