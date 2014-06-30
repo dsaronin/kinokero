@@ -60,6 +60,7 @@ require "kinokero/version"
 require "kinokero/ruby_extensions"
 require 'kinokero/sasl_xoauth2'
 require "kinokero/jingle"
+require "kinokero/proxy"
 
 # #########################################################################
 end  # module Kinokero
