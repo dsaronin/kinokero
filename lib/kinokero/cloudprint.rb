@@ -78,8 +78,8 @@ GCP_USER_ACTION_OTHER     = 100  # User has performed some other action
     :ssl_ca_path => '',
     :verbose => true,         # log everything?
     :log_truncate => false,   # truncate long responses?
-    :log_response => true,    # log the responses?
-    :client_redirect_uri => ::Kinokero::AUTHORIZATION_REDIRECT_URI
+    :log_response => true    # log the responses?
+    # :client_redirect_uri => ::Kinokero::AUTHORIZATION_REDIRECT_URI
   }
 
 # #########################################################################

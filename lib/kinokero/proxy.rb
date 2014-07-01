@@ -35,16 +35,9 @@ class Proxy
 # -----------------------------------------------------------------------------
 # do_register -- registers our default printer, prints claim info
 # -----------------------------------------------------------------------------
-  def do_register()
+  def do_register( gcp_request )
 
-    response = @cloudprint.register_anonymous_printer(
-      { 
-      printer_name: ::Twiga::TEST_PRINTER,
-      capability_ppd: ::Twiga::TWIGA_PPD_PATH + ::Twiga::TEST_PRINTER_PPD,
-      default_ppd: ::Twiga::TWIGA_PPD_PATH + ::Twiga::TEST_PRINTER_PPD,
-      status: 'active'
-      }
-    ) { |gcp_ctl|  
+    response = @cloudprint.register_anonymous_printer( gcp_request ) { |gcp_ctl|  
 
          # this block is called only if/when asynch polling completes
          # in a separate process

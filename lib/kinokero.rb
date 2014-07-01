@@ -35,6 +35,7 @@ LOGIN_URL = 'https://www.google.com/accounts/ClientLogin'
 
 # GCP documentation constants
 AUTHORIZATION_SCOPE = "https://www.googleapis.com/auth/cloudprint"
+CLIENT_REDIRECT_URI = "urn:ietf:wg:oauth:2.0:oob"
 AUTHORIZATION_REDIRECT_URI = 'oob'
 OAUTH2_TOKEN_ENDPOINT = "https://accounts.google.com/o/oauth2/token"
 MIMETYPE_OAUTH =  "application/x-pkcs12"
