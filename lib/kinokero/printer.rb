@@ -31,9 +31,12 @@ module Kinokero
   def initialize( gcp_info={}, request_info={}, model_info=nil )
     super
 
+    @model = model_info
+    @gcp_printer_control = nil   # default if empty
+    @gcp_printer_request = nil
+
     setup_gcp( gcp_info )
     setup_request( request_info )
-    @model = model_info
 
   end
 
@@ -49,8 +52,10 @@ module Kinokero
 #   - ArgumentError upon invalid values or keys for gcp_info
 #
   def setup_gcp( gcp_info )
-    validate_gcp_options( gcp_info )
-    @gcp_printer_control = gcp_info    # persist the hash
+    unless gcp_info.empty?
+      validate_gcp_options( gcp_info )
+      @gcp_printer_control = gcp_info    # persist the hash
+    end
   end
 
 # -----------------------------------------------------------------------------
@@ -65,8 +70,10 @@ module Kinokero
 #   - ArgumentError upon invalid values or keys for gcp_info
 #
   def setup_request( request_info )
-    validate_request_options( request_info )
-    @gcp_printer_request = request_info    # persist the hash
+    unless request_info.empty?
+      validate_request_options( request_info )
+      @gcp_printer_request = request_info    # persist the hash
+    end
   end
 
 # -----------------------------------------------------------------------------
@@ -105,6 +112,19 @@ SAMPLE_GCP_OPTIONS = {
 VALID_GCP_OPTIONS = SAMPLE_GCP_OPTIONS.keys
 
 
+SAMPLE_GCP_REQUEST =
+{ 
+  printer_name: "my_printer_name",
+  capability_ppd: '/etc/cups/ppd/my_printer.ppd',
+  default_ppd: '/etc/cups/ppd/my_printer.ppd',
+  status: 'active'
+}
+
+VALID_GCP_REQUEST = SAMPLE_GCP_REQUEST.keys
+
+
+# -----------------------------------------------------------------------------
+
 # validates gcp options
 #
 # * *Args*    :
@@ -116,13 +136,62 @@ VALID_GCP_OPTIONS = SAMPLE_GCP_OPTIONS.keys
 #
   def validate_gcp_options(options)
 
+    validate_hash(
+      'gcp_control validation', 
+      VALID_GCP_OPTIONS, 
+      SAMPLE_GCP_OPTIONS, 
+      options
+    )
+ 
+  end
+
+# -----------------------------------------------------------------------------
+
+# validates gcp request
+#
+# * *Args*    :
+#   - +options+ - request as a hash
+# * *Returns* :
+#   - 
+# * *Raises* :
+#   - ArgumentError if invalid option present 
+#
+  def validate_gcp_request(options)
+
+    validate_hash(
+      'gcp_request validation', 
+      VALID_GCP_REQUEST, 
+      SAMPLE_GCP_REQUEST, 
+      options
+    )
+    
+  end
+
+# -----------------------------------------------------------------------------
+
+# validates any hash options against a standard
+#
+# * *Args*    :
+#   - +msg+ - string to display if exception occurs
+#   - +valid_keys+ - list of expected hash keys (to look for invalid keys)
+#   - +sample+ - hash of sample values for all those keys, used to validate options hash values
+#   - +options+ - hash of values to be used
+# * *Returns* :
+#   - 
+# * *Raises* :
+#   - ArgumentError if invalid option present 
+#
+
+  def validate_hash(msg, valid_keys, sample, options)
+
     # options validations: check for invalid keys
-    options.assert_valid_keys(VALID_GCP_OPTIONS)
+    options.assert_valid_keys(valid_keys)
 
     # options validations: check for invalid values
-    VALID_GCP_OPTIONS.each do |key|
-       if options[key].nil? || !option[key].kind_of?( SAMPLE_GCP_OPTIONS[key].class )
-         raise ArgumentError,"[gcp_control validation] value for key #{key} should be similar to #{SAMPLE_GCP_OPTIONS[key]}"
+    valid_keys.each do |key|
+
+       if options[key].nil? || !option[key].kind_of?( sample[key].class )
+         raise ArgumentError,"[#{msg}] value for key #{key} should be similar to #{sample[key]}"
        end
 
     end  # do validate each key
