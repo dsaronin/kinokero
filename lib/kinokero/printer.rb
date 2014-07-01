@@ -15,6 +15,8 @@ module Kinokero
 
     include Device
 
+    attr_reader :model, :gcp_printer_control, :gcp_printer_request
+
 # -----------------------------------------------------------------------------
 
 # new object constructor; any/all args can be missing
@@ -31,14 +33,31 @@ module Kinokero
   def initialize( gcp_info={}, request_info={}, model_info=nil )
     super
 
-    @model = model_info
+    @model = nil
     @gcp_printer_control = nil   # default if empty
     @gcp_printer_request = nil
 
+    setup_model( model_info )
     setup_gcp( gcp_info )
     setup_request( request_info )
 
   end
+
+# -----------------------------------------------------------------------------
+
+# setup_model info 
+#
+# * *Args*    :
+#   - +model_info+ - some type of model object meaningful to calling appliance
+# * *Returns* :
+#   - 
+# * *Raises* :
+#   - 
+#
+  def setup_model( model_info )
+    @model = model_info
+  end
+
 
 # -----------------------------------------------------------------------------
 
