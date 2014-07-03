@@ -1,3 +1,4 @@
+require "kinokero/module_extensions"  # must come before defaults defined below
 require 'faraday-cookie_jar'
 require 'logger'
 require 'forwardable'
@@ -74,44 +75,45 @@ SSL_CERT_PATH = "/usr/lib/ssl/certs"
 # many, however, are fixed by Google Cloud Printer documentation demands
 # and should not be changed
 #
-  @@config = {
 
-      # class Proxy required
-    my_proxy_id:     MY_PROXY_ID,    # unique name for this running of the GCP connector client
+# class Proxy required
+    @@my_proxy_id    =  MY_PROXY_ID    # unique name for this running of the GCP connector client
 
-      # class Cloudprint required
-    mimetype_oauth:  MIMETYPE_OAUTH, # how to encoade oauth files
-    mimetype_ppd:    MIMETYPE_PPD,   # how to encode PPD files
-    polling_secs:    POLLING_SECS,   # secs to sleep before register polling again
-    truncate_log:    TRUNCATE_LOG,   # number of characters to truncate response logs 
-    followup_host:   FOLLOWUP_HOST,  #
-    followup_uri:    FOLLOWUP_URI,   #
-    gaia_host:       GAIA_HOST,      #
-    login_uri:       LOGIN_URI,      #
-    login_url:       LOGIN_URL,      #
-    gcp_url:         GCP_URL,        #
-    gcp_service:     GCP_SERVICE,    #
-    ssl_ca_path:     SSL_CERT_PATH,  # SSL certificates path for this machine
+# class Cloudprint required
+    @@mimetype_oauth  = MIMETYPE_OAUTH # how to encoade oauth files
+    @@mimetype_ppd  =   MIMETYPE_PPD   # how to encode PPD files
+    @@polling_secs  =   POLLING_SECS   # secs to sleep before register polling again
+    @@truncate_log  =   TRUNCATE_LOG   # number of characters to truncate response logs 
+    @@followup_host  =  FOLLOWUP_HOST  #
+    @@followup_uri  =   FOLLOWUP_URI   #
+    @@gaia_host  =      GAIA_HOST      #
+    @@login_uri  =      LOGIN_URI      #
+    @@login_url  =      LOGIN_URL      #
+    @@gcp_url  =        GCP_URL        #
+    @@gcp_service  =    GCP_SERVICE    #
+    @@ssl_ca_path  =    SSL_CERT_PATH  # SSL certificates path for this machine
 
-    authorization_scope:         AUTHORIZATION_SCOPE,         #
-    authorization_redirect_uri:  AUTHORIZATION_REDIRECT_URI,  #
-    oauth2_token_endpoint:       OAUTH2_TOKEN_ENDPOINT,       #
+    @@authorization_scope  =        AUTHORIZATION_SCOPE         #
+    @@authorization_redirect_uri  = AUTHORIZATION_REDIRECT_URI  #
+    @@oauth2_token_endpoint  =      OAUTH2_TOKEN_ENDPOINT       #
 
-      # class Jingle required
-    xmpp_server:      XMPP_SERVER,     #  
-    ns_google_push:   NS_GOOGLE_PUSH,  #  
-    gcp_channel:      GCP_CHANNEL,     #  
-
+# class Jingle required
+    @@xmpp_server  =     XMPP_SERVER     #  
+    @@ns_google_push  =  NS_GOOGLE_PUSH  #  
+    @@gcp_channel  =     GCP_CHANNEL     #  
 
 
-  }
+  mattr_accessor :my_proxy_id,:mimetype_oauth, :mimetype_ppd, :polling_secs,
+    :truncate_log, :followup_host, :followup_uri, :gaia_host, :loging_uri,
+    :loging_url, :gcp_url, :gcp_service, :ssl_ca_path, 
+    :authorization_scope, :authorization_redirect_uri, :oauth2_token_endpoint,
+    :xmpp_server, :ns_google_push, :gcp_channel
+
 
 # #########################################################################
 
-  class_eval( "def self.config; @@config; end;" )
-  class_eval( "def self.config=(opt); @@config=opt; end;" )
-
-  # Default way to setup milia. 
+# Default way to setup kinokero configuration
+#
   def self.setup
     yield self
   end
