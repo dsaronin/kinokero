@@ -124,7 +124,7 @@ GCP_USER_ACTION_OTHER     = 100  # User has performed some other action
 
     return Faraday.new( 
           ::Kinokero.gcp_url, 
-          :ssl => { :ca_path => ::Kinokero::SSL_CERT_PATH }
+          :ssl => { :ca_path => ::Kinokero.ssl_ca_path }
     ) do |faraday|
       #   faraday.request  :retry
       unless @gcp_control.blank?

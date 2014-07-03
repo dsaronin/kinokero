@@ -1,4 +1,3 @@
-# require "kinokero/module_extensions"  # must come before defaults defined below
 require 'faraday-cookie_jar'
 require 'logger'
 require 'forwardable'
@@ -102,13 +101,11 @@ SSL_CERT_PATH = "/usr/lib/ssl/certs"
     @@ns_google_push  =  NS_GOOGLE_PUSH  #  
     @@gcp_channel  =     GCP_CHANNEL     #  
 
-    mattr_accessor  :gcp_url
-
-#   mattr_accessor :my_proxy_id,:mimetype_oauth, :mimetype_ppd, :polling_secs,
-#     :truncate_log, :followup_host, :followup_uri, :gaia_host, :loging_uri,
-#     :loging_url, :gcp_url, :gcp_service, :ssl_ca_path, 
-#     :authorization_scope, :authorization_redirect_uri, :oauth2_token_endpoint,
-#     :xmpp_server, :ns_google_push, :gcp_channel
+  mattr_accessor :my_proxy_id,:mimetype_oauth, :mimetype_ppd, :polling_secs,
+    :truncate_log, :followup_host, :followup_uri, :gaia_host, :loging_uri,
+    :loging_url, :gcp_url, :gcp_service, :ssl_ca_path, 
+    :authorization_scope, :authorization_redirect_uri, :oauth2_token_endpoint,
+    :xmpp_server, :ns_google_push, :gcp_channel
 
 
 # #########################################################################
