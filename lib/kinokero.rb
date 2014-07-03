@@ -1,4 +1,4 @@
-require "kinokero/module_extensions"  # must come before defaults defined below
+# require "kinokero/module_extensions"  # must come before defaults defined below
 require 'faraday-cookie_jar'
 require 'logger'
 require 'forwardable'
