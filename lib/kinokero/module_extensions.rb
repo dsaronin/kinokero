@@ -18,7 +18,6 @@ class Module
     syms.each do |sym|
 
       class_eval "@@#{sym} = nil unless defined? @@#{sym};" +
-                 :w
       "def self.#{sym}; @@#{sym}; end;"
 
     end  # do each
