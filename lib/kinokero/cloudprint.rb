@@ -23,14 +23,6 @@ module Kinokero
 
 # #########################################################################
 
-# MY_PROXY_ID is a unique name for this running of the GCP connector client
-# formed with gem name + machine-node name (expected to be  unique)
-# TODO: make sure machine nodename is unique
-MY_PROXY_ID = "kinokero::"+`uname -n`.chop
-
-# CLIENT_NAME should be some string identifier for the client you are writing.
-CLIENT_NAME = MY_PROXY_ID + " cloudprint controller v0.0.1"
-
 # GCP API actions
 GCP_CONTROL  = '/control'
 GCP_DELETE   = '/delete'
