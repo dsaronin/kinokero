@@ -123,7 +123,7 @@ GCP_USER_ACTION_OTHER     = 100  # User has performed some other action
   def setup_connection( options )
 
     return Faraday.new( 
-          ::Kinokero::GCP_URL, 
+          ::Kinokero.config[:gcp_url], 
           :ssl => { :ca_path => ::Kinokero::SSL_CERT_PATH }
     ) do |faraday|
       #   faraday.request  :retry
