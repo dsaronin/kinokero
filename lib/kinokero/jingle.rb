@@ -17,10 +17,6 @@ class Jingle
  
 # ****************************************************************************
 
-XMPP_SERVER     = "talk.google.com" 
-NS_GOOGLE_PUSH  = "google:push"
-GCP_CHANNEL     = "cloudprint.google.com"
-
 # ****************************************************************************
 
 
@@ -42,12 +38,12 @@ GCP_CHANNEL     = "cloudprint.google.com"
     @sender_jid = Jabber::JID.new( @gcp_control[ :gcp_xmpp_jid ] )
     @client = Jabber::Client.new(@sender_jid)
     @client.jid.resource = @gcp_control[ :gcp_printer_name ]
-    @conn = @client.connect(XMPP_SERVER)
+    @conn = @client.connect(::Kinokero::XMPP_SERVER)
 
        # prep the Google Talk for GCP subscribe stanza
     @iq_subscribe = Jabber::Iq.new( :set, @gcp_control[ :gcp_xmpp_jid ])
-    @sub_el = @iq_subscribe.add_element( 'subscribe', 'xmlns' => NS_GOOGLE_PUSH )
-    @sub_el.add_element( 'item', 'channel' => GCP_CHANNEL, 'from' => GCP_CHANNEL )
+    @sub_el = @iq_subscribe.add_element( 'subscribe', 'xmlns' => ::Kinokero::NS_GOOGLE_PUSH )
+    @sub_el.add_element( 'item', 'channel' => ::Kinokero::GCP_CHANNEL, 'from' => ::Kinokero::GCP_CHANNEL )
 
     @client.auth( @gcp_appliance.cloudprint.gcp_form_jingle_auth_token )
 
@@ -62,7 +58,7 @@ GCP_CHANNEL     = "cloudprint.google.com"
 # </message>
 
     @client.add_message_callback do |m|
-      if m.from == GCP_CHANNEL
+      if m.from == ::Kinokero::GCP_CHANNEL
           # grab the "push:data" snippet from within the "push:push" snippet
           # from within the current stanza m
           # for better understanding this, see issue & comments at:

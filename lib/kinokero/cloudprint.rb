@@ -65,13 +65,9 @@ GCP_USER_ACTION_OTHER     = 100  # User has performed some other action
 
     # default options and configurations for cloudprinting
   DEFAULT_OPTIONS = {
-    :url => ::Kinokero::GCP_URL    ,
-    :oauth_token => nil,
-    :ssl_ca_path => '',
     :verbose => true,         # log everything?
     :log_truncate => false,   # truncate long responses?
     :log_response => true    # log the responses?
-    # :client_redirect_uri => ::Kinokero::AUTHORIZATION_REDIRECT_URI
   }
 
 # #########################################################################
@@ -127,8 +123,8 @@ GCP_USER_ACTION_OTHER     = 100  # User has performed some other action
   def setup_connection( options )
 
     return Faraday.new( 
-          options[:url], 
-          :ssl => { :ca_path => options[:ssl_ca_path] }
+          ::Kinokero::GCP_URL, 
+          :ssl => { :ca_path => ::Kinokero::SSL_CERT_PATH }
     ) do |faraday|
       #   faraday.request  :retry
       unless @gcp_control.blank?
@@ -296,20 +292,20 @@ GCP_USER_ACTION_OTHER     = 100  # User has performed some other action
   def gcp_anonymous_register(params)
 
     reg_response =  @connection.post ::Kinokero::GCP_SERVICE + GCP_REGISTER do |req|
-      req.headers['X-CloudPrint-Proxy'] = MY_PROXY_ID 
+      req.headers['X-CloudPrint-Proxy'] = ::Kinokero::MY_PROXY_ID 
       req.body =  {
         :printer => params[:printer_name],
-        :proxy   => MY_PROXY_ID,
+        :proxy   => ::Kinokero::MY_PROXY_ID,
         :description => params[:printer_name],
         :default_display_name => params[:printer_name],
         :status => params[:status],
         :capabilities => Faraday::UploadIO.new( 
                   params[:capability_ppd], 
-                  MIMETYPE_PPD 
+                  ::Kinokero::MIMETYPE_PPD 
         ),
         :defaults => Faraday::UploadIO.new( 
                   params[:default_ppd], 
-                  MIMETYPE_PPD 
+                  ::Kinokero::MIMETYPE_PPD 
         ),
       }
 
@@ -398,7 +394,7 @@ GCP_USER_ACTION_OTHER     = 100  # User has performed some other action
   def gcp_poll_request( poll_url )
         
     poll_response = @connection.post( poll_url ) do |req|  # connection poll request
-      req.headers['X-CloudPrint-Proxy'] = MY_PROXY_ID 
+      req.headers['X-CloudPrint-Proxy'] = ::Kinokero::MY_PROXY_ID 
     end  # post poll response request
 
     log_response( 'anon-poll', poll_response )
@@ -421,7 +417,7 @@ GCP_USER_ACTION_OTHER     = 100  # User has performed some other action
   def gcp_get_job_file( file_url )
         
     file_response = @connection.get( file_url ) do |req|  # connection get job file request
-      req.headers['X-CloudPrint-Proxy'] = MY_PROXY_ID 
+      req.headers['X-CloudPrint-Proxy'] = ::Kinokero::MY_PROXY_ID 
       req.headers['Authorization'] = gcp_form_auth_token()
 
       log_request( 'get job file', req )
@@ -671,7 +667,7 @@ GCP_USER_ACTION_OTHER     = 100  # User has performed some other action
     list_response = @connection.post( ::Kinokero::GCP_SERVICE + GCP_LIST ) do |req|
       req.headers['Authorization'] = gcp_form_auth_token()
       req.body =  {
-        :proxy   => MY_PROXY_ID
+        :proxy   => ::Kinokero::MY_PROXY_ID
       }
 
       log_request( 'get printer list', req )

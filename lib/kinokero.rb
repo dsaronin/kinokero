@@ -67,7 +67,9 @@ MY_PROXY_ID = "kinokero::"+`uname -n`.chop
 # CLIENT_NAME should be some string identifier for the client you are writing.
 CLIENT_NAME = MY_PROXY_ID + " cloudprint controller v0.0.1"
 
-
+# SSL certificates path for this machine
+# NOTE: move this out before finalizing gem
+SSL_CERT_PATH = "/usr/lib/ssl/certs"
 
 # -----------------------------------------------------------------------------
 
@@ -90,6 +92,7 @@ CLIENT_NAME = MY_PROXY_ID + " cloudprint controller v0.0.1"
     login_url:       LOGIN_URL,      #
     gcp_url:         GCP_URL,        #
     gcp_service:     GCP_SERVICE,    #
+    ssl_ca_path:     SSL_CERT_PATH,  # SSL certificates path for this machine
 
     authorization_scope:         AUTHORIZATION_SCOPE,         #
     authorization_redirect_uri:  AUTHORIZATION_REDIRECT_URI,  #
