@@ -17,13 +17,9 @@ class Module
   def mattr_reader(*syms)
     syms.each do |sym|
 
-      class_eval   <<-EOS
-        @@#{sym} = nil unless defined? @@#{sym}
-
-        def self.#{sym}
-          @@#{sym}
-        end
-      EOS
+      class_eval "@@#{sym} = nil unless defined? @@#{sym};" +
+                 :w
+      "def self.#{sym}; @@#{sym}; end;"
 
     end  # do each
   end
