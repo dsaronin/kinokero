@@ -29,7 +29,6 @@ class Module
   end
 
   def mattr_writer(*syms)
-    options = syms.extract_options!
     syms.each do |sym|
       class_eval(<<-EOS, __FILE__, __LINE__ + 1)
         def self.#{sym}=(obj)
