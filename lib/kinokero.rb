@@ -108,8 +108,14 @@ SSL_CERT_PATH = "/usr/lib/ssl/certs"
 
 # #########################################################################
 
-  class_eval( "def config; @@config; end;" )
+  class_eval( "def self.config; @@config; end;" )
+  class_eval( "def self.config=(opt); @@config=opt; end;" )
 
+  # Default way to setup milia. 
+  def self.setup
+    yield self
+  end
+ 
 # #########################################################################
 
 # these requires for kinokero modules must occur AFTER the above constants defined
