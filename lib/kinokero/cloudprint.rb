@@ -642,7 +642,7 @@ GCP_USER_ACTION_OTHER     = 100  # User has performed some other action
         :Email       => email,
         :Passwd      => password,
         :service     => ::Kinokero::GCP_SERVICE,
-        :source      => CLIENT_NAME
+        :source      => ::Kinokero::MY_PROXY_ID
       }
 
       log_request( 'get auth tokens', req )

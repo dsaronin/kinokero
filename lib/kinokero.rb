@@ -64,21 +64,20 @@ GCP_CHANNEL     = "cloudprint.google.com"
 # TODO: make sure machine nodename is unique
 MY_PROXY_ID = "kinokero::"+`uname -n`.chop
 
-# CLIENT_NAME should be some string identifier for the client you are writing.
-CLIENT_NAME = MY_PROXY_ID + " cloudprint controller v0.0.1"
-
 # SSL certificates path for this machine
 # NOTE: move this out before finalizing gem
 SSL_CERT_PATH = "/usr/lib/ssl/certs"
 
 # -----------------------------------------------------------------------------
 
-
+# gem master config area; most settings are alterable as needed
+# many, however, are fixed by Google Cloud Printer documentation demands
+# and should not be changed
+#
   @@config = {
 
       # class Proxy required
     my_proxy_id:     MY_PROXY_ID,    # unique name for this running of the GCP connector client
-    client_name:     CLIENT_NAME,    # some string identifier for the client you are writing
 
       # class Cloudprint required
     mimetype_oauth:  MIMETYPE_OAUTH, # how to encoade oauth files
