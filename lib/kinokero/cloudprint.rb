@@ -291,21 +291,21 @@ GCP_USER_ACTION_OTHER     = 100  # User has performed some other action
 #
   def gcp_anonymous_register(params)
 
-    reg_response =  @connection.post ::Kinokero::GCP_SERVICE + GCP_REGISTER do |req|
-      req.headers['X-CloudPrint-Proxy'] = ::Kinokero::MY_PROXY_ID 
+    reg_response =  @connection.post ::Kinokero.gcp_service + GCP_REGISTER do |req|
+      req.headers['X-CloudPrint-Proxy'] = ::Kinokero.my_proxy_id 
       req.body =  {
         :printer => params[:printer_name],
-        :proxy   => ::Kinokero::MY_PROXY_ID,
+        :proxy   => ::Kinokero.my_proxy_id,
         :description => params[:printer_name],
         :default_display_name => params[:printer_name],
         :status => params[:status],
         :capabilities => Faraday::UploadIO.new( 
                   params[:capability_ppd], 
-                  ::Kinokero::MIMETYPE_PPD 
+                  ::Kinokero.mimetype_ppd 
         ),
         :defaults => Faraday::UploadIO.new( 
                   params[:default_ppd], 
-                  ::Kinokero::MIMETYPE_PPD 
+                  ::Kinokero.mimetype_ppd 
         ),
       }
 
@@ -355,9 +355,9 @@ GCP_USER_ACTION_OTHER     = 100  # User has performed some other action
     printer_id = anon_response['printers'][0]['id']
 
       # countdown timer for polling loop
-    0.step( anon_response['token_duration'].to_i, ::Kinokero::POLLING_SECS ) do |i|
+    0.step( anon_response['token_duration'].to_i, ::Kinokero.polling_secs ) do |i|
 
-      sleep ::Kinokero::POLLING_SECS    # sleep here until next poll
+      sleep ::Kinokero.polling_secs    # sleep here until next poll
 
         # poll GCP to see if printer claimed yet?
       poll_response = gcp_poll_request( poll_url )
@@ -394,7 +394,7 @@ GCP_USER_ACTION_OTHER     = 100  # User has performed some other action
   def gcp_poll_request( poll_url )
         
     poll_response = @connection.post( poll_url ) do |req|  # connection poll request
-      req.headers['X-CloudPrint-Proxy'] = ::Kinokero::MY_PROXY_ID 
+      req.headers['X-CloudPrint-Proxy'] = ::Kinokero.my_proxy_id 
     end  # post poll response request
 
     log_response( 'anon-poll', poll_response )
@@ -417,7 +417,7 @@ GCP_USER_ACTION_OTHER     = 100  # User has performed some other action
   def gcp_get_job_file( file_url )
         
     file_response = @connection.get( file_url ) do |req|  # connection get job file request
-      req.headers['X-CloudPrint-Proxy'] = ::Kinokero::MY_PROXY_ID 
+      req.headers['X-CloudPrint-Proxy'] = ::Kinokero.my_proxy_id 
       req.headers['Authorization'] = gcp_form_auth_token()
 
       log_request( 'get job file', req )
@@ -476,14 +476,14 @@ GCP_USER_ACTION_OTHER     = 100  # User has performed some other action
 #
   def gcp_get_oauth2_tokens( auth_code )
 
-    oauth_response = @connection.post( ::Kinokero::OAUTH2_TOKEN_ENDPOINT ) do |req|
+    oauth_response = @connection.post( ::Kinokero.oauth2_token_endpoint ) do |req|
       req.body =  {
         :client_id =>  @gcp_control[:proxy_client_id],
         :client_secret =>  @gcp_control[:proxy_client_secret], 
-        :redirect_uri => ::Kinokero::AUTHORIZATION_REDIRECT_URI,
+        :redirect_uri => ::Kinokero.authorization_redirect_uri,
         :code => auth_code,
         :grant_type => "authorization_code",
-        :scope => ::Kinokero::AUTHORIZATION_SCOPE,
+        :scope => ::Kinokero.authorization_scope,
       }
 
       log_request( 'get oauth2 code', req )
@@ -509,7 +509,7 @@ GCP_USER_ACTION_OTHER     = 100  # User has performed some other action
 #
   def gcp_refresh_tokens( )
 
-    oauth_response = @connection.post( ::Kinokero::OAUTH2_TOKEN_ENDPOINT ) do |req|
+    oauth_response = @connection.post( ::Kinokero.oauth2_token_endpoint ) do |req|
       req.body =  {
         :client_id =>  @gcp_control[:proxy_client_id],
         :client_secret =>  @gcp_control[:proxy_client_secret], 
@@ -552,7 +552,7 @@ GCP_USER_ACTION_OTHER     = 100  # User has performed some other action
 #
   def gcp_get_printer_fetch( printerid )
 
-    fetch_response = @connection.post( ::Kinokero::GCP_SERVICE + GCP_FETCH ) do |req|
+    fetch_response = @connection.post( ::Kinokero.gcp_service + GCP_FETCH ) do |req|
       req.headers['Authorization'] = gcp_form_auth_token()
       req.body =  {
         :printerid   => printerid
@@ -636,13 +636,13 @@ GCP_USER_ACTION_OTHER     = 100  # User has performed some other action
 #
   def gcp_get_auth_tokens(email, password)
 
-    return @connection.post( ::Kinokero::LOGIN_URL ) do |req|
+    return @connection.post( ::Kinokero.login_url ) do |req|
       req.body =  {
         :accountType => 'GOOGLE',
         :Email       => email,
         :Passwd      => password,
-        :service     => ::Kinokero::GCP_SERVICE,
-        :source      => ::Kinokero::MY_PROXY_ID
+        :service     => ::Kinokero.gcp_service,
+        :source      => ::Kinokero.my_proxy_id
       }
 
       log_request( 'get auth tokens', req )
@@ -664,10 +664,10 @@ GCP_USER_ACTION_OTHER     = 100  # User has performed some other action
 #
   def gcp_get_printer_list(  )
 
-    list_response = @connection.post( ::Kinokero::GCP_SERVICE + GCP_LIST ) do |req|
+    list_response = @connection.post( ::Kinokero.gcp_service + GCP_LIST ) do |req|
       req.headers['Authorization'] = gcp_form_auth_token()
       req.body =  {
-        :proxy   => ::Kinokero::MY_PROXY_ID
+        :proxy   => ::Kinokero.my_proxy_id
       }
 
       log_request( 'get printer list', req )
@@ -752,7 +752,7 @@ GCP_USER_ACTION_OTHER     = 100  # User has performed some other action
     if @options[:verbose] && @options[:log_response]
       body = ( response.body.nil?  ?  response  :  response.body )
       puts "\n---------- RESPONSE ------------ #{body.class.name} --------------"
-      debug( msg ) { body.inspect[0, ( @options[:log_truncate] ? ::Kinokero::TRUNCATE_LOG : 20000 )] } 
+      debug( msg ) { body.inspect[0, ( @options[:log_truncate] ? ::Kinokero.truncate_log : 20000 )] } 
       puts "----------" * 4
     end  # if verbose
   end
@@ -817,7 +817,7 @@ GCP_USER_ACTION_OTHER     = 100  # User has performed some other action
 #
   def generic_job_status( jobid, state_diff )
 
-    status_response = @connection.post( ::Kinokero::GCP_SERVICE + GCP_CONTROL ) do |req|
+    status_response = @connection.post( ::Kinokero.gcp_service + GCP_CONTROL ) do |req|
       req.headers['Authorization'] = gcp_form_auth_token()
       req.body =  {
         :jobid   => jobid,

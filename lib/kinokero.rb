@@ -73,6 +73,7 @@ SSL_CERT_PATH = "/usr/lib/ssl/certs"
 # gem master config area; most settings are alterable as needed
 # many, however, are fixed by Google Cloud Printer documentation demands
 # and should not be changed
+# if making any additions, be sure to add name to mattr_accessor list below
 #
 
 # class Proxy required

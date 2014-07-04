@@ -13,7 +13,7 @@ class Proxy
 
   attr_reader :cloudprint, :jingle, :options
 
-  def_delegators :@logger, :debug, :info, :warn, :error, :fatal
+  def_delegators :logger, :debug, :info, :warn, :error, :fatal
 
 # #########################################################################
 
@@ -21,8 +21,9 @@ class Proxy
   def initialize( gcp_control, options = { verbose: true } )
      @cloudprint = Kinokero::Cloudprint.new( gcp_control, options )
      @jingle     = Kinokero::Jingle.new( self, gcp_control )
+     @proxy_id   = Kinokero.my_proxy_id
      @options    = options
-     @logger = ::Logger.new(STDOUT)  # in case we need error logging
+     @logger     = ::Logger.new(STDOUT)  # in case we need error logging
   end
 
 # -----------------------------------------------------------------------------
