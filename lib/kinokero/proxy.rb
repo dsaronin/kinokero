@@ -8,11 +8,15 @@ module Kinokero
 class Proxy
 
   extend Forwardable
+#   require 'singleton'
+#   include Singleton
 
 # #########################################################################
 
   attr_reader :cloudprint, :jingle, :options
 
+    # note to self: for some reason, the '@' in :@logger is necessary
+    # in the following statement
   def_delegators :@logger, :debug, :info, :warn, :error, :fatal
 
 # #########################################################################
