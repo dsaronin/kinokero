@@ -13,7 +13,7 @@ class Proxy
 
   attr_reader :cloudprint, :jingle, :options
 
-  def_delegators :logger, :debug, :info, :warn, :error, :fatal
+  def_delegators :@logger, :debug, :info, :warn, :error, :fatal
 
 # #########################################################################
 
