@@ -569,6 +569,25 @@ GCP_USER_ACTION_OTHER     = 100  # User has performed some other action
 
 # ------------------------------------------------------------------------------
 
+  def gcp_delete_printer( )
+
+    remove_response = @connection.post( ::Kinokero.gcp_service + GCP_DELETE ) do |req|
+      req.headers['Authorization'] = gcp_form_auth_token()
+      req.body =  {
+        :printerid   => @gcp_control[:gcp_printerid]
+      }
+
+      log_request( 'remove printer', req )
+      
+    end  # request do
+    log_response( 'remove printer', remove_response )
+
+    return remove_response.body
+
+  end
+
+# ------------------------------------------------------------------------------
+
 # report status for a print job
 #
 # * *Args*    :
@@ -757,7 +776,6 @@ GCP_USER_ACTION_OTHER     = 100  # User has performed some other action
     end  # if verbose
   end
 
-# ------------------------------------------------------------------------------
 # ------------------------------------------------------------------------------
 
 # ------------------------------------------------------------------------------

@@ -38,6 +38,15 @@ class Proxy
   end
 
 # -----------------------------------------------------------------------------
+# do_delete -- 
+# -----------------------------------------------------------------------------
+  def do_delete()
+    @cloudprint.gcp_delete_printer
+    # TODO: remove from printers, if last, sever connection
+  end
+
+
+# -----------------------------------------------------------------------------
 # do_register -- registers our default printer, prints claim info
 # -----------------------------------------------------------------------------
   def do_register( gcp_request )
