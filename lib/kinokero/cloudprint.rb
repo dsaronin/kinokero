@@ -242,9 +242,6 @@ GCP_USER_ACTION_OTHER     = 100  # User has performed some other action
             # let calling module save the response for us
           yield( @gcp_control )  # persistence
 
-          # TODO: start listening for work
-          gcp_listen_jabber()
-          
         end  # if polling succeeded
 
         exit

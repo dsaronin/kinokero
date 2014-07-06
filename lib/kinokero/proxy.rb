@@ -56,6 +56,7 @@ class Proxy
          # this block is called only if/when asynch polling completes
          # in a separate process
       log_debug("\n***** Printer successfully registered to GCP *****\n")
+      puts gcp_ctl.inspect
 
         # this is the place to save anything we need to about the printers
         # under swalapala control; info is in gcp_ctl
