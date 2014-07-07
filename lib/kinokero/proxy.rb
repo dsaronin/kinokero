@@ -49,7 +49,7 @@ class Proxy
 # -----------------------------------------------------------------------------
 # do_register -- registers our default printer, prints claim info
 # -----------------------------------------------------------------------------
-  def do_register( gcp_request )
+  def do_register( gcp_request, &block )
 
     response = @cloudprint.register_anonymous_printer( gcp_request ) { |gcp_ctl|  
 
@@ -60,6 +60,7 @@ class Proxy
 
         # this is the place to save anything we need to about the printers
         # under swalapala control; info is in gcp_ctl
+      yield( gcp_ctl )  # persistence
 
     }
 
@@ -107,8 +108,8 @@ class Proxy
 
         File.open( job["id"], 'wb') { |fp| fp.write(job_file) }
        
-        printer_command = "lp -d #{job['printerName']} #{job['id']}"
-        log_debug   printer_command + "\n"
+        printer_command = "lp -d #{@cloudprint.gcp_control[:cups_alias]} #{job['id']}"
+        log_debug  "#{job['printerName']}: " + printer_command + "\n"
 
         status = system( "#{printer_command}" )
 
@@ -146,7 +147,7 @@ class Proxy
         # print out on the new printer
       command = ( system("which enscript") ? 'enscript -f Helvetica12' : 'lp' )
 
-      system("echo '#{msg}' | #{command} -d #{response[:gcp_printer_name]}")
+      system("echo '#{msg}' | #{command} -d #{response[:cups_alias]}")
     end
   end
 
@@ -168,7 +169,7 @@ class Proxy
   Easy-claim URL:     #{response[:gcp_easy_reg_url]}
   Record id:          #{response[:swalapala_printer_id]}
   Printer name:       #{response[:gcp_printer_name]}
-  GDP printer id:     #{response[:gcp_printer_id]}
+  GCP printer id:     #{response[:gcp_printer_id]}
   
 RUBY10
   end

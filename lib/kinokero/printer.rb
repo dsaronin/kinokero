@@ -136,6 +136,7 @@ SAMPLE_GCP_REQUEST =
   printer_name: "my_printer_name",
   capability_ppd: '/etc/cups/ppd/my_printer.ppd',
   default_ppd: '/etc/cups/ppd/my_printer.ppd',
+  cups_alias: 'my_cups_printer_name',
   status: 'active'
 }
 

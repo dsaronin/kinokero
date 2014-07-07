@@ -225,7 +225,7 @@ GCP_USER_ACTION_OTHER     = 100  # User has performed some other action
             # complete self instantiation by making this the printer
             # which we control
           @gcp_control = {
-            printer_id: params[:id],
+            printer_id: params[:printer_id],
             success: oauth_response['error'].nil?,
             message: oauth_response['error'].to_s,
             gcp_xmpp_jid: poll_response['xmpp_jid'],
@@ -237,6 +237,9 @@ GCP_USER_ACTION_OTHER     = 100  # User has performed some other action
             gcp_refresh_token: oauth_response['refresh_token'],
             gcp_token_type: oauth_response['token_type'],
             gcp_token_expiry_time: Time.now + oauth_response['expires_in'].to_i,
+
+            cups_alias: params[:cups_alias],
+            item: params[:item]
           }
 
             # let calling module save the response for us
@@ -258,7 +261,7 @@ GCP_USER_ACTION_OTHER     = 100  # User has performed some other action
       # step 2: tell user where to claim printer
     return {
       success:                 status, 
-      swalapala_printer_id:    params[:id],
+      swalapala_printer_id:    params[:printer_id],
       gcp_printer_name:        reg_response['printers'][0]['name'],
       gcp_printer_id:          reg_response['printers'][0]['id'],
       gcp_invite_page_url:     reg_response['invite_page_url'],
@@ -266,7 +269,8 @@ GCP_USER_ACTION_OTHER     = 100  # User has performed some other action
       gcp_auto_invite_url:     reg_response['automated_invite_url'],
       gcp_claim_token_url:     reg_response['invite_url'],
       gcp_printer_reg_token:   reg_response['registration_token'],
-      gcp_reg_token_duration:  reg_response['token_duration']
+      gcp_reg_token_duration:  reg_response['token_duration'],
+      cups_alias:              params[:cups_alias] 
     }
 
   end
