@@ -352,7 +352,7 @@ GCP_USER_ACTION_OTHER     = 100  # User has performed some other action
 #
   def gcp_anonymous_poll(anon_response)
 
-    poll_url = anon_response['polling_url'] + @gcp_control[:proxy_client_id]
+    poll_url = anon_response['polling_url'] + Kinokero.proxy_client_id
     printer_id = anon_response['printers'][0]['id']
 
       # countdown timer for polling loop
@@ -479,8 +479,8 @@ GCP_USER_ACTION_OTHER     = 100  # User has performed some other action
 
     oauth_response = @connection.post( ::Kinokero.oauth2_token_endpoint ) do |req|
       req.body =  {
-        :client_id =>  @gcp_control[:proxy_client_id],
-        :client_secret =>  @gcp_control[:proxy_client_secret], 
+        :client_id =>  Kinokero.proxy_client_id,
+        :client_secret =>  Kinokero.proxy_client_secret, 
         :redirect_uri => ::Kinokero.authorization_redirect_uri,
         :code => auth_code,
         :grant_type => "authorization_code",
@@ -512,8 +512,8 @@ GCP_USER_ACTION_OTHER     = 100  # User has performed some other action
 
     oauth_response = @connection.post( ::Kinokero.oauth2_token_endpoint ) do |req|
       req.body =  {
-        :client_id =>  @gcp_control[:proxy_client_id],
-        :client_secret =>  @gcp_control[:proxy_client_secret], 
+        :client_id =>  Kinokero.proxy_client_id,
+        :client_secret =>  Kinokero.proxy_client_secret, 
         :refresh_token => @gcp_control[:gcp_refresh_token],
         :grant_type => "refresh_token"
       }

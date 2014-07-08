@@ -77,7 +77,10 @@ SSL_CERT_PATH = "/usr/lib/ssl/certs"
 #
 
 # class Proxy required
-    @@my_proxy_id    =  MY_PROXY_ID    # unique name for this running of the GCP connector client
+    @@my_proxy_id         =  MY_PROXY_ID    # unique name for this running of the GCP connector client
+    @@proxy_client_id     =  ENV["GCP_PROXY_CLIENT_ID"] || 'missing'
+    @@proxy_client_secret =  ENV["GCP_PROXY_CLIENT_SECRET"] || 'missing'
+    @@proxy_serial_nbr    =  ENV["GCP_PROXY_SERIAL_NBR"] || 'missing'
 
 # class Cloudprint required
     @@mimetype_oauth  = MIMETYPE_OAUTH # how to encoade oauth files
@@ -106,7 +109,8 @@ SSL_CERT_PATH = "/usr/lib/ssl/certs"
     :truncate_log, :followup_host, :followup_uri, :gaia_host, :loging_uri,
     :loging_url, :gcp_url, :gcp_service, :ssl_ca_path, 
     :authorization_scope, :authorization_redirect_uri, :oauth2_token_endpoint,
-    :xmpp_server, :ns_google_push, :gcp_channel
+    :xmpp_server, :ns_google_push, :gcp_channel,
+    :proxy_client_secret, :proxy_client_id, :proxy_serial_nbr
 
 
 # #########################################################################
