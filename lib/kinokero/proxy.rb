@@ -22,18 +22,28 @@ class Proxy
 # #########################################################################
 
 # -----------------------------------------------------------------------------
-  def initialize( gcp_control, options = { verbose: true } )
-     @cloudprint = Kinokero::Cloudprint.new( gcp_control, options )
+  def initialize( device_hash, options = { verbose: true } )
+
      @proxy_id   = Kinokero.my_proxy_id
      @options    = options
      @logger     = ::Logger.new(STDOUT)  # in case we need error logging
+
+     device_hash.each_key do |item|
+
+       device_hash[item].cloudprint = Kinokero::Cloudprint.new( 
+             device_hash[item].gcp_printer_control, 
+             options 
+       )
+
+     end  # setting up each device
+
   end
 
 # -----------------------------------------------------------------------------
 # do_connect -- 
 # -----------------------------------------------------------------------------
-  def do_connect()
-    @cloudprint.gtalk_start_connection do |printerid|
+  def do_connect(item)
+    device_hash[item].cloudprint.gtalk_start_connection do |printerid|
       do_print_jobs( printerid )
     end  # block
   end
@@ -41,8 +51,8 @@ class Proxy
 # -----------------------------------------------------------------------------
 # do_delete -- 
 # -----------------------------------------------------------------------------
-  def do_delete()
-    @cloudprint.gcp_delete_printer
+  def do_delete(item)
+    device_hash[item].cloudprint.gcp_delete_printer
     # TODO: remove from printers, if last, sever connection
   end
 
@@ -76,15 +86,15 @@ class Proxy
 
 # -----------------------------------------------------------------------------
 # -----------------------------------------------------------------------------
-  def do_refresh()
-    @cloudprint.gcp_refresh_tokens
+  def do_refresh(item)
+    device_hash[item].cloudprint.gcp_refresh_tokens
     # new token should be set up in the gcp_control area
   end
 
 # -----------------------------------------------------------------------------
 # -----------------------------------------------------------------------------
-  def do_list()
-    result = @cloudprint.gcp_get_printer_list
+  def do_list(item)
+    device_hash[item].cloudprint.gcp_get_printer_list
   end
 
 

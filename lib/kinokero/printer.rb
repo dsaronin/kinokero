@@ -16,6 +16,7 @@ module Kinokero
     include Device
 
     attr_reader :model, :gcp_printer_control, :gcp_printer_request
+    attr_accessor  :cloudprint   # cloudprint object for this device
 
 # -----------------------------------------------------------------------------
 
@@ -40,6 +41,8 @@ module Kinokero
     setup_model( model_info )
     setup_gcp( gcp_info )
     setup_request( request_info )
+
+    @cloudprint = nil   # Proxy fills this in later
 
   end
 
