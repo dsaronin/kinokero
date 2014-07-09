@@ -10,7 +10,7 @@ class Jingle
 
 # #########################################################################
 
-  attr_reader :gcp_channel, :gcp_appliance, :gcp_control
+  attr_reader :gcp_channel, :gcp_control
 
 # #########################################################################
 
@@ -23,8 +23,7 @@ class Jingle
 # -----------------------------------------------------------------------------
 # -----  jabber initialization here   -----------------------------------------
 # -----------------------------------------------------------------------------
-  def initialize( gcp_appliance, gcp_control )
-    @gcp_appliance = gcp_appliance 
+  def initialize( gcp_control )
     @gcp_control   = gcp_control
     @gcp_channel   = ::Kinokero.gcp_channel
     @client        = nil
@@ -35,7 +34,7 @@ class Jingle
 
 # -----------------------------------------------------------------------------
 
-  def gtalk_start_connection()
+  def gtalk_start_connection( &block )
 
     begin
 
@@ -43,7 +42,7 @@ class Jingle
 
       gtalk_start_subscription()   # starts subscription to receive jobs
 
-      gtalk_notification_callback()  # callback response to notifications
+      gtalk_notification_callback( &block )  # callback response to notifications
 
       Jabber::debuglog("**************** protocol ended normally ******************")      
 
@@ -74,7 +73,7 @@ class Jingle
 #     <push:data>{Base-64 encoded printer id}</push:data>
 #   </push:push>
 # </message>
-  def gtalk_notification_callback()
+  def gtalk_notification_callback( &block )
     @client.add_message_callback do |m|
       if m.from == @gcp_channel
           # grab the "push:data" snippet from within the "push:push" snippet
@@ -98,7 +97,7 @@ class Jingle
            Jabber::debuglog("GCP CALLBACK: printer_id: #{printerid}")      
 
               # go into appliance and let it know we need the queue for this printer
-           @gcp_appliance.do_print_jobs( printerid )
+           yield( printerid )
 
           end   # decoded printerid nil  if..then..else
         end   # printerid useless if..then..else

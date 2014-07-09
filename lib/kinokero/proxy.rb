@@ -13,7 +13,7 @@ class Proxy
 
 # #########################################################################
 
-  attr_reader :cloudprint, :jingle, :options
+  attr_reader :cloudprint, :options
 
     # note to self: for some reason, the '@' in :@logger is necessary
     # in the following statement
@@ -24,7 +24,6 @@ class Proxy
 # -----------------------------------------------------------------------------
   def initialize( gcp_control, options = { verbose: true } )
      @cloudprint = Kinokero::Cloudprint.new( gcp_control, options )
-     @jingle     = Kinokero::Jingle.new( self, gcp_control )
      @proxy_id   = Kinokero.my_proxy_id
      @options    = options
      @logger     = ::Logger.new(STDOUT)  # in case we need error logging
@@ -34,7 +33,9 @@ class Proxy
 # do_connect -- 
 # -----------------------------------------------------------------------------
   def do_connect()
-    @jingle.gtalk_start_connection
+    @cloudprint.gtalk_start_connection do |printerid|
+      do_print_jobs( printerid )
+    end  # block
   end
 
 # -----------------------------------------------------------------------------

@@ -79,7 +79,7 @@ GCP_USER_ACTION_OTHER     = 100  # User has performed some other action
 
 # #########################################################################
 
-  attr_reader :connection, :gcp_control
+  attr_reader :connection, :gcp_control, :jingle
 
   def_delegators :@logger, :debug, :info, :warn, :error, :fatal
 
@@ -101,6 +101,15 @@ GCP_USER_ACTION_OTHER     = 100  # User has performed some other action
     validate_gcp_control( gcp_control )
     @connection = setup_connection(@options)
     @logger = ::Logger.new(STDOUT)  # in case we need error logging
+    @jingle = Kinokero::Jingle.new( gcp_control ) 
+  end
+
+# ------------------------------------------------------------------------------
+
+  def gtalk_start_connection(&block)
+    @jingle.gtalk_start_connection do |printerid|
+      yield( printerid )
+    end  # closure for doing print stuff
   end
 
 # ------------------------------------------------------------------------------
