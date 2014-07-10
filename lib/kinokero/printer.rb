@@ -94,7 +94,7 @@ module Kinokero
 #
   def setup_request( request_info )
     unless request_info.empty?
-      validate_request_options( request_info )
+      validate_gcp_request( request_info )
       @gcp_printer_request = request_info    # persist the hash
     end
   end
