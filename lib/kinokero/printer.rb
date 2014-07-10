@@ -221,7 +221,7 @@ VALID_GCP_REQUEST = SAMPLE_GCP_REQUEST.keys
     # options validations: check for invalid values
     valid_keys.each do |key|
 
-       if options[key].nil? || !option[key].kind_of?( sample[key].class )
+       if options[key].nil? || !options[key].kind_of?( sample[key].class )
          raise ArgumentError,"[#{msg}] value for key #{key} should be similar to #{sample[key]}"
        end
 
