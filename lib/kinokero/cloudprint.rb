@@ -23,6 +23,10 @@ module Kinokero
 
 # #########################################################################
 
+  @@connection = nil  # class-wide client http Faraday connection
+
+# #########################################################################
+
 # GCP API actions
 GCP_CONTROL  = '/control'
 GCP_DELETE   = '/delete'
@@ -96,20 +100,15 @@ GCP_USER_ACTION_OTHER     = 100  # User has performed some other action
 #   - 
 #
   def initialize( gcp_control, options )
-    @options = DEFAULT_OPTIONS.merge(options)
-    validate_cloudprint_options(@options)
-    validate_gcp_control( gcp_control )
-    @connection = setup_connection(@options)
+    
     @logger = ::Logger.new(STDOUT)  # in case we need error logging
-    @jingle = Kinokero::Jingle.new( gcp_control ) 
-  end
+    
+    @options = validate_cloudprint_options( DEFAULT_OPTIONS.merge(options) )
+    @gcp_control = validate_gcp_control( gcp_control ) 
 
-# ------------------------------------------------------------------------------
+    Cloudprint.client_connection() # set up faraday connection iff first time
 
-  def gtalk_start_connection(&block)
-    @jingle.gtalk_start_connection do |printerid|
-      yield( printerid )
-    end  # closure for doing print stuff
+    @jingle = Kinokero::Jingle.new( gcp_control ) if gcp_control[:is_active]
   end
 
 # ------------------------------------------------------------------------------
@@ -119,28 +118,24 @@ GCP_USER_ACTION_OTHER     = 100  # User has performed some other action
 # * *Args*    :
 #   - 
 # * *Returns* :
-#   - Faraday connection object based on settings
+#   - Faraday connection object 
 # * *Raises* :
 #   - 
-# * *Assumes* :
-#   - @gcp_control set up (to determine oauth2 needs)
 # * *Note* :
 #   - GCP returns responses as content-type: "text/plain", 
 #     so we want faraday to parse all responses from JSON to HASH 
 #     regardless of content-type
 #
-  def setup_connection( options )
+  def self.client_connection()
 
-    return Faraday.new( 
+    @@connection ||= Faraday.new( 
           ::Kinokero.gcp_url, 
           :ssl => { :ca_path => ::Kinokero.ssl_ca_path }
     ) do |faraday|
       #   faraday.request  :retry
-      unless @gcp_control.blank?
-        faraday.request  :oauth2, { 
-          :token     => @gcp_control[ :gcp_access_token ]
-        } 
-      end
+#       faraday.request  :oauth2, { 
+#         :token     => @gcp_control[ :gcp_access_token ]
+#       } 
 
       faraday.use      :cookie_jar       # cookiejar handling
       faraday.request  :multipart        # multipart files
@@ -211,7 +206,7 @@ GCP_USER_ACTION_OTHER     = 100  # User has performed some other action
 #   'Use token: response['registration_token']
 # ------------------------------------------------------------------------------
 # 
-  def register_anonymous_printer(params,&block)
+  def self.register_anonymous_printer(params,&block)
 
       # step 1: issue /register to GCP server
     reg_response = gcp_anonymous_register(params).body
@@ -299,9 +294,9 @@ GCP_USER_ACTION_OTHER     = 100  # User has performed some other action
 # * *Raises* :
 #   - 
 #
-  def gcp_anonymous_register(params)
+  def self.gcp_anonymous_register(params)
 
-    reg_response =  @connection.post ::Kinokero.gcp_service + GCP_REGISTER do |req|
+    reg_response =  @@connection.post ::Kinokero.gcp_service + GCP_REGISTER do |req|
       req.headers['X-CloudPrint-Proxy'] = ::Kinokero.my_proxy_id 
       req.body =  {
         :printer => params[:printer_name],
@@ -359,7 +354,7 @@ GCP_USER_ACTION_OTHER     = 100  # User has performed some other action
 # * *Raises* :
 #   - 
 #
-  def gcp_anonymous_poll(anon_response)
+  def self.gcp_anonymous_poll(anon_response)
 
     poll_url = anon_response['polling_url'] + Kinokero.proxy_client_id
     printer_id = anon_response['printers'][0]['id']
@@ -401,9 +396,9 @@ GCP_USER_ACTION_OTHER     = 100  # User has performed some other action
 # * *Raises* :
 #   - 
 #
-  def gcp_poll_request( poll_url )
+  def self.gcp_poll_request( poll_url )
         
-    poll_response = @connection.post( poll_url ) do |req|  # connection poll request
+    poll_response = @@connection.post( poll_url ) do |req|  # connection poll request
       req.headers['X-CloudPrint-Proxy'] = ::Kinokero.my_proxy_id 
     end  # post poll response request
 
@@ -411,6 +406,14 @@ GCP_USER_ACTION_OTHER     = 100  # User has performed some other action
 
     return poll_response
 
+  end
+
+# ------------------------------------------------------------------------------
+
+  def gtalk_start_connection(&block)
+    @jingle.gtalk_start_connection do |printerid|
+      yield( printerid )
+    end  # closure for doing print stuff
   end
 
 # ------------------------------------------------------------------------------
@@ -426,7 +429,7 @@ GCP_USER_ACTION_OTHER     = 100  # User has performed some other action
 #
   def gcp_get_job_file( file_url )
         
-    file_response = @connection.get( file_url ) do |req|  # connection get job file request
+    file_response = @@connection.get( file_url ) do |req|  # connection get job file request
       req.headers['X-CloudPrint-Proxy'] = ::Kinokero.my_proxy_id 
       req.headers['Authorization'] = gcp_form_auth_token()
 
@@ -486,7 +489,7 @@ GCP_USER_ACTION_OTHER     = 100  # User has performed some other action
 #
   def gcp_get_oauth2_tokens( auth_code )
 
-    oauth_response = @connection.post( ::Kinokero.oauth2_token_endpoint ) do |req|
+    oauth_response = @@connection.post( ::Kinokero.oauth2_token_endpoint ) do |req|
       req.body =  {
         :client_id =>  Kinokero.proxy_client_id,
         :client_secret =>  Kinokero.proxy_client_secret, 
@@ -519,7 +522,7 @@ GCP_USER_ACTION_OTHER     = 100  # User has performed some other action
 #
   def gcp_refresh_tokens( )
 
-    oauth_response = @connection.post( ::Kinokero.oauth2_token_endpoint ) do |req|
+    oauth_response = @@connection.post( ::Kinokero.oauth2_token_endpoint ) do |req|
       req.body =  {
         :client_id =>  Kinokero.proxy_client_id,
         :client_secret =>  Kinokero.proxy_client_secret, 
@@ -562,7 +565,7 @@ GCP_USER_ACTION_OTHER     = 100  # User has performed some other action
 #
   def gcp_get_printer_fetch( printerid )
 
-    fetch_response = @connection.post( ::Kinokero.gcp_service + GCP_FETCH ) do |req|
+    fetch_response = @@connection.post( ::Kinokero.gcp_service + GCP_FETCH ) do |req|
       req.headers['Authorization'] = gcp_form_auth_token()
       req.body =  {
         :printerid   => printerid
@@ -581,7 +584,7 @@ GCP_USER_ACTION_OTHER     = 100  # User has performed some other action
 
   def gcp_delete_printer( )
 
-    remove_response = @connection.post( ::Kinokero.gcp_service + GCP_DELETE ) do |req|
+    remove_response = @@connection.post( ::Kinokero.gcp_service + GCP_DELETE ) do |req|
       req.headers['Authorization'] = gcp_form_auth_token()
       req.body =  {
         :printerid   => @gcp_control[:gcp_printerid]
@@ -665,7 +668,7 @@ GCP_USER_ACTION_OTHER     = 100  # User has performed some other action
 #
   def gcp_get_auth_tokens(email, password)
 
-    return @connection.post( ::Kinokero.login_url ) do |req|
+    return @@connection.post( ::Kinokero.login_url ) do |req|
       req.body =  {
         :accountType => 'GOOGLE',
         :Email       => email,
@@ -693,7 +696,7 @@ GCP_USER_ACTION_OTHER     = 100  # User has performed some other action
 #
   def gcp_get_printer_list(  )
 
-    list_response = @connection.post( ::Kinokero.gcp_service + GCP_LIST ) do |req|
+    list_response = @@connection.post( ::Kinokero.gcp_service + GCP_LIST ) do |req|
       req.headers['Authorization'] = gcp_form_auth_token()
       req.body =  {
         :proxy   => ::Kinokero.my_proxy_id
@@ -845,7 +848,7 @@ GCP_USER_ACTION_OTHER     = 100  # User has performed some other action
 #
   def generic_job_status( jobid, state_diff )
 
-    status_response = @connection.post( ::Kinokero.gcp_service + GCP_CONTROL ) do |req|
+    status_response = @@connection.post( ::Kinokero.gcp_service + GCP_CONTROL ) do |req|
       req.headers['Authorization'] = gcp_form_auth_token()
       req.body =  {
         :jobid   => jobid,
@@ -868,7 +871,7 @@ GCP_USER_ACTION_OTHER     = 100  # User has performed some other action
 # * *Args*    :
 #   - +options+ - described in constants 
 # * *Returns* :
-#   - 
+#   - options hash itself
 # * *Raises* :
 #   - ArgumentError if invalid option present 
 #
@@ -882,6 +885,8 @@ GCP_USER_ACTION_OTHER     = 100  # User has performed some other action
     #      raise ArgumentError,":any_key must exist"
     #    end
     
+    return options
+    
   end
 
 # ------------------------------------------------------------------------------
@@ -893,12 +898,12 @@ GCP_USER_ACTION_OTHER     = 100  # User has performed some other action
 # * *Args*    :
 #   - +gcp_control+ - options for setting attribute
 # * *Returns* :
-#   - the gcp_control attribute
+#   - the gcp_control hash
 # * *Raises*  :
 #   - 
 #
   def validate_gcp_control( gcp_control )
-    @gcp_control = gcp_control
+    return gcp_control
   end
 
 
