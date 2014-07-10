@@ -129,8 +129,8 @@ SAMPLE_GCP_OPTIONS = {
   gcp_token_expiry_time: Time.new(2014,6,13,19,31,0),
 
   printer_id: 1,
-  item: test,
-  cups_alias: laserjet_1102w,
+  item: 'test',
+  cups_alias: 'cups_printer_name',
   is_active: false   # set to true after successful registration
 
 }
