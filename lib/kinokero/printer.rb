@@ -32,7 +32,8 @@ module Kinokero
 #   - 
 #
   def initialize( gcp_info={}, request_info={}, model_info=nil )
-    super
+    # TODO: uncomment when Device mix-in is fleshed out
+    # super
 
     @model = nil
     @gcp_printer_control = nil   # default if empty
