@@ -228,23 +228,23 @@ GCP_USER_ACTION_OTHER     = 100  # User has performed some other action
           
             # complete self instantiation by making this the printer
             # which we control
-          @gcp_control = {
-            printer_id: params[:printer_id],
-            success: oauth_response['error'].nil?,
-            message: oauth_response['error'].to_s,
-            gcp_xmpp_jid: poll_response['xmpp_jid'],
-            gcp_printerid: reg_response['printers'][0]['id'],
-            gcp_confirmation_url: poll_response['confirmation_page_url'],
-            gcp_owner_email: poll_response['user_email'],
+          
+            @gcp_control[:printer_id]      =  params[:printer_id]
+            @gcp_control[:success]         =  oauth_response['error'].nil?
+            @gcp_control[:message]         =  oauth_response['error'].to_s
+            @gcp_control[:gcp_xmpp_jid]    =  poll_response['xmpp_jid']
+            @gcp_control[:gcp_printerid]   =  reg_response['printers'][0]['id']
+            @gcp_control[:gcp_confirmation_url]      =  poll_response['confirmation_page_url']
+            @gcp_control[:gcp_owner_email]  =  poll_response['user_email']
 
-            gcp_access_token: oauth_response['access_token'],
-            gcp_refresh_token: oauth_response['refresh_token'],
-            gcp_token_type: oauth_response['token_type'],
-            gcp_token_expiry_time: Time.now + oauth_response['expires_in'].to_i,
+            @gcp_control[:gcp_access_token]  =  oauth_response['access_token']
+            @gcp_control[:gcp_refresh_token] =  oauth_response['refresh_token']
+            @gcp_control[:gcp_token_type]    =  oauth_response['token_type']
+            @gcp_control[:gcp_token_expiry_time]  =  Time.now + oauth_response['expires_in'].to_i
 
-            cups_alias: params[:cups_alias],
-            item: params[:item]
-          }
+            @gcp_control[:cups_alias] =  params[:cups_alias]
+            @gcp_control[:item]       =  params[:item]
+            @gcp_control[:is_active]  =  true
 
             # let calling module save the response for us
           yield( @gcp_control )  # persistence
@@ -407,6 +407,12 @@ GCP_USER_ACTION_OTHER     = 100  # User has performed some other action
     return poll_response
 
   end
+
+# #########################################################################
+# #########################################################################
+
+# #########################################################################
+# #########################################################################
 
 # ------------------------------------------------------------------------------
 
@@ -595,6 +601,10 @@ GCP_USER_ACTION_OTHER     = 100  # User has performed some other action
     end  # request do
     log_response( 'remove printer', remove_response )
 
+    if remove_response[ 'success' ]
+      @gcp_control[:is_active] = false
+    end
+
     return remove_response.body
 
   end
@@ -652,36 +662,6 @@ GCP_USER_ACTION_OTHER     = 100  # User has performed some other action
 
   end
 
-
-# ------------------------------------------------------------------------------
-
-# simple auth token requester;
-# won't work for accounts that require two-step 
-#
-# * *Args*    :
-#   - +email+ - proxy owner's email 
-#   - +password+ - proxy owner's password
-# * *Returns* :
-#   - gcp response hash
-# * *Raises* :
-#   - 
-#
-  def gcp_get_auth_tokens(email, password)
-
-    return @@connection.post( ::Kinokero.login_url ) do |req|
-      req.body =  {
-        :accountType => 'GOOGLE',
-        :Email       => email,
-        :Passwd      => password,
-        :service     => ::Kinokero.gcp_service,
-        :source      => ::Kinokero.my_proxy_id
-      }
-
-      log_request( 'get auth tokens', req )
-      
-    end  # request do
-
-  end
 
 # ------------------------------------------------------------------------------
 
@@ -787,6 +767,39 @@ GCP_USER_ACTION_OTHER     = 100  # User has performed some other action
       debug( msg ) { body.inspect[0, ( @options[:log_truncate] ? ::Kinokero.truncate_log : 20000 )] } 
       puts "----------" * 4
     end  # if verbose
+  end
+
+# ------------------------------------------------------------------------------
+
+# simple auth token requester;
+# won't work for accounts that require two-step 
+#
+# * *Args*    :
+#   - +email+ - proxy owner's email 
+#   - +password+ - proxy owner's password
+# * *Returns* :
+#   - gcp response hash
+# * *Raises* :
+#   - 
+# * *NOTE* :
+#   - currently this is untested!
+#
+  def gcp_get_auth_tokens(email, password)
+
+    auth_response = @@connection.post( ::Kinokero.login_url ) do |req|
+      req.body =  {
+        :accountType => 'GOOGLE',
+        :Email       => email,
+        :Passwd      => password,
+        :service     => ::Kinokero.gcp_service,
+        :source      => ::Kinokero.my_proxy_id
+      }
+
+      log_request( 'get auth tokens', req )
+      
+    end  # request do
+
+    return auth_response.body
   end
 
 # ------------------------------------------------------------------------------
