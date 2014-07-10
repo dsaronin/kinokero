@@ -135,6 +135,8 @@ require "kinokero/ruby_extensions"
 require 'kinokero/sasl_xoauth2'
 require "kinokero/jingle"
 require "kinokero/proxy"
+require "kinokero/device"
+require "kinokero/printer"
 
 # #########################################################################
 end  # module Kinokero
