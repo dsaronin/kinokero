@@ -221,7 +221,7 @@ VALID_GCP_REQUEST = SAMPLE_GCP_REQUEST.keys
     # options validations: check for invalid values
     valid_keys.each do |key|
 
-       if options[key].nil? || !options[key].kind_of?( sample[key].class )
+       if options[key].nil? || !similar_values?(options[key], sample[key]) 
          raise ArgumentError,"[#{msg}] value for key #{key} should be similar to #{sample[key]}"
        end
 
@@ -230,7 +230,12 @@ VALID_GCP_REQUEST = SAMPLE_GCP_REQUEST.keys
   end
 
 # -----------------------------------------------------------------------------
-  
+
+  def similar_values?(ref, x)
+    return true  if ref.kind_of?( x.class ) || ( (x == true) ^ (x == false) )
+    return false
+  end
+
 # ****************************************************************************
 
 # -----------------------------------------------------------------------------
