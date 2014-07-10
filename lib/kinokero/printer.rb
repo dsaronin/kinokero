@@ -115,17 +115,17 @@ protected
 # SAMPLE_GCP_OPTIONS are indicative of the data furnished by GCP after
 # printer registration; the data here has been sanitized
 SAMPLE_GCP_OPTIONS = {
-  gcp_xmpp_jid: "123456789cbce123456789abcdef123a@cloudprint.googleusercontent.com" 
-  gcp_confirmation_url: "https://www.google.com/cloudprint/regconfirmpage?printername=my_printer_name&email=my_user@gmail.com&dpi=300&pagesize=215900,279400" 
-  gcp_owner_email: "my_user@gmail.com" 
+  gcp_xmpp_jid: "123456789cbce123456789abcdef123a@cloudprint.googleusercontent.com" ,
+  gcp_confirmation_url: "https://www.google.com/cloudprint/regconfirmpage?printername=my_printer_name&email=my_user@gmail.com&dpi=300&pagesize=215900,279400" ,
+  gcp_owner_email: "my_user@gmail.com" ,
 
-  gcp_printer_name: "my_printer_name"
-  gcp_printerid: "bd9234a9-abc6-1a34-012def1234ab63f03" 
+  gcp_printer_name: "my_printer_name",
+  gcp_printerid: "bd9234a9-abc6-1a34-012def1234ab63f03" ,
 
-  gcp_access_token: "ya29.LgDrBsgEaZ7b-ridicuously-long-encrypted-key-u2TA" 
-  gcp_refresh_token: "1/nm0_another_encrypted_key_xxxxxxxxxxxxxe730" 
-  gcp_token_type: "Bearer" 
-  gcp_token_expiry_time: <%= Time.new(2014,6,13,19,31,0) %>
+  gcp_access_token: "ya29.LgDrBsgEaZ7b-ridicuously-long-encrypted-key-u2TA" ,
+  gcp_refresh_token: "1/nm0_another_encrypted_key_xxxxxxxxxxxxxe730" ,
+  gcp_token_type: "Bearer" ,
+  gcp_token_expiry_time: Time.new(2014,6,13,19,31,0),
 
   is_active: false   # set to true after successful registration
 }
