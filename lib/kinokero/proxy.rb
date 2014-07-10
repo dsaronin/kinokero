@@ -13,7 +13,7 @@ class Proxy
 
 # #########################################################################
 
-  attr_reader :device_hash, :options
+  attr_reader :my_devices, :options
 
     # note to self: for some reason, the '@' in :@logger is necessary
     # in the following statement
@@ -27,6 +27,7 @@ class Proxy
      @proxy_id   = Kinokero.my_proxy_id
      @options    = options
      @logger     = ::Logger.new(STDOUT)  # in case we need error logging
+     @my_devices = device_hash
 
      device_hash.each_key do |item|
 
@@ -43,7 +44,7 @@ class Proxy
 # do_connect -- 
 # -----------------------------------------------------------------------------
   def do_connect(item)
-    device_hash[item].cloudprint.gtalk_start_connection do |printerid|
+    @my_devices[item].cloudprint.gtalk_start_connection do |printerid|
       do_print_jobs( printerid )
     end  # block
   end
@@ -52,7 +53,7 @@ class Proxy
 # do_delete -- 
 # -----------------------------------------------------------------------------
   def do_delete(item)
-    device_hash[item].cloudprint.gcp_delete_printer
+    @my_devices[item].cloudprint.gcp_delete_printer
     # TODO: remove from printers, if last, sever connection
   end
 
@@ -87,14 +88,14 @@ class Proxy
 # -----------------------------------------------------------------------------
 # -----------------------------------------------------------------------------
   def do_refresh(item)
-    device_hash[item].cloudprint.gcp_refresh_tokens
+    @my_devices[item].cloudprint.gcp_refresh_tokens
     # new token should be set up in the gcp_control area
   end
 
 # -----------------------------------------------------------------------------
 # -----------------------------------------------------------------------------
   def do_list(item)
-    device_hash[item].cloudprint.gcp_get_printer_list
+    @my_devices[item].cloudprint.gcp_get_printer_list
   end
 
 # -----------------------------------------------------------------------------
@@ -102,7 +103,7 @@ class Proxy
 
   def item_from_printerid( printerid )
 
-    found = device_hash.detect do |device|
+    found = @my_devices.detect do |device|
       device.gcp_printer_control[:gcp_printerid] == printerid
     end  # each item
 
@@ -116,10 +117,15 @@ class Proxy
 # -----------------------------------------------------------------------------
 
 # -----------------------------------------------------------------------------
+
+# do_print_jobs blends across the perfect protocol boundaries I'm trying to 
+# maintain with Cloudprint, mainly because there's a higher level process
+# handling which it has to handle, thus involving multiple cloudprint
+# interactions and Printer class interaction.
 # -----------------------------------------------------------------------------
   def do_print_jobs( printerid )
     item = item_from_printerid( printerid )  # find corresponding device item
-    my_cloudprint = device_hash[item].cloudprint  # DRY access
+    my_cloudprint = @my_devices[item].cloudprint  # DRY access
 
     result = my_cloudprint.gcp_get_printer_fetch( printerid )
 
@@ -132,7 +138,7 @@ class Proxy
 
         item = item_from_printerid( printerid )  # find corresponding device item
         printerid = job['printerid']
-        my_cloudprint = device_hash[item].cloudprint  # DRY access
+        my_cloudprint = @my_devices[item].cloudprint  # DRY access
         print "\e[1;31m\n***** WARNING ***** differ printerid in fetch queue #{printerid}\n\e[0m" 
       end
 
