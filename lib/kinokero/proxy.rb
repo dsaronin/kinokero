@@ -13,7 +13,7 @@ class Proxy
 
 # #########################################################################
 
-  attr_reader :cloudprint, :options
+  attr_reader :device_hash, :options
 
     # note to self: for some reason, the '@' in :@logger is necessary
     # in the following statement
@@ -62,7 +62,7 @@ class Proxy
 # -----------------------------------------------------------------------------
   def do_register( gcp_request, &block )
 
-    response = @cloudprint.register_anonymous_printer( gcp_request ) { |gcp_ctl|  
+    response = Kinokero::Cloudprint.register_anonymous_printer( gcp_request ) do |gcp_ctl|  
 
          # this block is called only if/when asynch polling completes
          # in a separate process
@@ -74,7 +74,7 @@ class Proxy
         # under swalapala control; info is in gcp_ctl
       yield( gcp_ctl )  # persistence
 
-    }
+    end  # block for register
 
     # execution continues here AFTER registering but BEFORE polling completes
     # this is our opportunity to tell the user to claim the printer via
@@ -97,42 +97,72 @@ class Proxy
     device_hash[item].cloudprint.gcp_get_printer_list
   end
 
+# -----------------------------------------------------------------------------
+# -----------------------------------------------------------------------------
 
-# -----------------------------------------------------------------------------
-# -----------------------------------------------------------------------------
-  def do_job_status(job,status,pages)
-    @cloudprint.gcp_job_status( job["id"], status, pages )
+  def item_from_printerid( printerid )
+
+    found = device_hash.detect do |device|
+      device.gcp_printer_control[:gcp_printerid] == printerid
+    end  # each item
+
+    raise PrinteridNotFound, printerid if found.nil?  # oops, not found!
+
+    return found.gcp_printer_control[:item]
+
   end
 
 # -----------------------------------------------------------------------------
 # -----------------------------------------------------------------------------
+
+# -----------------------------------------------------------------------------
+# -----------------------------------------------------------------------------
   def do_print_jobs( printerid )
-    result = @cloudprint.gcp_get_printer_fetch( printerid )
-    log_debug  "#{printerid} queue has #{result['jobs'].size} jobs"
+    item = item_from_printerid( printerid )  # find corresponding device item
+    my_cloudprint = device_hash[item].cloudprint  # DRY access
 
+    result = my_cloudprint.gcp_get_printer_fetch( printerid )
+
+    log_debug  "#{ printerid } queue has #{ result['jobs'].size } jobs"
+
+      # deal with each job fetched
     result['jobs'].each do |job|
-      # TODO: lookup our printer and relevant gcp_control stuff
-      # cups_printer = find_printer_by_gcp_id( job["printerid"] )
 
-      if ( job_file = @cloudprint.gcp_get_job_file( job["fileUrl"] ) )
+      unless printerid == job['printerid']  # ? hmmm, different printer ref'd
 
-        do_job_status(job, ::Kinokero::Cloudprint::GCP_JOBSTATE_IN_PROGRESS, 0)
+        item = item_from_printerid( printerid )  # find corresponding device item
+        printerid = job['printerid']
+        my_cloudprint = device_hash[item].cloudprint  # DRY access
+      
+      end
+
+      if ( job_file = my_cloudprint.gcp_get_job_file( job["fileUrl"] ) )
+
+        my_cloudprint.gcp_job_status(
+          job["id"], 
+          ::Kinokero::Cloudprint::GCP_JOBSTATE_IN_PROGRESS, 
+          0
+        )
 
         File.open( job["id"], 'wb') { |fp| fp.write(job_file) }
        
-        printer_command = "lp -d #{@cloudprint.gcp_control[:cups_alias]} #{job['id']}"
+        printer_command = "lp -d #{my_cloudprint.gcp_control[:cups_alias]} #{job['id']}"
         log_debug  "#{job['printerName']}: " + printer_command + "\n"
 
         status = system( "#{printer_command}" )
 
         # TODO: poll printer job status & report back to GCP
-        do_job_status( job, ::Kinokero::Cloudprint::GCP_JOBSTATE_DONE, job["numberOfPages"] )
+        my_cloudprint.gcp_job_status( 
+          job["id"], 
+          ::Kinokero::Cloudprint::GCP_JOBSTATE_DONE, 
+          job["numberOfPages"] 
+        )
 
         # TODO: delete the file
         File.delete( job["id"] )
 
       else  # failure to get file
-        @cloudprint.gcp_job_status_abort( 
+        my_cloudprint.gcp_job_status_abort( 
             job["id"], 
             ::Kinokero::Cloudprint::GCP_USER_ACTION_OTHER,
             0
@@ -148,18 +178,10 @@ class Proxy
 # -----------------------------------------------------------------------------
   def print_gcp_registration_info( response )
     if response[:success]
-      msg = snippet_registration_info( response )
-
-        # display in log or the SYSOUT
-
-      log_debug  ("\n------------------------------------------------------------------\n")
-      info( msg )
-      log_debug  ("\n------------------------------------------------------------------\n")
-
-        # print out on the new printer
-      command = ( system("which enscript") ? 'enscript -f Helvetica12' : 'lp' )
-
-      system("echo '#{msg}' | #{command} -d #{response[:cups_alias]}")
+      Kinokero::Printer.print_gcp_registration_info( 
+        response[:cups_alias],   # actual printer to use
+        snippet_registration_info( response )  # crafted message to print
+      )
     end
   end
 

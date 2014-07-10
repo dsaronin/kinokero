@@ -126,6 +126,8 @@ SAMPLE_GCP_OPTIONS = {
   gcp_refresh_token: "1/nm0_another_encrypted_key_xxxxxxxxxxxxxe730" 
   gcp_token_type: "Bearer" 
   gcp_token_expiry_time: <%= Time.new(2014,6,13,19,31,0) %>
+
+  is_active: false   # set to true after successful registration
 }
 
 # VALID_GCP_OPTIONS is used to determine if user options valid
@@ -140,7 +142,8 @@ SAMPLE_GCP_REQUEST =
   capability_ppd: '/etc/cups/ppd/my_printer.ppd',
   default_ppd: '/etc/cups/ppd/my_printer.ppd',
   cups_alias: 'my_cups_printer_name',
-  status: 'active'
+  status: 'active',
+  item:  'test'
 }
 
 VALID_GCP_REQUEST = SAMPLE_GCP_REQUEST.keys
@@ -222,6 +225,27 @@ VALID_GCP_REQUEST = SAMPLE_GCP_REQUEST.keys
   end
 
 # -----------------------------------------------------------------------------
+  
+# ****************************************************************************
+
+# -----------------------------------------------------------------------------
+  def self.print_gcp_registration_info( cups_printer, msg )
+
+      # display in log or the SYSOUT
+    log_debug  ("\n------------------------------------------------------------------\n")
+    info( msg )
+    log_debug  ("\n------------------------------------------------------------------\n")
+
+      # print out on the new printer
+    command = ( system("which enscript") ? 'enscript -f Helvetica12' : 'lp' )
+
+    system("echo '#{msg}' | #{command} -d #{cups_printer}")
+  end
+
+
+
+
+# ****************************************************************************
 
   end # Printer
   

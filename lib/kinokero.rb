@@ -15,6 +15,11 @@ module Kinokero
 
 # #########################################################################
 
+    class PrinteridNotFound < NameError; end
+
+# #########################################################################
+
+
 CRLF = '\r\n'
 
 # mimetype for how to encode PPD files
