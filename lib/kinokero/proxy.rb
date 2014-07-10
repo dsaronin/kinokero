@@ -133,7 +133,7 @@ class Proxy
         item = item_from_printerid( printerid )  # find corresponding device item
         printerid = job['printerid']
         my_cloudprint = device_hash[item].cloudprint  # DRY access
-      
+        print "\e[1;31m\n***** WARNING ***** differ printerid in fetch queue #{printerid}\n\e[0m" 
       end
 
       if ( job_file = my_cloudprint.gcp_get_job_file( job["fileUrl"] ) )

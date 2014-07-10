@@ -10,20 +10,15 @@ class Jingle
 
 # #########################################################################
 
-  attr_reader :gcp_channel, :gcp_control
+  attr_reader :gcp_channel, :gcp_control, :my_cloudprint
 
 # #########################################################################
-
- 
-# ****************************************************************************
-
-# ****************************************************************************
-
 
 # -----------------------------------------------------------------------------
 # -----  jabber initialization here   -----------------------------------------
 # -----------------------------------------------------------------------------
-  def initialize( gcp_control )
+  def initialize( my_cloudprint, gcp_control )
+    @my_cloudprint = my_cloudprint  # cloudprint object
     @gcp_control   = gcp_control
     @gcp_channel   = ::Kinokero.gcp_channel
     @client        = nil
@@ -47,7 +42,7 @@ class Jingle
       Jabber::debuglog("**************** protocol ended normally ******************")      
 
     rescue
-      Jabber::debuglog("**************** protocol yielded exception: #{ $! } ******************")      
+      Jabber::debuglog("\e[1;31m**************** protocol yielded exception: #{ $! } ******************\e[0m")      
       @is_connection = false
     end  # block for catch exceptions
 
@@ -115,7 +110,7 @@ class Jingle
       sub_el = iq_subscribe.add_element( 'subscribe', 'xmlns' => ::Kinokero.ns_google_push )
       sub_el.add_element( 'item', 'channel' => @gcp_channel, 'from' => @gcp_channel )
 
-      @client.auth( @gcp_appliance.cloudprint.gcp_form_jingle_auth_token )
+      @client.auth( @my_cloudprint.gcp_form_jingle_auth_token )
 
       @client.send( iq_subscribe )
 
@@ -134,7 +129,7 @@ class Jingle
       sub_el = iq_unsubscribe.add_element( 'unsubscribe', 'xmlns' => ::Kinokero.ns_google_push )
       sub_el.add_element( 'item', 'channel' => @gcp_channel, 'from' => @gcp_channel )
 
-      @client.auth( @gcp_appliance.cloudprint.gcp_form_jingle_auth_token )
+      @client.auth( @my_cloudprint.gcp_form_jingle_auth_token )
 
       @client.send( iq_unsubscribe )
       @is_connection = false

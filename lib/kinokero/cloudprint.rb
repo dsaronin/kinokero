@@ -108,7 +108,7 @@ GCP_USER_ACTION_OTHER     = 100  # User has performed some other action
 
     Cloudprint.client_connection() # set up faraday connection iff first time
 
-    @jingle = Kinokero::Jingle.new( gcp_control ) if gcp_control[:is_active]
+    @jingle = Kinokero::Jingle.new( self, gcp_control ) if gcp_control[:is_active]
   end
 
 # ------------------------------------------------------------------------------
@@ -248,6 +248,8 @@ GCP_USER_ACTION_OTHER     = 100  # User has performed some other action
 
             # let calling module save the response for us
           yield( @gcp_control )  # persistence
+    
+          @jingle = Kinokero::Jingle.new( self, @gcp_control )  # create the jingle object
 
         end  # if polling succeeded
 
@@ -417,9 +419,13 @@ GCP_USER_ACTION_OTHER     = 100  # User has performed some other action
 # ------------------------------------------------------------------------------
 
   def gtalk_start_connection(&block)
+
+    return  if @jingle.nil?
+
     @jingle.gtalk_start_connection do |printerid|
       yield( printerid )
     end  # closure for doing print stuff
+
   end
 
 # ------------------------------------------------------------------------------
@@ -589,6 +595,9 @@ GCP_USER_ACTION_OTHER     = 100  # User has performed some other action
 # ------------------------------------------------------------------------------
 
   def gcp_delete_printer( )
+
+    # unsubscribe jingle connection
+    @jingle.gtalk_end_subscription()  unless @jingle.nil?
 
     remove_response = @@connection.post( ::Kinokero.gcp_service + GCP_DELETE ) do |req|
       req.headers['Authorization'] = gcp_form_auth_token()
