@@ -23,10 +23,6 @@ module Kinokero
 
 # #########################################################################
 
-  @@connection = nil  # class-wide client http Faraday connection
-
-# #########################################################################
-
 # GCP API actions
 GCP_CONTROL  = '/control'
 GCP_DELETE   = '/delete'
@@ -83,9 +79,17 @@ GCP_USER_ACTION_OTHER     = 100  # User has performed some other action
 
 # #########################################################################
 
-  attr_reader :connection, :gcp_control, :jingle
+  @@connection = nil  # class-wide client http Faraday connection
 
-  def_delegators :@logger, :debug, :info, :warn, :error, :fatal
+# #########################################################################
+
+    # logger must be accessible as class-method level for register
+  @@logger = ::Logger.new(STDOUT)  # in case we need error logging
+
+  def_delegators :@@logger, :debug, :info, :warn, :error, :fatal
+    
+
+  attr_reader :connection, :gcp_control, :jingle
 
 # #########################################################################
 
@@ -100,8 +104,6 @@ GCP_USER_ACTION_OTHER     = 100  # User has performed some other action
 #   - 
 #
   def initialize( gcp_control, options )
-    
-    @logger = ::Logger.new(STDOUT)  # in case we need error logging
     
     @options = validate_cloudprint_options( DEFAULT_OPTIONS.merge(options) )
     @gcp_control = validate_gcp_control( gcp_control ) 
@@ -298,7 +300,7 @@ GCP_USER_ACTION_OTHER     = 100  # User has performed some other action
 #
   def self.gcp_anonymous_register(params)
 
-    reg_response =  @@connection.post ::Kinokero.gcp_service + GCP_REGISTER do |req|
+    reg_response =  Cloudprint.client_connection.post ::Kinokero.gcp_service + GCP_REGISTER do |req|
       req.headers['X-CloudPrint-Proxy'] = ::Kinokero.my_proxy_id 
       req.body =  {
         :printer => params[:printer_name],
@@ -400,7 +402,7 @@ GCP_USER_ACTION_OTHER     = 100  # User has performed some other action
 #
   def self.gcp_poll_request( poll_url )
         
-    poll_response = @@connection.post( poll_url ) do |req|  # connection poll request
+    poll_response = Cloudprint.client_connection.post( poll_url ) do |req|  # connection poll request
       req.headers['X-CloudPrint-Proxy'] = ::Kinokero.my_proxy_id 
     end  # post poll response request
 
@@ -441,7 +443,7 @@ GCP_USER_ACTION_OTHER     = 100  # User has performed some other action
 #
   def gcp_get_job_file( file_url )
         
-    file_response = @@connection.get( file_url ) do |req|  # connection get job file request
+    file_response = Cloudprint.client_connection.get( file_url ) do |req|  # connection get job file request
       req.headers['X-CloudPrint-Proxy'] = ::Kinokero.my_proxy_id 
       req.headers['Authorization'] = gcp_form_auth_token()
 
@@ -501,7 +503,7 @@ GCP_USER_ACTION_OTHER     = 100  # User has performed some other action
 #
   def gcp_get_oauth2_tokens( auth_code )
 
-    oauth_response = @@connection.post( ::Kinokero.oauth2_token_endpoint ) do |req|
+    oauth_response = Cloudprint.client_connection.post( ::Kinokero.oauth2_token_endpoint ) do |req|
       req.body =  {
         :client_id =>  Kinokero.proxy_client_id,
         :client_secret =>  Kinokero.proxy_client_secret, 
@@ -534,7 +536,7 @@ GCP_USER_ACTION_OTHER     = 100  # User has performed some other action
 #
   def gcp_refresh_tokens( )
 
-    oauth_response = @@connection.post( ::Kinokero.oauth2_token_endpoint ) do |req|
+    oauth_response = Cloudprint.client_connection.post( ::Kinokero.oauth2_token_endpoint ) do |req|
       req.body =  {
         :client_id =>  Kinokero.proxy_client_id,
         :client_secret =>  Kinokero.proxy_client_secret, 
@@ -577,7 +579,7 @@ GCP_USER_ACTION_OTHER     = 100  # User has performed some other action
 #
   def gcp_get_printer_fetch( printerid )
 
-    fetch_response = @@connection.post( ::Kinokero.gcp_service + GCP_FETCH ) do |req|
+    fetch_response = Cloudprint.client_connection.post( ::Kinokero.gcp_service + GCP_FETCH ) do |req|
       req.headers['Authorization'] = gcp_form_auth_token()
       req.body =  {
         :printerid   => printerid
@@ -599,7 +601,7 @@ GCP_USER_ACTION_OTHER     = 100  # User has performed some other action
     # unsubscribe jingle connection
     @jingle.gtalk_end_subscription()  unless @jingle.nil?
 
-    remove_response = @@connection.post( ::Kinokero.gcp_service + GCP_DELETE ) do |req|
+    remove_response = Cloudprint.client_connection.post( ::Kinokero.gcp_service + GCP_DELETE ) do |req|
       req.headers['Authorization'] = gcp_form_auth_token()
       req.body =  {
         :printerid   => @gcp_control[:gcp_printerid]
@@ -686,7 +688,7 @@ GCP_USER_ACTION_OTHER     = 100  # User has performed some other action
 #
   def gcp_get_printer_list(  )
 
-    list_response = @@connection.post( ::Kinokero.gcp_service + GCP_LIST ) do |req|
+    list_response = Cloudprint.client_connection.post( ::Kinokero.gcp_service + GCP_LIST ) do |req|
       req.headers['Authorization'] = gcp_form_auth_token()
       req.body =  {
         :proxy   => ::Kinokero.my_proxy_id
@@ -749,8 +751,8 @@ GCP_USER_ACTION_OTHER     = 100  # User has performed some other action
 # * *Raises* :
 #   - 
 #
-  def log_request( msg, req )
-    if @options[:verbose]
+  def self.log_request( msg, req, verbose = nil )
+    if verbose || ( verbose.nil? && Kinokero.verbose )
       body = ( req.body.nil?  ?  req  :  req.body )
       puts "\n---------- REQUEST ------------ #{body.class.name} --------------"
       debug( msg ) { body.inspect }
@@ -758,6 +760,9 @@ GCP_USER_ACTION_OTHER     = 100  # User has performed some other action
     end  # if verbose
   end
 
+  def log_request( msg, req )
+    Cloudprint.log_request( msg, req, @options[:verbose] )
+  end
 # ------------------------------------------------------------------------------
 
 # log the GCP response
@@ -770,8 +775,8 @@ GCP_USER_ACTION_OTHER     = 100  # User has performed some other action
 # * *Raises* :
 #   - 
 #
-  def log_response( msg, response )
-    if @options[:verbose] && @options[:log_response]
+  def self.log_response( msg, response, verbose = nil )
+    if verbose || ( verbose.nil? && Kinokero.verbose )
       body = ( response.body.nil?  ?  response  :  response.body )
       puts "\n---------- RESPONSE ------------ #{body.class.name} --------------"
       debug( msg ) { body.inspect[0, ( @options[:log_truncate] ? ::Kinokero.truncate_log : 20000 )] } 
@@ -779,6 +784,13 @@ GCP_USER_ACTION_OTHER     = 100  # User has performed some other action
     end  # if verbose
   end
 
+  def log_response( msg, response )
+    Cloudprint.log_response( 
+        msg, 
+        response,
+        @options[:verbose] && @options[:log_response]  
+    )
+  end
 # ------------------------------------------------------------------------------
 
 # simple auth token requester;
@@ -796,7 +808,7 @@ GCP_USER_ACTION_OTHER     = 100  # User has performed some other action
 #
   def gcp_get_auth_tokens(email, password)
 
-    auth_response = @@connection.post( ::Kinokero.login_url ) do |req|
+    auth_response = Cloudprint.client_connection.post( ::Kinokero.login_url ) do |req|
       req.body =  {
         :accountType => 'GOOGLE',
         :Email       => email,
@@ -871,7 +883,7 @@ GCP_USER_ACTION_OTHER     = 100  # User has performed some other action
 #
   def generic_job_status( jobid, state_diff )
 
-    status_response = @@connection.post( ::Kinokero.gcp_service + GCP_CONTROL ) do |req|
+    status_response = Cloudprint.client_connection.post( ::Kinokero.gcp_service + GCP_CONTROL ) do |req|
       req.headers['Authorization'] = gcp_form_auth_token()
       req.body =  {
         :jobid   => jobid,

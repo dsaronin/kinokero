@@ -86,6 +86,7 @@ SSL_CERT_PATH = "/usr/lib/ssl/certs"
     @@proxy_client_id     =  ENV["GCP_PROXY_CLIENT_ID"] || 'missing'
     @@proxy_client_secret =  ENV["GCP_PROXY_CLIENT_SECRET"] || 'missing'
     @@proxy_serial_nbr    =  ENV["GCP_PROXY_SERIAL_NBR"] || 'missing'
+    @@verbose             =  true  # for any class-level decisions
 
 # class Cloudprint required
     @@mimetype_oauth  = MIMETYPE_OAUTH # how to encoade oauth files

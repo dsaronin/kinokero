@@ -11,10 +11,9 @@ class Proxy
 #   require 'singleton'
 #   include Singleton
   
-    @@logger     = ::Logger.new(STDOUT)  # in case we need error logging
 
     # REMINDER: don't remove the "@@" in the following statement
-  def_delegators :@@logger, :debug, :info, :warn, :error, :fatal
+  def_delegators :@logger, :debug, :info, :warn, :error, :fatal
 
 # #########################################################################
 
@@ -28,6 +27,7 @@ class Proxy
      @proxy_id   = Kinokero.my_proxy_id
      @options    = options
      @my_devices = device_hash
+     @logger     = ::Logger.new(STDOUT)  # in case we need error logging
 
      device_hash.each_key do |item|
 
