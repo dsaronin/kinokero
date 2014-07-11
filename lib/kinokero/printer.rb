@@ -242,9 +242,9 @@ VALID_GCP_REQUEST = SAMPLE_GCP_REQUEST.keys
   def self.print_gcp_registration_info( cups_printer, msg )
 
       # display in log or the SYSOUT
-    log_debug  ("\n------------------------------------------------------------------\n")
-    info( msg )
-    log_debug  ("\n------------------------------------------------------------------\n")
+    Kinokero::Log.debug  ("\n------------------------------------------------------------------\n")
+    Kinokero::Log.info( msg )
+    Kinokero::Log.debug  ("\n------------------------------------------------------------------\n")
 
       # print out on the new printer
     command = ( system("which enscript") ? 'enscript -f Helvetica12' : 'lp' )

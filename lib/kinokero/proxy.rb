@@ -68,7 +68,7 @@ class Proxy
 
          # this block is called only if/when asynch polling completes
          # in a separate process
-      log_debug("\n***** Printer successfully registered to GCP *****\n")
+      Kinokero::Log.verbose_debug("\n***** Printer successfully registered to GCP *****\n")
       puts "register gcp_control: #{@gcp_ctl.object_id}"
       puts gcp_ctl.inspect
 
@@ -131,7 +131,7 @@ class Proxy
 
     result = my_cloudprint.gcp_get_printer_fetch( printerid )
 
-    log_debug  "#{ printerid } queue has #{ result['jobs'].size } jobs"
+    Kinokero::Log.verbose_debug  "#{ printerid } queue has #{ result['jobs'].size } jobs"
 
       # deal with each job fetched
     result['jobs'].each do |job|
@@ -155,7 +155,7 @@ class Proxy
         File.open( job["id"], 'wb') { |fp| fp.write(job_file) }
        
         printer_command = "lp -d #{my_cloudprint.gcp_control[:cups_alias]} #{job['id']}"
-        log_debug  "#{job['printerName']}: " + printer_command + "\n"
+        Kinokero::Log.verbose_debug  "#{job['printerName']}: " + printer_command + "\n"
 
         status = system( "#{printer_command}" )
 
@@ -215,26 +215,6 @@ class Proxy
   
 RUBY10
   end
-
-protected
-
-
-#
-# log_debug -- will log the message if verbose setting
-#
-# * *Args*    :
-#   - +msg+ - string to identify position in protocol sequence
-# * *Returns* :
-#   - 
-# * *Raises* :
-#   - 
-#
-  def log_debug( msg )
-    if @options[:verbose]
-      debug( msg ) { '' }
-    end  # if verbose
-  end
-
 
 # -----------------------------------------------------------------------------
 # -----------------------------------------------------------------------------

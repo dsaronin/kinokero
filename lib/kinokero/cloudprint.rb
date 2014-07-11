@@ -83,12 +83,6 @@ GCP_USER_ACTION_OTHER     = 100  # User has performed some other action
 
 # #########################################################################
 
-    # logger must be accessible as class-method level for register
-  @@logger = ::Logger.new(STDOUT)  # in case we need error logging
-
-  # def_delegators :@@logger, :debug, :info, :warn, :error, :fatal
-    
-
   attr_reader :connection, :gcp_control, :jingle
 
 # #########################################################################
@@ -382,7 +376,7 @@ GCP_USER_ACTION_OTHER     = 100  # User has performed some other action
     end  # sleep/polling loop
 
       # log failure
-    @@logger.debug( 'anon-poll' ) { "polling timed out" } if @options[:verbose]
+    Kinokero::Log.debug( 'anon-poll' ) { "polling timed out" } if @options[:verbose]
 
     return { 'success' => false, 'message' =>  "polling timed out" }   # return failure
 
@@ -556,7 +550,7 @@ GCP_USER_ACTION_OTHER     = 100  # User has performed some other action
 
     else  # failed to refresh token
 
-      @@logger.error( 'refresh fail' )  { "**********************************" }
+      Kinokero::Log.error( 'refresh fail' )  { "**********************************" }
 
     end  # if..then..else success
 
@@ -751,18 +745,10 @@ GCP_USER_ACTION_OTHER     = 100  # User has performed some other action
 # * *Raises* :
 #   - 
 #
-  def self.log_request( msg, req, verbose = nil )
-    if verbose || ( verbose.nil? && Kinokero.verbose )
-      body = ( req.body.nil?  ?  req  :  req.body )
-      puts "\n---------- REQUEST ------------ #{body.class.name} --------------"
-      @@logger.debug( msg ) { body.inspect }
-      puts "----------" * 4
-    end  # if verbose
+  def log_request( msg, req )
+    Kinokero::Log.log_request( msg, req, @options[:verbose] )
   end
 
-  def log_request( msg, req )
-    Cloudprint.log_request( msg, req, @options[:verbose] )
-  end
 # ------------------------------------------------------------------------------
 
 # log the GCP response
@@ -775,22 +761,14 @@ GCP_USER_ACTION_OTHER     = 100  # User has performed some other action
 # * *Raises* :
 #   - 
 #
-  def self.log_response( msg, response, verbose = nil )
-    if verbose || ( verbose.nil? && Kinokero.verbose )
-      body = ( response.body.nil?  ?  response  :  response.body )
-      puts "\n---------- RESPONSE ------------ #{body.class.name} --------------"
-      @@logger.debug( msg ) { body.inspect[0, ::Kinokero.truncate_log] } 
-      puts "----------" * 4
-    end  # if verbose
-  end
-
   def log_response( msg, response )
-    Cloudprint.log_response( 
+    Kinokero::Log.log_response( 
         msg, 
         response,
         @options[:verbose] && @options[:log_response]  
     )
   end
+
 # ------------------------------------------------------------------------------
 
 # simple auth token requester;
