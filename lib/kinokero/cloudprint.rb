@@ -779,7 +779,7 @@ GCP_USER_ACTION_OTHER     = 100  # User has performed some other action
     if verbose || ( verbose.nil? && Kinokero.verbose )
       body = ( response.body.nil?  ?  response  :  response.body )
       puts "\n---------- RESPONSE ------------ #{body.class.name} --------------"
-      @@logger.debug( msg ) { body.inspect[0, ( @options[:log_truncate] ? ::Kinokero.truncate_log : 20000 )] } 
+      @@logger.debug( msg ) { body.inspect[0, ::Kinokero.truncate_log] } 
       puts "----------" * 4
     end  # if verbose
   end

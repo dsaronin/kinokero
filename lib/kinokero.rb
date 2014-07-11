@@ -29,7 +29,7 @@ MIMETYPE_PPD     = 'application/vnd.cups.ppd'
 POLLING_SECS = 30     
 
 # number of characters before truncate response logs
-TRUNCATE_LOG = 600    
+TRUNCATE_LOG = 1000    
 
 # authentication function constants
 FOLLOWUP_HOST = 'www.google.com/cloudprint'
