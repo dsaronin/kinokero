@@ -694,7 +694,7 @@ GCP_USER_ACTION_OTHER     = 100  # User has performed some other action
       log_request( 'get printer list', req )
       
     end  # request do
-    log_response( 'refresh token', list_response )
+    log_response( 'get printer list', list_response )
 
     return list_response.body
 

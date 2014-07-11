@@ -103,13 +103,14 @@ class Proxy
 
   def item_from_printerid( printerid )
 
-    found = @my_devices.detect do |device|
-      device.gcp_printer_control[:gcp_printerid] == printerid
+    found = @my_devices.detect do |item, device|
+      break item if device.gcp_printer_control[:gcp_printerid] == printerid
+      false
     end  # each item
 
     raise PrinteridNotFound, printerid if found.nil?  # oops, not found!
 
-    return found.gcp_printer_control[:item]
+    return found
 
   end
 
