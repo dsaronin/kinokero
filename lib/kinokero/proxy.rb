@@ -10,14 +10,15 @@ class Proxy
   extend Forwardable
 #   require 'singleton'
 #   include Singleton
+  
+    @@logger     = ::Logger.new(STDOUT)  # in case we need error logging
+
+    # REMINDER: don't remove the "@@" in the following statement
+  def_delegators :@@logger, :debug, :info, :warn, :error, :fatal
 
 # #########################################################################
 
   attr_reader :my_devices, :options
-
-    # note to self: for some reason, the '@' in :@logger is necessary
-    # in the following statement
-  def_delegators :@logger, :debug, :info, :warn, :error, :fatal
 
 # #########################################################################
 
@@ -26,7 +27,6 @@ class Proxy
 
      @proxy_id   = Kinokero.my_proxy_id
      @options    = options
-     @logger     = ::Logger.new(STDOUT)  # in case we need error logging
      @my_devices = device_hash
 
      device_hash.each_key do |item|
@@ -54,8 +54,8 @@ class Proxy
 # -----------------------------------------------------------------------------
   def do_delete(item)
     @my_devices[item].cloudprint.gcp_delete_printer
-    @my_devices[item].cloudprint = nil    # make available to garbage collect
-    @my_devices.delete( item )   # remove it from our list
+    @my_devices[item].cloudprint = nil    # release the reference to our object
+    @my_devices.delete( item )   # remove device struct from our list
   end
 
 
