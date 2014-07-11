@@ -86,7 +86,7 @@ GCP_USER_ACTION_OTHER     = 100  # User has performed some other action
     # logger must be accessible as class-method level for register
   @@logger = ::Logger.new(STDOUT)  # in case we need error logging
 
-  def_delegators :@@logger, :debug, :info, :warn, :error, :fatal
+  # def_delegators :@@logger, :debug, :info, :warn, :error, :fatal
     
 
   attr_reader :connection, :gcp_control, :jingle
@@ -382,7 +382,7 @@ GCP_USER_ACTION_OTHER     = 100  # User has performed some other action
     end  # sleep/polling loop
 
       # log failure
-    debug( 'anon-poll' ) { "polling timed out" } if @options[:verbose]
+    @@logger.debug( 'anon-poll' ) { "polling timed out" } if @options[:verbose]
 
     return { 'success' => false, 'message' =>  "polling timed out" }   # return failure
 
@@ -556,7 +556,7 @@ GCP_USER_ACTION_OTHER     = 100  # User has performed some other action
 
     else  # failed to refresh token
 
-      error( 'refresh fail' )  { "**********************************" }
+      @@logger.error( 'refresh fail' )  { "**********************************" }
 
     end  # if..then..else success
 
@@ -755,7 +755,7 @@ GCP_USER_ACTION_OTHER     = 100  # User has performed some other action
     if verbose || ( verbose.nil? && Kinokero.verbose )
       body = ( req.body.nil?  ?  req  :  req.body )
       puts "\n---------- REQUEST ------------ #{body.class.name} --------------"
-      debug( msg ) { body.inspect }
+      @@logger.debug( msg ) { body.inspect }
       puts "----------" * 4
     end  # if verbose
   end
@@ -779,7 +779,7 @@ GCP_USER_ACTION_OTHER     = 100  # User has performed some other action
     if verbose || ( verbose.nil? && Kinokero.verbose )
       body = ( response.body.nil?  ?  response  :  response.body )
       puts "\n---------- RESPONSE ------------ #{body.class.name} --------------"
-      debug( msg ) { body.inspect[0, ( @options[:log_truncate] ? ::Kinokero.truncate_log : 20000 )] } 
+      @@logger.debug( msg ) { body.inspect[0, ( @options[:log_truncate] ? ::Kinokero.truncate_log : 20000 )] } 
       puts "----------" * 4
     end  # if verbose
   end
