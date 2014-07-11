@@ -129,8 +129,6 @@ class Jingle
       sub_el = iq_unsubscribe.add_element( 'unsubscribe', 'xmlns' => ::Kinokero.ns_google_push )
       sub_el.add_element( 'item', 'channel' => @gcp_channel, 'from' => @gcp_channel )
 
-      @client.auth( @my_cloudprint.gcp_form_jingle_auth_token )
-
       @client.send( iq_unsubscribe )
       @is_connection = false
 

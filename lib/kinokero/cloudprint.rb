@@ -612,6 +612,7 @@ GCP_USER_ACTION_OTHER     = 100  # User has performed some other action
 
     if remove_response[ 'success' ]
       @gcp_control[:is_active] = false
+      @jingle = nil   # make available to garbage collect
     end
 
     return remove_response.body

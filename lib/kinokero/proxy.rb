@@ -54,7 +54,8 @@ class Proxy
 # -----------------------------------------------------------------------------
   def do_delete(item)
     @my_devices[item].cloudprint.gcp_delete_printer
-    # TODO: remove from printers, if last, sever connection
+    @my_devices[item].cloudprint = nil    # make available to garbage collect
+    @my_devices.delete( item )   # remove it from our list
   end
 
 
