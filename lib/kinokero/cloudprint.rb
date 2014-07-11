@@ -227,15 +227,19 @@ GCP_USER_ACTION_OTHER     = 100  # User has performed some other action
 
               # create the control hash
             gcp_control = {
-              printer_id:      params[:printer_id],
-              gcp_xmpp_jid:    poll_response['xmpp_jid'],
-              gcp_printerid:   reg_response['printers'][0]['id'],
+              printer_id:        params[:printer_id],
+              gcp_printer_name:  reg_response['printers'][0]['name'],
+
+              gcp_xmpp_jid:     poll_response['xmpp_jid'],
+              gcp_printerid:    reg_response['printers'][0]['id'],
               gcp_owner_email:  poll_response['user_email'],
+
               gcp_confirmation_url:      poll_response['confirmation_page_url'],
 
               gcp_access_token:  oauth_response['access_token'],
               gcp_refresh_token: oauth_response['refresh_token'],
               gcp_token_type:    oauth_response['token_type'],
+
               gcp_token_expiry_time:      Time.now + oauth_response['expires_in'].to_i,
 
               cups_alias:      params[:cups_alias],

@@ -168,7 +168,7 @@ VALID_GCP_REQUEST = SAMPLE_GCP_REQUEST.keys
   def validate_gcp_options(options)
 
     validate_hash(
-      'gcp_control validation', 
+      'VALIDATE gcp_control', 
       VALID_GCP_OPTIONS, 
       SAMPLE_GCP_OPTIONS, 
       options
@@ -190,7 +190,7 @@ VALID_GCP_REQUEST = SAMPLE_GCP_REQUEST.keys
   def validate_gcp_request(options)
 
     validate_hash(
-      'gcp_request validation', 
+      'VALIDATE gcp_request', 
       VALID_GCP_REQUEST, 
       SAMPLE_GCP_REQUEST, 
       options
@@ -222,7 +222,9 @@ VALID_GCP_REQUEST = SAMPLE_GCP_REQUEST.keys
     valid_keys.each do |key|
 
        if options[key].nil? || !similar_values?(options[key], sample[key]) 
-         raise ArgumentError,"[#{msg}] value for key #{key} should be similar to #{sample[key]}"
+         err_msg = "[#{msg}] value for key #{key} should be similar to <#{sample[key]}>, a #{sample[key].class}; " +
+                   "instead it was <#{options[key]}>"
+         raise ArgumentError, err_msg
        end
 
     end  # do validate each key
