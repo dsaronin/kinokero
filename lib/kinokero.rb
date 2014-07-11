@@ -115,7 +115,7 @@ SSL_CERT_PATH = "/usr/lib/ssl/certs"
     :truncate_log, :followup_host, :followup_uri, :gaia_host, :loging_uri,
     :loging_url, :gcp_url, :gcp_service, :ssl_ca_path, 
     :authorization_scope, :authorization_redirect_uri, :oauth2_token_endpoint,
-    :xmpp_server, :ns_google_push, :gcp_channel,
+    :xmpp_server, :ns_google_push, :gcp_channel, :verbose, 
     :proxy_client_secret, :proxy_client_id, :proxy_serial_nbr
 
 
