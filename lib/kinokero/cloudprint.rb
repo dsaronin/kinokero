@@ -312,11 +312,11 @@ GCP_USER_ACTION_OTHER     = 100  # User has performed some other action
         ),
       }
 
-      log_request( 'get anon-reg', req )
+      Kinokero::Log.log_request( 'get anon-reg', req )
 
     end  # request do
 
-    log_response( 'anon-reg', reg_response )
+    Kinokero::Log.log_response( 'anon-reg', reg_response )
 
     return reg_response
 
@@ -400,7 +400,7 @@ GCP_USER_ACTION_OTHER     = 100  # User has performed some other action
       req.headers['X-CloudPrint-Proxy'] = ::Kinokero.my_proxy_id 
     end  # post poll response request
 
-    log_response( 'anon-poll', poll_response )
+    Kinokero::Log.log_response( 'anon-poll', poll_response )
 
     return poll_response
 
