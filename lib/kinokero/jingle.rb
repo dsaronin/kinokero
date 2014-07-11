@@ -122,14 +122,24 @@ class Jingle
 
 # -----------------------------------------------------------------------------
 
-  def gtalk_end_subscription()
+  def gtalk_close_connection()
     unless @client.nil?
+        # cease responding to message callbacks
+      @client.delete_message_callback( nil )
+
          # prep the Google Talk for GCP unsubscribe stanza
       iq_unsubscribe = Jabber::Iq.new( :set, @gcp_control[ :gcp_xmpp_jid ])
       sub_el = iq_unsubscribe.add_element( 'unsubscribe', 'xmlns' => ::Kinokero.ns_google_push )
       sub_el.add_element( 'item', 'channel' => @gcp_channel, 'from' => @gcp_channel )
 
+        # attempt to unsubscribe (currently GCP returns 501: feature-not-implemented error
       @client.send( iq_unsubscribe )
+
+        # now seal off the connection
+      @client.close!
+
+      @client = nil   # and let it vanish away
+
       @is_connection = false
 
     end   # if a client exists

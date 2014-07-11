@@ -591,8 +591,8 @@ GCP_USER_ACTION_OTHER     = 100  # User has performed some other action
 
   def gcp_delete_printer( )
 
-    # unsubscribe jingle connection
-    @jingle.gtalk_end_subscription()  unless @jingle.nil?
+    # unsubscribe & close jingle connection
+    @jingle.gtalk_close_connection()  unless @jingle.nil?
 
     remove_response = Cloudprint.client_connection.post( ::Kinokero.gcp_service + GCP_DELETE ) do |req|
       req.headers['Authorization'] = gcp_form_auth_token()
