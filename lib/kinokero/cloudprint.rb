@@ -225,28 +225,28 @@ GCP_USER_ACTION_OTHER     = 100  # User has performed some other action
             # complete self instantiation by making this the printer
             # which we control
           
-            @gcp_control[:printer_id]      =  params[:printer_id]
-            @gcp_control[:success]         =  oauth_response['error'].nil?
-            @gcp_control[:message]         =  oauth_response['error'].to_s
-            @gcp_control[:gcp_xmpp_jid]    =  poll_response['xmpp_jid']
-            @gcp_control[:gcp_printerid]   =  reg_response['printers'][0]['id']
-            @gcp_control[:gcp_confirmation_url]      =  poll_response['confirmation_page_url']
-            @gcp_control[:gcp_owner_email]  =  poll_response['user_email']
+            gcp_control = {
+              printer_id:      params[:printer_id]
+              success:         oauth_response['error'].nil?
+              message:         oauth_response['error'].to_s
+              gcp_xmpp_jid:    poll_response['xmpp_jid']
+              gcp_printerid:   reg_response['printers'][0]['id']
+              gcp_confirmation_url:      poll_response['confirmation_page_url']
+              gcp_owner_email:  poll_response['user_email']
 
-            @gcp_control[:gcp_access_token]  =  oauth_response['access_token']
-            @gcp_control[:gcp_refresh_token] =  oauth_response['refresh_token']
-            @gcp_control[:gcp_token_type]    =  oauth_response['token_type']
-            @gcp_control[:gcp_token_expiry_time]  =  Time.now + oauth_response['expires_in'].to_i
+              gcp_access_token:  oauth_response['access_token']
+              gcp_refresh_token: oauth_response['refresh_token']
+              gcp_token_type:    oauth_response['token_type']
+              gcp_token_expiry_time:      Time.now + oauth_response['expires_in'].to_i
 
-            @gcp_control[:cups_alias] =  params[:cups_alias]
-            @gcp_control[:item]       =  params[:item]
-            @gcp_control[:is_active]  =  true
+              cups_alias:      params[:cups_alias]
+              item:      params[:item]
+              is_active:      true
+            }
 
             # let calling module save the response for us
-          yield( @gcp_control )  # persistence
+          yield( gcp_control )  # persistence
     
-          @jingle = Kinokero::Jingle.new( self, @gcp_control )  # create the jingle object
-
         end  # if polling succeeded
 
         exit
@@ -495,7 +495,7 @@ GCP_USER_ACTION_OTHER     = 100  # User has performed some other action
 # (after an hour) by using the token endpoint with your refresh token, 
 # client credentials, and the parameter grant_type=refresh_token.
 #
-  def gcp_get_oauth2_tokens( auth_code )
+  def self.gcp_get_oauth2_tokens( auth_code )
 
     oauth_response = Cloudprint.client_connection.post( ::Kinokero.oauth2_token_endpoint ) do |req|
       req.body =  {
@@ -507,11 +507,11 @@ GCP_USER_ACTION_OTHER     = 100  # User has performed some other action
         :scope => ::Kinokero.authorization_scope,
       }
 
-      log_request( 'get oauth2 code', req )
+      Kinokero::Log.log_request( 'get oauth2 code', req )
       
     end  # request do
 
-    log_response( 'oauth2 code', oauth_response )
+    Kinokero::Log.log_response( 'oauth2 code', oauth_response )
 
     return oauth_response
 

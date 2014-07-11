@@ -11,10 +11,6 @@ class Proxy
 #   require 'singleton'
 #   include Singleton
   
-
-    # REMINDER: don't remove the "@@" in the following statement
-  def_delegators :@logger, :debug, :info, :warn, :error, :fatal
-
 # #########################################################################
 
   attr_reader :my_devices, :options
@@ -27,7 +23,6 @@ class Proxy
      @proxy_id   = Kinokero.my_proxy_id
      @options    = options
      @my_devices = device_hash
-     @logger     = ::Logger.new(STDOUT)  # in case we need error logging
 
      device_hash.each_key do |item|
 
@@ -71,6 +66,16 @@ class Proxy
       Kinokero::Log.verbose_debug("\n***** Printer successfully registered to GCP *****\n")
       puts "register gcp_control: #{@gcp_ctl.object_id}"
       puts gcp_ctl.inspect
+
+        # wrap the newly registered printer in a device object
+      new_device =  Kinokero::Printer.new( gcp_ctl, gcp_request)
+
+        # add it to our list of managed devices
+      @my_devices[ gcp_ctl[:item] ] = new_device
+
+        # create a cloudprint object to manage the protocols
+      new_device.cloudprint = 
+               Kinokero::Cloudprint.new( gcp_ctl, @options )
 
         # this is the place to save anything we need to about the printers
         # under swalapala control; info is in gcp_ctl
