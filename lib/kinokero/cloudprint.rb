@@ -222,13 +222,12 @@ GCP_USER_ACTION_OTHER     = 100  # User has performed some other action
             poll_response[ 'authorization_code' ]
           ).body
           
-            # complete self instantiation by making this the printer
-            # which we control
-          
+#                  oauth_response['error'].nil?
+#                  oauth_response['error'].to_s
+
+              # create the control hash
             gcp_control = {
               printer_id:      params[:printer_id],
-              success:         oauth_response['error'].nil?,
-              message:         oauth_response['error'].to_s,
               gcp_xmpp_jid:    poll_response['xmpp_jid'],
               gcp_printerid:   reg_response['printers'][0]['id'],
               gcp_owner_email:  poll_response['user_email'],
