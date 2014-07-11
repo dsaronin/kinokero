@@ -143,6 +143,7 @@ VALID_GCP_OPTIONS = SAMPLE_GCP_OPTIONS.keys
 
 SAMPLE_GCP_REQUEST =
 { 
+  printer_id:  1,
   printer_name: "my_printer_name",
   capability_ppd: '/etc/cups/ppd/my_printer.ppd',
   default_ppd: '/etc/cups/ppd/my_printer.ppd',
