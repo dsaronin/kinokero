@@ -63,8 +63,8 @@ class Proxy
 
          # this block is called only if/when asynch polling completes
          # in a separate process
-      Kinokero::Log.verbose_debug("\n***** Printer successfully registered to GCP *****\n")
-      puts "register gcp_control: #{@gcp_ctl.object_id}"
+      puts Kinokero::Log.say_info("\n***** Printer successfully registered to GCP *****")
+      puts Kinokero::Log.say_warn "register gcp_control: #{@gcp_ctl.object_id}"
       puts gcp_ctl.inspect
 
         # wrap the newly registered printer in a device object
@@ -76,6 +76,8 @@ class Proxy
         # create a cloudprint object to manage the protocols
       new_device.cloudprint = 
                Kinokero::Cloudprint.new( gcp_ctl, @options )
+
+      Kinokero::Log.verbose_debug  "my_devices has #{ @my_devices.size } devices [#{ @my_devices.object_id }]"
 
         # this is the place to save anything we need to about the printers
         # under swalapala control; info is in gcp_ctl
