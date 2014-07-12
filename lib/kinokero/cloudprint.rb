@@ -19,6 +19,8 @@ module Kinokero
 #
   class Cloudprint
 
+    require 'thread'
+
     extend Forwardable
 
 # #########################################################################
@@ -209,7 +211,8 @@ GCP_USER_ACTION_OTHER     = 100  # User has performed some other action
 
     if (status = reg_response[ 'success' ])  # success; continues
 
-      pid = fork do
+      poll_thread = Thread.new do
+      # DEPRECATED: pid = fork do
         # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
         # step 3: poll GCP asynchronously as a separate process
         # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
@@ -252,12 +255,15 @@ GCP_USER_ACTION_OTHER     = 100  # User has performed some other action
     
         end  # if polling succeeded
 
-        exit
+        # DEPRECATED: exit
         # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
       end  # fork block
 
-      Process.detach(pid) # we are not interested in the exit
+        # force abort of everything if exception in thread
+      poll_thread.abort_on_exception = true
+
+      # DEPRECATED: Process.detach(pid) # we are not interested in the exit
       # code of this child and it should become independent
       
     end  # if successful response
