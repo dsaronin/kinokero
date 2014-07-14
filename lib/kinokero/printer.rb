@@ -131,6 +131,7 @@ SAMPLE_GCP_OPTIONS = {
   printer_id: 1,
   item: 'test',
   cups_alias: 'cups_printer_name',
+  virgin_access: false,   # true for initial oauth2 token
   is_active: false   # set to true after successful registration
 
 }

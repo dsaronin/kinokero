@@ -243,10 +243,11 @@ GCP_USER_ACTION_OTHER     = 100  # User has performed some other action
               gcp_refresh_token: oauth_response['refresh_token'],
               gcp_token_type:    oauth_response['token_type'],
 
-              gcp_token_expiry_time:      Time.now + oauth_response['expires_in'].to_i,
+              gcp_token_expiry_time: Time.now + oauth_response['expires_in'].to_i,
 
               cups_alias:      params[:cups_alias],
               item:            params[:item],
+              virgin_access:   true,  # boolean for dealing with jingle access token quirk
               is_active:      true
             }
 
@@ -556,6 +557,7 @@ GCP_USER_ACTION_OTHER     = 100  # User has performed some other action
       @gcp_control[:gcp_access_token] = oauth_response.body['access_token']
       @gcp_control[:gcp_token_expiry_time] = 
                   Time.now + oauth_response.body['expires_in'].to_i
+      @gcp_control[:virgin_access] = false
 
     else  # failed to refresh token
 
@@ -736,7 +738,15 @@ GCP_USER_ACTION_OTHER     = 100  # User has performed some other action
 #
   def gcp_form_jingle_auth_token()
     return '' if @gcp_control.nil?
-    gcp_refresh_tokens if Time.now >= @gcp_control[:gcp_token_expiry_time] 
+
+      # jingle quirk seems to be unable to use the initial, long access token
+      # which was returned by the oauth2 call (longer length)
+      # but it jingle readily handles the refreshed access token (shorter length)
+    if @gcp_control[:virgin_access] ||  
+       Time.now >= @gcp_control[:gcp_token_expiry_time] 
+      gcp_refresh_tokens 
+    end
+
     return @gcp_control[:gcp_access_token]
   end
 
