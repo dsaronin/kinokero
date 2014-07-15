@@ -426,11 +426,17 @@ GCP_USER_ACTION_OTHER     = 100  # User has performed some other action
 
   def gtalk_start_connection(&block)
 
-    return  if @jingle.nil?
+    if @jingle.nil?
 
-    @jingle.gtalk_start_connection do |printerid|
-      yield( printerid )
-    end  # closure for doing print stuff
+      Kinokero::Log.error( "jingle not started yet" )
+
+    else
+
+      @jingle.gtalk_start_connection do |printerid|
+        yield( printerid )
+      end  # closure for doing print stuff
+
+    end
 
   end
 
