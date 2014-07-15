@@ -128,7 +128,7 @@ class Proxy
   def do_fetch_jobs( item )
     
     @my_devices[item].cloudprint.gcp_get_printer_fetch(
-      @my_devices[item][:gcp_printerid]
+      @my_devices[item].gcp_printer_control[:gcp_printerid]
     )
 
   end
