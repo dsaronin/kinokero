@@ -416,59 +416,6 @@ GCP_USER_ACTION_OTHER     = 100  # User has performed some other action
 
   end
 
-# #########################################################################
-# #########################################################################
-
-# #########################################################################
-# #########################################################################
-
-# ------------------------------------------------------------------------------
-
-  def gtalk_start_connection(&block)
-
-    if @jingle.nil?
-
-      Kinokero::Log.error( "jingle not started yet" )
-
-    else
-
-      @jingle.gtalk_start_connection do |printerid|
-        yield( printerid )
-      end  # closure for doing print stuff
-
-    end
-
-  end
-
-# ------------------------------------------------------------------------------
-
-# gcp_get_job_file -- returns the job file to be printed
-#
-# * *Args*    :
-#   - +file_url+ - url to get the file for printing 
-# * *Returns* :
-#   - nil if failed to get file; else file itself
-# * *Raises* :
-#   - 
-#
-  def gcp_get_job_file( file_url )
-        
-    file_response = Cloudprint.client_connection.get( file_url ) do |req|  # connection get job file request
-      req.headers['X-CloudPrint-Proxy'] = ::Kinokero.my_proxy_id 
-      req.headers['Authorization'] = gcp_form_auth_token()
-
-      log_request( 'get job file', req )
-     end  # post poll response request
-
-      # check the RESPONSE_HEADER for SUCCESS
-    return ( file_response.env.status == HTTP_RESPONSE_OK  ?
-                file_response.env.body  :
-                nil
-           )
-
-  end
-
-
 # ------------------------------------------------------------------------------
 
 # * *Args*    :
@@ -532,6 +479,59 @@ GCP_USER_ACTION_OTHER     = 100  # User has performed some other action
     return oauth_response
 
   end
+
+# #########################################################################
+# #########################################################################
+#   instance methods
+# #########################################################################
+# #########################################################################
+
+# ------------------------------------------------------------------------------
+
+  def gtalk_start_connection(&block)
+
+    if @jingle.nil?
+
+      Kinokero::Log.error( "jingle not started yet" )
+
+    else
+
+      @jingle.gtalk_start_connection do |printerid|
+        yield( printerid )
+      end  # closure for doing print stuff
+
+    end
+
+  end
+
+# ------------------------------------------------------------------------------
+
+# gcp_get_job_file -- returns the job file to be printed
+#
+# * *Args*    :
+#   - +file_url+ - url to get the file for printing 
+# * *Returns* :
+#   - nil if failed to get file; else file itself
+# * *Raises* :
+#   - 
+#
+  def gcp_get_job_file( file_url )
+        
+    file_response = Cloudprint.client_connection.get( file_url ) do |req|  # connection get job file request
+      req.headers['X-CloudPrint-Proxy'] = ::Kinokero.my_proxy_id 
+      req.headers['Authorization'] = gcp_form_auth_token()
+
+      log_request( 'get job file', req )
+     end  # post poll response request
+
+      # check the RESPONSE_HEADER for SUCCESS
+    return ( file_response.env.status == HTTP_RESPONSE_OK  ?
+                file_response.env.body  :
+                nil
+           )
+
+  end
+
 
 # ------------------------------------------------------------------------------
 

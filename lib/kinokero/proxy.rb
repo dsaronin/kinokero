@@ -125,6 +125,14 @@ class Proxy
 # -----------------------------------------------------------------------------
 # -----------------------------------------------------------------------------
 
+  def do_fetch_jobs( item )
+    
+    @my_devices[item].cloudprint.gcp_get_printer_fetch(
+      @my_devices[item][:gcp_printerid]
+    )
+
+  end
+
 # -----------------------------------------------------------------------------
 
 # do_print_jobs blends across the perfect protocol boundaries I'm trying to 
