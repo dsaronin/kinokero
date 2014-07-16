@@ -18,11 +18,13 @@ class Proxy
 # #########################################################################
 
 # -----------------------------------------------------------------------------
-  def initialize( device_hash, options = { verbose: true } )
+  def initialize( device_hash, options = { verbose: true, auto_connect: true } )
 
      @proxy_id   = Kinokero.my_proxy_id
      @options    = options
      @my_devices = device_hash
+
+     Kinokero::Log.verbose_debug( options.inspect, options[:verbose] )
 
      device_hash.each_key do |item|
 

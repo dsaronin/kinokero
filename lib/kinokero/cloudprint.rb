@@ -68,6 +68,7 @@ GCP_USER_ACTION_OTHER     = 100  # User has performed some other action
     # default options and configurations for cloudprinting
   DEFAULT_OPTIONS = {
     :verbose => true,         # log everything?
+    :auto_connect => true,    # automatically connect active devices?
     :log_truncate => false,   # truncate long responses?
     :log_response => true    # log the responses?
   }
