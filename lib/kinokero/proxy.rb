@@ -41,9 +41,28 @@ class Proxy
 # do_connect -- 
 # -----------------------------------------------------------------------------
   def do_connect(item)
+      # establish a jingle connection
     @my_devices[item].cloudprint.gtalk_start_connection do |printerid|
       do_print_jobs( printerid )
     end  # block
+
+      # upon first connect, fetch & print any pending jobs in queue
+    print_fetch_queue(
+      item,    # find corresponding device item
+      @my_devices[item].gcp_printer_control[:gcp_printerid],
+      @my_devices[item].cloudprint.gcp_get_printer_fetch( printerid )
+    )
+
+  end
+
+# -----------------------------------------------------------------------------
+
+  def do_fetch_jobs( item )
+    
+    @my_devices[item].cloudprint.gcp_get_printer_fetch(
+      @my_devices[item].gcp_printer_control[:gcp_printerid]
+    )
+
   end
 
 # -----------------------------------------------------------------------------
@@ -125,17 +144,6 @@ class Proxy
   end
 
 # -----------------------------------------------------------------------------
-# -----------------------------------------------------------------------------
-
-  def do_fetch_jobs( item )
-    
-    @my_devices[item].cloudprint.gcp_get_printer_fetch(
-      @my_devices[item].gcp_printer_control[:gcp_printerid]
-    )
-
-  end
-
-# -----------------------------------------------------------------------------
 
 # do_print_jobs blends across the perfect protocol boundaries I'm trying to 
 # maintain with Cloudprint, mainly because there's a higher level process
@@ -143,59 +151,76 @@ class Proxy
 # interactions and Printer class interaction.
 # -----------------------------------------------------------------------------
   def do_print_jobs( printerid )
-    item = item_from_printerid( printerid )  # find corresponding device item
-    my_cloudprint = @my_devices[item].cloudprint  # DRY access
 
-    result = my_cloudprint.gcp_get_printer_fetch( printerid )
+    item = item_from_printerid( printerid )
+    print_fetch_queue(
+      item,    # find corresponding device item
+      printerid,
+      @my_devices[item].cloudprint.gcp_get_printer_fetch( printerid )
+    )
 
-    Kinokero::Log.verbose_debug  "#{ printerid } queue has #{ result['jobs'].size } jobs"
+  end
 
-      # deal with each job fetched
-    result['jobs'].each do |job|
+# -----------------------------------------------------------------------------
 
-      unless printerid == job['printerid']  # ? hmmm, different printer ref'd
+# DRY work of printing a fetch queue of jobs
+  def print_fetch_queue(item, printerid, fetch_result)
+    if fetch_result['success']
+      Kinokero::Log.verbose_debug  "#{ printerid } queue has #{ fetch_result['jobs'].size } jobs"
 
-        item = item_from_printerid( printerid )  # find corresponding device item
-        printerid = job['printerid']
-        my_cloudprint = @my_devices[item].cloudprint  # DRY access
-        print "\e[1;31m\n***** WARNING ***** differ printerid in fetch queue #{printerid}\n\e[0m" 
-      end
+      my_cloudprint = @my_devices[item].cloudprint  # DRY access
 
-      if ( job_file = my_cloudprint.gcp_get_job_file( job["fileUrl"] ) )
+        # deal with each job fetched
+      fetch_result['jobs'].each do |job|
 
-        my_cloudprint.gcp_job_status(
-          job["id"], 
-          ::Kinokero::Cloudprint::GCP_JOBSTATE_IN_PROGRESS, 
-          0
-        )
+        unless printerid == job['printerid']  # ? hmmm, different printer ref'd
 
-        File.open( job["id"], 'wb') { |fp| fp.write(job_file) }
-       
-        printer_command = "lp -d #{my_cloudprint.gcp_control[:cups_alias]} #{job['id']}"
-        Kinokero::Log.verbose_debug  "#{job['printerName']}: " + printer_command + "\n"
+          item = item_from_printerid( printerid )  # find corresponding device item
+          printerid = job['printerid']
+          my_cloudprint = @my_devices[item].cloudprint  # DRY access
+          print "\e[1;31m\n***** WARNING ***** differ printerid in fetch queue #{printerid}\n\e[0m" 
+        end
 
-        status = system( "#{printer_command}" )
+          # able to download the job file for printing?
+        if ( job_file = my_cloudprint.gcp_get_job_file( job["fileUrl"] ) )
 
-        # TODO: poll printer job status & report back to GCP
-        my_cloudprint.gcp_job_status( 
-          job["id"], 
-          ::Kinokero::Cloudprint::GCP_JOBSTATE_DONE, 
-          job["numberOfPages"] 
-        )
-
-        # TODO: delete the file
-        File.delete( job["id"] )
-
-      else  # failure to get file
-        my_cloudprint.gcp_job_status_abort( 
+            # update printer status to IN PROGRESS
+          my_cloudprint.gcp_job_status(
             job["id"], 
-            ::Kinokero::Cloudprint::GCP_USER_ACTION_OTHER,
+            ::Kinokero::Cloudprint::GCP_JOBSTATE_IN_PROGRESS, 
             0
-        )
-          
-      end   # if..then..else get job file
+          )
 
-    end   # do each job
+            # write the file locally
+          File.open( job["id"], 'wb') { |fp| fp.write(job_file) }
+         
+            # TODO: replace with printing via Printer Class
+          printer_command = "lp -d #{my_cloudprint.gcp_control[:cups_alias]} #{job['id']}"
+          Kinokero::Log.verbose_debug  "#{job['printerName']}: " + printer_command + "\n"
+
+          status = system( "#{printer_command}" )
+
+            # poll printer job status & report back to GCP
+          my_cloudprint.gcp_job_status( 
+            job["id"], 
+            ::Kinokero::Cloudprint::GCP_JOBSTATE_DONE, 
+            job["numberOfPages"] 
+          )
+
+            # delete the file
+          File.delete( job["id"] )
+
+        else  # failure to get file; tell GCP about the status
+          my_cloudprint.gcp_job_status_abort( 
+              job["id"], 
+              ::Kinokero::Cloudprint::GCP_USER_ACTION_OTHER,
+              0
+          )
+            
+        end   # if..then..else get job file
+
+      end   # do each job
+    end  # pending job queue from fetch
 
   end
 
