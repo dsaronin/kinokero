@@ -149,6 +149,34 @@ GCP_USER_ACTION_OTHER     = 100  # User has performed some other action
 
 # ------------------------------------------------------------------------------
 
+# gcp protocol to get the list of registered printers for the proxy
+#
+# * *Args*    :
+#   - 
+# * *Returns* :
+#   - 
+# * *Raises* :
+#   - 
+#
+  def self.gcp_get_printer_list(  )
+
+    list_response = Cloudprint.client_connection.post( ::Kinokero.gcp_service + GCP_LIST ) do |req|
+      # req.headers['Authorization'] = gcp_form_auth_token()  #  not required
+      req.body =  {
+        :proxy   => ::Kinokero.my_proxy_id
+      }
+
+      log_request( 'get printer list', req )
+      
+    end  # request do
+    log_response( 'get printer list', list_response )
+
+    return list_response.body
+
+  end
+
+# ------------------------------------------------------------------------------
+
 # handles the anonymous printer registration protocol
 #
 # * *Args*    :
@@ -686,34 +714,6 @@ GCP_USER_ACTION_OTHER     = 100  # User has performed some other action
 
   end
 
-
-# ------------------------------------------------------------------------------
-
-# gcp protocol to get the list of registered printers for the proxy
-#
-# * *Args*    :
-#   - 
-# * *Returns* :
-#   - 
-# * *Raises* :
-#   - 
-#
-  def gcp_get_printer_list(  )
-
-    list_response = Cloudprint.client_connection.post( ::Kinokero.gcp_service + GCP_LIST ) do |req|
-      req.headers['Authorization'] = gcp_form_auth_token()
-      req.body =  {
-        :proxy   => ::Kinokero.my_proxy_id
-      }
-
-      log_request( 'get printer list', req )
-      
-    end  # request do
-    log_response( 'get printer list', list_response )
-
-    return list_response.body
-
-  end
 
 # ------------------------------------------------------------------------------
 
