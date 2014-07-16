@@ -166,10 +166,10 @@ GCP_USER_ACTION_OTHER     = 100  # User has performed some other action
         :proxy   => ::Kinokero.my_proxy_id
       }
 
-      log_request( 'get printer list', req )
+      Kinokero::Log.log_request( 'get printer list', req )
       
     end  # request do
-    log_response( 'get printer list', list_response )
+    Kinokero::Log.log_response( 'get printer list', list_response )
 
     return list_response.body
 
