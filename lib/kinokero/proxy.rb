@@ -43,14 +43,21 @@ class Proxy
   def do_connect(item)
       # establish a jingle connection
     @my_devices[item].cloudprint.gtalk_start_connection do |printerid|
+
+        # NOTE: this execution takes place asynchronously 
+        # upon callback from jingle notification
       do_print_jobs( printerid )
+
     end  # block
 
+    # execution continues here BEFORE above block executes
+
+    my_printerid = @my_devices[item].gcp_printer_control[:gcp_printerid]
       # upon first connect, fetch & print any pending jobs in queue
     print_fetch_queue(
       item,    # find corresponding device item
-      @my_devices[item].gcp_printer_control[:gcp_printerid],
-      @my_devices[item].cloudprint.gcp_get_printer_fetch( printerid )
+      my_printerid,
+      @my_devices[item].cloudprint.gcp_get_printer_fetch( my_printerid )
     )
 
   end
