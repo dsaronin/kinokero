@@ -107,8 +107,17 @@ GCP_USER_ACTION_OTHER     = 100  # User has performed some other action
 
     Cloudprint.client_connection() # set up faraday connection iff first time
 
-    @jingle = Kinokero::Jingle.new( self, gcp_control ) if gcp_control[:is_active]
+      # set up a reason why jingle not started
+    gcp_control[:message] = "device inactive at initialization" unless gcp_control[:is_active]
+
+    if gcp_control[:is_active]  &&
+      printer_still_active?()  # verify that this printer is still active
+
+      @jingle = Kinokero::Jingle.new( self, gcp_control ) 
+    end  # if active printer
+
   end
+
 
 # ------------------------------------------------------------------------------
 
@@ -493,7 +502,7 @@ GCP_USER_ACTION_OTHER     = 100  # User has performed some other action
 
     if @jingle.nil?
 
-      Kinokero::Log.error( "jingle not started yet" )
+      Kinokero::Log.error( "jingle not started yet; #{@gcp_control[:message]}" )
 
     else
 
@@ -686,6 +695,50 @@ GCP_USER_ACTION_OTHER     = 100  # User has performed some other action
 
   end
 
+# ------------------------------------------------------------------------------
+
+# checks GCP server to see if printer still active
+#
+# * *Args*    :
+#   - 
+# * *Returns* :
+#   - true if still active; false if not
+# * *Raises* :
+#   - 
+# * *side effects* :
+#   - changes :is_active status; sets :message for reason
+#   
+  def printer_still_active?()
+    list_result = gcp_get_printer_list
+
+    is_active = false  # assume failure
+
+    if list_result["success"]
+
+      if list_result["printers"].empty?
+
+        @gcp_control[:message] = "proxy printer list empty"
+
+        # try to find a matching printer in the list
+      elsif list_result["printers"].any? { |p| p["id"] == @gcp_control[:gcp_printerid] }
+
+        is_active = true   # success here!
+
+      else  # failed to find matching printer in list
+
+        @gcp_control[:message] = "matching printer not found in proxy printer list"
+
+      end   # if..then..else check proxy printer list
+
+    else  # failed to get list result
+
+        @gcp_control[:message] = list_result["message"] || "couldn't obtain proxy printer list"
+
+    end  # able/not get list results
+
+    return (@gcp_control[:is_active] = is_active)
+
+  end
 
 # ------------------------------------------------------------------------------
 
