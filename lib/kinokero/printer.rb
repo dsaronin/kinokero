@@ -110,7 +110,7 @@ module Kinokero
 # ****************************************************************************
 
   def print_file( file )
-    printer_command = "lp -d #{@gcp_printer_control[:cups_alias]} file "
+    printer_command = "lp -d #{@gcp_printer_control[:cups_alias]} #{file} "
     Kinokero::Log.verbose_debug  "#{@gcp_printer_control[:gcp_printer_name]}: " + 
                                  printer_command + "\n"
 
