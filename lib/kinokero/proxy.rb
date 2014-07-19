@@ -201,7 +201,7 @@ class Proxy
             # write the file locally
           File.open( job["id"], 'wb') { |fp| fp.write(job_file) }
          
-          status = @my_devices[item].print_file( #{job['id']} )
+          status = @my_devices[item].print_file( job['id'] )
 
           # TODO: do something intelligent with the status
           # like report back to GCP
