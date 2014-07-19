@@ -201,11 +201,10 @@ class Proxy
             # write the file locally
           File.open( job["id"], 'wb') { |fp| fp.write(job_file) }
          
-            # TODO: replace with printing via Printer Class
-          printer_command = "lp -d #{my_cloudprint.gcp_control[:cups_alias]} #{job['id']}"
-          Kinokero::Log.verbose_debug  "#{job['printerName']}: " + printer_command + "\n"
+          status = @my_devices[item].print_file( #{job['id']} )
 
-          status = system( "#{printer_command}" )
+          # TODO: do something intelligent with the status
+          # like report back to GCP
 
             # poll printer job status & report back to GCP
           my_cloudprint.gcp_job_status( 

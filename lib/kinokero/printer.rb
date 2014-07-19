@@ -104,6 +104,26 @@ module Kinokero
 
 # -----------------------------------------------------------------------------
 
+  
+# ****************************************************************************
+# PRINTER CONTROL  
+# ****************************************************************************
+
+  def print_file( file )
+    printer_command = "lp -d #{@gcp_printer_control[:cups_alias]} file "
+    Kinokero::Log.verbose_debug  "#{@gcp_printer_control[:gcp_printer_name]}: " + 
+                                 printer_command + "\n"
+
+    status = system( "#{printer_command}" )
+
+    # TODO: figure out what the status means? or get printer status
+    # so we know when the job has successfully printed
+
+    return status
+  end
+
+
+
 
 # -----------------------------------------------------------------------------
 # -----------------------------------------------------------------------------
