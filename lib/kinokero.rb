@@ -73,6 +73,9 @@ MY_PROXY_ID = "kinokero::"+`uname -n`.chop
 # NOTE: move this out before finalizing gem
 SSL_CERT_PATH = "/usr/lib/ssl/certs"
 
+# CUPS system default testpage file
+CUPS_TESTPAGE_FILE = "/usr/share/cups/data/default-testpage.pdf"
+
 # -----------------------------------------------------------------------------
 
 # gem master config area; most settings are alterable as needed
@@ -111,12 +114,16 @@ SSL_CERT_PATH = "/usr/lib/ssl/certs"
     @@ns_google_push  =  NS_GOOGLE_PUSH  #  
     @@gcp_channel  =     GCP_CHANNEL     #  
 
+# cups testpage file path
+    @@cups_testpage_file = CUPS_TESTPAGE_FILE
+
   mattr_accessor :my_proxy_id,:mimetype_oauth, :mimetype_ppd, :polling_secs,
     :truncate_log, :followup_host, :followup_uri, :gaia_host, :loging_uri,
     :loging_url, :gcp_url, :gcp_service, :ssl_ca_path, 
     :authorization_scope, :authorization_redirect_uri, :oauth2_token_endpoint,
     :xmpp_server, :ns_google_push, :gcp_channel, :verbose, 
-    :proxy_client_secret, :proxy_client_id, :proxy_serial_nbr
+    :proxy_client_secret, :proxy_client_id, :proxy_serial_nbr,
+    :cups_testpage_file
 
 
 # #########################################################################
