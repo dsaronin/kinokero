@@ -126,7 +126,7 @@ module Kinokero
 # -----------------------------------------------------------------------------
 
   def is_printer_ready?()
-    state_hash = Cups.options_for( @gcp_printer_control[:gcp_printer_name] )
+    state_hash = Cups.options_for( @gcp_printer_control[:cups_alias] )
     return state_hash['printer-is-accepting-jobs']
   end
 
