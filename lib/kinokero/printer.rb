@@ -14,6 +14,7 @@ module Kinokero
   class Printer
 
     include Device
+    require 'cups'
 
     attr_reader :model, :gcp_printer_control, :gcp_printer_request
     attr_accessor  :cloudprint   # cloudprint object for this device
@@ -122,7 +123,12 @@ module Kinokero
     return status
   end
 
+# -----------------------------------------------------------------------------
 
+  def is_printer_ready?()
+    state_hash = Cups.options_for( @gcp_print_control[:gcp_printer_name] )
+    return state_hash['printer-is-accepting-jobs']
+  end
 
 
 # -----------------------------------------------------------------------------

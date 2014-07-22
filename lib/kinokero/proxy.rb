@@ -52,12 +52,10 @@ class Proxy
 
     # execution continues here BEFORE above block executes
 
-    my_printerid = @my_devices[item].gcp_printer_control[:gcp_printerid]
       # upon first connect, fetch & print any pending jobs in queue
-    print_fetch_queue(
-      item,    # find corresponding device item
-      my_printerid,
-      @my_devices[item].cloudprint.gcp_get_printer_fetch( my_printerid )
+    fetch_and_print_queue_if_ready( 
+          item, 
+          @my_devices[item].gcp_printer_control[:gcp_printerid] 
     )
 
   end
@@ -152,6 +150,25 @@ class Proxy
 
 # -----------------------------------------------------------------------------
 
+  def fetch_and_print_queue_if_ready( item, printerid )
+
+    if @my_devices[item].is_printer_ready?
+    
+      print_fetch_queue(
+        item,    # find corresponding device item
+        printerid,
+        @my_devices[item].cloudprint.gcp_get_printer_fetch( printerid )
+      )
+
+    else   # oops, printer is NOT ready
+      # TODO: shouldn't we tell GCP about this situation?
+
+    end  # continue if printer ready
+
+  end
+
+# -----------------------------------------------------------------------------
+
 # do_print_jobs blends across the perfect protocol boundaries I'm trying to 
 # maintain with Cloudprint, mainly because there's a higher level process
 # handling which it has to handle, thus involving multiple cloudprint
@@ -159,13 +176,11 @@ class Proxy
 # -----------------------------------------------------------------------------
   def do_print_jobs( printerid )
 
-    item = item_from_printerid( printerid )
-    print_fetch_queue(
-      item,    # find corresponding device item
-      printerid,
-      @my_devices[item].cloudprint.gcp_get_printer_fetch( printerid )
+    fetch_and_print_queue_if_ready( 
+        item_from_printerid( printerid ), 
+        printerid 
     )
-
+    
   end
 
 # -----------------------------------------------------------------------------
