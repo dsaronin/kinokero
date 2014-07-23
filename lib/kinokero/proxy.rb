@@ -38,7 +38,7 @@ class Proxy
          @my_devices[ item ] = 
                   Kinokero::Printer.new( gcp_hash[item] )
 
-         gcp_hash[item].cloudprint = Kinokero::Cloudprint.new( 
+         @my_devices[ item ].cloudprint = Kinokero::Cloudprint.new( 
               @my_devices[item].gcp_printer_control, 
               options 
          )

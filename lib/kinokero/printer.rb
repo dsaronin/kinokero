@@ -16,7 +16,7 @@ module Kinokero
     include Device
     require 'cups'
 
-    attr_reader :model, :gcp_printer_control, :gcp_printer_request
+    attr_reader :model, :gcp_printer_control
     attr_accessor  :cloudprint   # cloudprint object for this device
 
 # -----------------------------------------------------------------------------
@@ -37,12 +37,12 @@ module Kinokero
     # super
 
     @model = nil
+    @cloudprint = nil   # Proxy fills this in later
     @gcp_printer_control = nil   # default if empty
 
     setup_model( model_info )
     setup_gcp( gcp_info )
 
-    @cloudprint = nil   # Proxy fills this in later
 
   end
 
