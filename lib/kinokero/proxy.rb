@@ -18,20 +18,34 @@ class Proxy
 # #########################################################################
 
 # -----------------------------------------------------------------------------
-  def initialize( device_hash, options = { verbose: true, auto_connect: true } )
+  def initialize( gcp_hash, options = { verbose: true, auto_connect: true } )
 
      @proxy_id   = Kinokero.my_proxy_id
      @options    = options
-     @my_devices = device_hash
+     @my_devices = {}   # will hold the device objects from seed
 
      Kinokero::Log.verbose_debug( options.inspect, options[:verbose] )
+    
+     cups_list = Cups.show_destinations  # current printer list
 
-     device_hash.each_key do |item|
+      # convert seed data into device objects
+     gcp_hash.each_key do |item|
+        
+       if cups_list.include?( gcp_hash[item][:cups_alias] )
+          # instantiate object and remember
+         @my_devices[ item ] = Kinokero::Printer.new(
+            gcp_hash[item],
+            build_gcp_request( item )
+         )
 
-       device_hash[item].cloudprint = Kinokero::Cloudprint.new( 
-             device_hash[item].gcp_printer_control, 
-             options 
-       )
+         gcp_hash[item].cloudprint = Kinokero::Cloudprint.new( 
+              @my_devices[item].gcp_printer_control, 
+              options 
+         )
+
+       else  # previously registered device no longer active
+         # TODO:
+       end   # convert each seed to a device object
 
      end  # setting up each device
 
