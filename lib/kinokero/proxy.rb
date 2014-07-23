@@ -31,7 +31,9 @@ class Proxy
       # convert seed data into device objects
      gcp_hash.each_key do |item|
         
+        # make sure that the persistent printer is still in CUPS list
        if cups_list.include?( gcp_hash[item][:cups_alias] )
+
           # instantiate object and remember
          @my_devices[ item ] = Kinokero::Printer.new(
             gcp_hash[item],
