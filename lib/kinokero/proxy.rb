@@ -35,10 +35,8 @@ class Proxy
        if cups_list.include?( gcp_hash[item][:cups_alias] )
 
           # instantiate object and remember
-         @my_devices[ item ] = Kinokero::Printer.new(
-            gcp_hash[item],
-            build_gcp_request( item )
-         )
+         @my_devices[ item ] = 
+                  Kinokero::Printer.new( gcp_hash[item] )
 
          gcp_hash[item].cloudprint = Kinokero::Cloudprint.new( 
               @my_devices[item].gcp_printer_control, 

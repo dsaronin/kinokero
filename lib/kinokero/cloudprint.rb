@@ -317,10 +317,10 @@ GCP_USER_ACTION_OTHER     = 100  # User has performed some other action
     reg_response =  Cloudprint.client_connection.post ::Kinokero.gcp_service + GCP_REGISTER do |req|
       req.headers['X-CloudPrint-Proxy'] = ::Kinokero.my_proxy_id 
       req.body =  {
-        :printer => params[:printer_name],
+        :printer => params[:gcp_printer_name],
         :proxy   => ::Kinokero.my_proxy_id,
-        :description => params[:printer_name],
-        :default_display_name => params[:printer_name],
+        :description => params[:gcp_printer_name],
+        :default_display_name => params[:gcp_printer_name],
         :status => params[:status],
         :capabilities => Faraday::UploadIO.new( 
                   params[:capability_ppd], 

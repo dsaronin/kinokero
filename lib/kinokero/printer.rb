@@ -32,17 +32,15 @@ module Kinokero
 # * *Raises* :
 #   - 
 #
-  def initialize( gcp_info={}, request_info={}, model_info=nil )
+  def initialize( gcp_info={}, model_info=nil )
     # TODO: uncomment when Device mix-in is fleshed out
     # super
 
     @model = nil
     @gcp_printer_control = nil   # default if empty
-    @gcp_printer_request = nil
 
     setup_model( model_info )
     setup_gcp( gcp_info )
-    setup_request( request_info )
 
     @cloudprint = nil   # Proxy fills this in later
 
@@ -84,21 +82,6 @@ module Kinokero
 
 # -----------------------------------------------------------------------------
 
-# setup_request info from hash (possibly empty)
-#
-# * *Args*    :
-#   - +request_info+ - hash of info needed for a request
-# * *Returns* :
-#   - 
-# * *Raises* :
-#   - ArgumentError upon invalid values or keys for gcp_info
-#
-  def setup_request( request_info )
-    unless request_info.empty?
-      validate_gcp_request( request_info )
-      @gcp_printer_request = request_info    # persist the hash
-    end
-  end
 
 # -----------------------------------------------------------------------------
 
@@ -158,29 +141,17 @@ SAMPLE_GCP_OPTIONS = {
   item: 'test',
   cups_alias: 'cups_printer_name',
   virgin_access: false,   # true for initial oauth2 token
-  is_active: false   # set to true after successful registration
+  is_active: false,   # set to true after successful registration
 
+  capability_ppd: '/etc/cups/ppd/my_printer.ppd',
+  default_ppd: '/etc/cups/ppd/my_printer.ppd',
+  status: 'active',
 }
 
 # VALID_GCP_OPTIONS is used to determine if user options valid
 # if (in future) any default options were to be off-limits,
 # then a specific sets of keys will have to be enumerated below 
 VALID_GCP_OPTIONS = SAMPLE_GCP_OPTIONS.keys
-
-
-SAMPLE_GCP_REQUEST =
-{ 
-  printer_id:  1,
-  printer_name: "my_printer_name",
-  capability_ppd: '/etc/cups/ppd/my_printer.ppd',
-  default_ppd: '/etc/cups/ppd/my_printer.ppd',
-  cups_alias: 'my_cups_printer_name',
-  status: 'active',
-  item:  'test'
-}
-
-VALID_GCP_REQUEST = SAMPLE_GCP_REQUEST.keys
-
 
 # -----------------------------------------------------------------------------
 
@@ -206,25 +177,6 @@ VALID_GCP_REQUEST = SAMPLE_GCP_REQUEST.keys
 
 # -----------------------------------------------------------------------------
 
-# validates gcp request
-#
-# * *Args*    :
-#   - +options+ - request as a hash
-# * *Returns* :
-#   - 
-# * *Raises* :
-#   - ArgumentError if invalid option present 
-#
-  def validate_gcp_request(options)
-
-    validate_hash(
-      'VALIDATE gcp_request', 
-      VALID_GCP_REQUEST, 
-      SAMPLE_GCP_REQUEST, 
-      options
-    )
-    
-  end
 
 # -----------------------------------------------------------------------------
 
