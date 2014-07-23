@@ -255,10 +255,13 @@ GCP_USER_ACTION_OTHER     = 100  # User has performed some other action
 
               gcp_token_expiry_time: Time.now + oauth_response['expires_in'].to_i,
 
+              default_ppd:     params[:default_ppd],
+              capability_ppd:  params[:capability_ppd],
               cups_alias:      params[:cups_alias],
               item:            params[:item],
+              status:          params[:status],
               virgin_access:   true,  # boolean for dealing with jingle access token quirk
-              is_active:      true
+              is_active:       true
             }
 
             # let calling module save the response for us
