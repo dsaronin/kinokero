@@ -1,0 +1,8 @@
+// Represents the scanner state.
+
+message ScannerStateSection {
+
+  // Current scanner state (required).
+  optional CloudDeviceState.StateType state = 1;
+
+}

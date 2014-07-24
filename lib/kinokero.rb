@@ -9,6 +9,7 @@ require 'typhoeus/adapters/faraday'
 
 require 'job_state.pb'
 require 'print_job_state_diff.pb'
+
 require 'xmpp4r/client'
 
 module Kinokero

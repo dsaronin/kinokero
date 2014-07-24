@@ -1,8 +1,8 @@
 // Represents the printer state.
 
-import 'cloud_device_state.proto';
+// import 'cloud_device_state.proto';
 import 'input_tray_state.proto';
-import 'ouitput_bin_state.proto';
+import 'output_bin_state.proto';
 import 'marker_state.proto';
 import 'cover_state.proto';
 import 'media_path_state.proto';

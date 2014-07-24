@@ -1,4 +1,6 @@
 // Vendor-specific state.
+import 'localized_string.proto';
+
 message VendorState {
 
   message Item {
