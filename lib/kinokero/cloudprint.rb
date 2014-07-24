@@ -700,6 +700,12 @@ GCP_USER_ACTION_OTHER     = 100  # User has performed some other action
 
 # ------------------------------------------------------------------------------
 
+  def gcp_ready_state_changed( ready_state, state, reason )
+
+  end
+
+# ------------------------------------------------------------------------------
+
 # checks GCP server to see if printer still active
 #
 # * *Args*    :

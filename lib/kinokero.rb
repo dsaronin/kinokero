@@ -76,6 +76,9 @@ SSL_CERT_PATH = "/usr/lib/ssl/certs"
 # CUPS system default testpage file
 CUPS_TESTPAGE_FILE = "/usr/share/cups/data/default-testpage.pdf"
 
+# printer device status polling cycle (float secs to sleep)
+PRINTER_POLL_CYCLE = 5    # wait five seconds before recheck status
+
 # -----------------------------------------------------------------------------
 
 # gem master config area; most settings are alterable as needed
@@ -117,13 +120,16 @@ CUPS_TESTPAGE_FILE = "/usr/share/cups/data/default-testpage.pdf"
 # cups testpage file path
     @@cups_testpage_file = CUPS_TESTPAGE_FILE
 
+# printer device/cups related
+    @@printer_poll_cycle = PRINTER_POLL_CYCLE
+
   mattr_accessor :my_proxy_id,:mimetype_oauth, :mimetype_ppd, :polling_secs,
     :truncate_log, :followup_host, :followup_uri, :gaia_host, :loging_uri,
     :loging_url, :gcp_url, :gcp_service, :ssl_ca_path, 
     :authorization_scope, :authorization_redirect_uri, :oauth2_token_endpoint,
     :xmpp_server, :ns_google_push, :gcp_channel, :verbose, 
     :proxy_client_secret, :proxy_client_id, :proxy_serial_nbr,
-    :cups_testpage_file
+    :cups_testpage_file, :printer_poll_cycle
 
 
 # #########################################################################

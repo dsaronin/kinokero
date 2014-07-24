@@ -16,8 +16,8 @@ module Kinokero
     include Device
     require 'cups'
 
-    attr_reader :model, :gcp_printer_control
-    attr_accessor  :cloudprint   # cloudprint object for this device
+    attr_reader :model, :gcp_printer_control, :was_state
+    attr_accessor  :cloudprint, :poll_thread   # cloudprint object for this device
 
 # -----------------------------------------------------------------------------
 
@@ -37,7 +37,9 @@ module Kinokero
     # super
 
     @model = nil
+    @poll_thread = nil   # will be the polling thread object
     @cloudprint = nil   # Proxy fills this in later
+    @was_state  = false   # previous state, printer not ready
     @gcp_printer_control = nil   # default if empty
 
     setup_model( model_info )
@@ -85,8 +87,63 @@ module Kinokero
 
 # -----------------------------------------------------------------------------
 
+  def start_poll_thread()
+
+    if @poll_thread.nil? && @gcp_printer_control[:is_active]
+
+      @poll_thread = Thread.new  do
+
+        while true    # LOOP indefinitely
+
+            # get current device cups state
+          state_hash = Cups.options_for( @gcp_printer_control[:cups_alias] ) 
+
+            # if different from before
+          if @was_state ^ state_hash['printer-is-accepting-jobs']
+               # remember the changed state
+            @was_state = state_hash['printer-is-accepting-jobs']
+               # then tell GCP about the change
+            @cloudprint.gcp_ready_state_changed( 
+                @was_state,
+                cups_state_to_sym( state_hash['printer-state'] ),
+                cups_reason( state_hash['printer-state-reasons'] )
+            )
+          end
+
+            # go back to sleep again
+          sleep Kinokero.printer_poll_cycle   #  <<<< SLEEPING HERE <<<<<
+        end
+
+      end  # polling thread; only ends when killed
+
+        # force abort of everything if exception in thread
+      @poll_thread.abort_on_exception = true
+
+    end  # if no existing poll_thread and this is an active printer
+
+  end
+
+  def stop_poll_thread()
+    @poll_thread.kill  unless @poll_thread.nil?
+    @poll_thread = nil
+  end
 
 # -----------------------------------------------------------------------------
+
+  
+  def cups_state_to_sym( state )
+    case ( state )
+      when '3' then :idle
+      when '4' then :busy
+      when '5' then :stopped
+      else
+        state.to_sym
+    end # case
+  end
+
+  def cups_reason( reason )
+    return ( reason == 'none' ?  ''  :  reason )
+  end
 
   
 # ****************************************************************************
