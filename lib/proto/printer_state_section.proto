@@ -7,11 +7,12 @@ import 'marker_state.proto';
 import 'cover_state.proto';
 import 'media_path_state.proto';
 import 'vendor_state.proto';
+import 'cloud_device_state_type.proto';
 
 message PrinterStateSection {
 
   // Current printer state (required).
-  optional CloudDeviceState.StateType state = 1;
+  optional CloudDeviceStateType.StateType state = 1;
 
   // State of the input trays.
   optional InputTrayState input_tray_state = 2;

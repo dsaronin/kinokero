@@ -9,6 +9,8 @@ require 'typhoeus/adapters/faraday'
 
 require 'job_state.pb'
 require 'print_job_state_diff.pb'
+require 'cloud_device_state.pb'
+require 'printer_state_section.pb'
 
 require 'xmpp4r/client'
 

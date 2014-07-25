@@ -62,6 +62,11 @@ GCP_USER_ACTION_CANCELLED = 0  # User has cancelled the job
 GCP_USER_ACTION_PAUSED    = 1  # User has paused the job 
 GCP_USER_ACTION_OTHER     = 100  # User has performed some other action 
 
+# GCP connection states
+GCP_CONNECTION_STATE_READY = 2  # "ONLINE"
+GCP_CONNECTION_STATE_NOT_READY = 3   # "OFFLINE"
+
+
 # #########################################################################
 # #########################################################################
 
@@ -701,6 +706,33 @@ GCP_USER_ACTION_OTHER     = 100  # User has performed some other action
 # ------------------------------------------------------------------------------
 
   def gcp_ready_state_changed( ready_state, state, reason )
+
+    state_diff = CloudDeviceState.new(
+      cloud_connection_state: 
+        ( ready_state ? 
+         GCP_CONNECTION_STATE_READY : 
+         GCP_CONNECTION_STATE_NOT_READY
+        ) ,
+      printer: PrinterStateSection.new( 
+            state: state.to_s.upcase,
+
+      )
+    )
+
+    status_response = Cloudprint.client_connection.post( ::Kinokero.gcp_service + GCP_UPDATE ) do |req|
+      req.headers['Authorization'] = gcp_form_auth_token()
+      req.body =  {
+        :jobid   => jobid,
+        :semantic_state_diff  => state_diff.to_json
+      }
+
+      log_request( 'device update', req )
+      
+    end  # request do
+    log_response( 'device update', status_response )
+
+    return status_response.body
+
 
   end
 

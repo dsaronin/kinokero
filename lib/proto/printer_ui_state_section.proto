@@ -1,7 +1,8 @@
 // Contains one UI state item for each CDS state item using the information
 // obtained from cross-referencing the CDD.
 
-import 'cloud_device_ui_state.proto';
+import 'cloud_device_ui_state_severity.proto';
+import 'marker.proto';
 
 message PrinterUiStateSection {
 
@@ -12,7 +13,7 @@ message PrinterUiStateSection {
   message Item {
 
     // The severity of this individual state item (required).
-    optional CloudDeviceUiState.Severity severity = 1;
+    optional CloudDeviceUiStateSeverity.Severity severity = 1;
 
     // A message produced from a state item, e.g. Black ink level is 60%. This
     // message may not be localized if it is from a VendorState.Item (required).
@@ -26,7 +27,7 @@ message PrinterUiStateSection {
     optional int32 level_percent = 4;
 
     // The color of a marker.
-    optional cloudprint.capabilities.Marker.Color.Type color = 5;
+    optional Marker.Color.Type color = 5;
   }
 
   repeated Item vendor_item = 1;

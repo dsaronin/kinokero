@@ -1,5 +1,6 @@
 // Represents a cloud device's state in a form convenient for display in a UI.
 
+import 'cloud_device_ui_state_severity.proto';
 import 'printer_ui_state_section.proto';
 
 message CloudDeviceUiState {
@@ -11,19 +12,13 @@ message CloudDeviceUiState {
     OFFLINE = 3;
   }
 
-  enum Severity {
-    NONE = 0;
-    LOW = 1;
-    MEDIUM = 2;
-    HIGH = 3;
-  }
 
   // Device state summary (required).
   optional Summary summary = 1 [default = IDLE];
 
   // Overall severity (error level) of the device state (required).
   // Must only be HIGH in the case that the device is STOPPED.
-  optional Severity severity = 2 [default = NONE];
+  optional CloudDeviceUiStateSeverity.Severity severity = 2 [default = NONE];
 
   // In the descriptions of the following three fields, "CDS is nontrivial"
   // means that CDS is present and there is at least one state item in its

@@ -1,0 +1,12 @@
+// Represents a cloud device's state in a form convenient for display in a UI.
+
+message CloudDeviceUiStateSeverity {
+
+  enum Severity {
+    NONE = 0;
+    LOW = 1;
+    MEDIUM = 2;
+    HIGH = 3;
+  }
+
+}

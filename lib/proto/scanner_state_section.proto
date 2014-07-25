@@ -1,8 +1,10 @@
 // Represents the scanner state.
 
+import 'cloud_device_state_type.proto';
+
 message ScannerStateSection {
 
   // Current scanner state (required).
-  optional CloudDeviceState.StateType state = 1;
+  optional CloudDeviceStateType.StateType state = 1;
 
 }
