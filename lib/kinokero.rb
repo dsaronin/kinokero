@@ -11,6 +11,8 @@ require 'job_state.pb'
 require 'print_job_state_diff.pb'
 require 'cloud_device_state_type.pb'
 
+require 'localized_string.pb'
+
 require 'input_tray_state.pb'
 require 'output_bin_state.pb'
 require 'marker_state.pb'
