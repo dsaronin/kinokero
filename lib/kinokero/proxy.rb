@@ -154,7 +154,7 @@ class Proxy
   def do_ready_state(item)
     @my_devices[item].cloudprint.gcp_ready_state_changed( 
           true,   # shows ready for jobs
-          :idle,  # waiting for work
+          0,  # waiting for work
           ''      # no reason description needed
     )
   end
