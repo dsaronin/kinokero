@@ -708,11 +708,11 @@ GCP_CONNECTION_STATE_NOT_READY = 3   # "OFFLINE"
   def gcp_ready_state_changed( ready_state, state, reason )
 
     state_diff = CloudDeviceState.new(
-      cloud_connection_state: 
-        ( ready_state ? 
-         GCP_CONNECTION_STATE_READY : 
-         GCP_CONNECTION_STATE_NOT_READY
-        ) ,
+#       cloud_connection_state: 
+#         ( ready_state ? 
+#          GCP_CONNECTION_STATE_READY : 
+#          GCP_CONNECTION_STATE_NOT_READY
+#         ) ,
       printer: PrinterStateSection.new( 
             state: state.to_s.upcase,
       )
