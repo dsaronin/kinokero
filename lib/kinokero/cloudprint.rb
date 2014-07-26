@@ -714,7 +714,7 @@ GCP_CONNECTION_STATE_NOT_READY = 3   # "OFFLINE"
 #          GCP_CONNECTION_STATE_NOT_READY
 #         ) ,
       printer: PrinterStateSection.new( 
-            state: state,
+            state: "IDLE",
       )
     )
 
