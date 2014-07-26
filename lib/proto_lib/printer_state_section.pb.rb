@@ -4,10 +4,16 @@ require "beefcake"
 
 class PrinterStateSection
   include Beefcake::Message
+
+  module StateType
+    IDLE = 0
+    PROCESSING = 1
+    STOPPED = 2
+  end
 end
 
 class PrinterStateSection
-  optional :state, CloudDeviceStateType::StateType, 1
+  optional :state, PrinterStateSection::StateType, 1
   optional :input_tray_state, InputTrayState, 2
   optional :output_bin_state, OutputBinState, 3
   optional :marker_state, MarkerState, 4

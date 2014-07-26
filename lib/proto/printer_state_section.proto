@@ -7,12 +7,27 @@ import 'marker_state.proto';
 import 'cover_state.proto';
 import 'media_path_state.proto';
 import 'vendor_state.proto';
-import 'cloud_device_state_type.proto';
 
 message PrinterStateSection {
 
+  // Supported device states.
+  enum StateType {
+
+    // Device is ready to accept jobs. Self-testing, low power and all other
+    // states in which the device can start processing newly submitted jobs
+    // without user intervention should be mapped into this state.
+    IDLE = 0;
+
+    // Processing jobs (e.g. printing).
+    PROCESSING = 1;
+
+    // Device cannot process jobs. User should fix the problem to resume the
+    // processing (e.g. printer is out of paper).
+    STOPPED = 2;
+  }
+
   // Current printer state (required).
-  optional CloudDeviceStateType.StateType state = 1;
+  optional StateType state = 1;
 
   // State of the input trays.
   optional InputTrayState input_tray_state = 2;

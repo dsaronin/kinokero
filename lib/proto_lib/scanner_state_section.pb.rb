@@ -4,8 +4,14 @@ require "beefcake"
 
 class ScannerStateSection
   include Beefcake::Message
+
+  module StateType
+    IDLE = 0
+    PROCESSING = 1
+    STOPPED = 2
+  end
 end
 
 class ScannerStateSection
-  optional :state, CloudDeviceStateType::StateType, 1
+  optional :state, ScannerStateSection::StateType, 1
 end
