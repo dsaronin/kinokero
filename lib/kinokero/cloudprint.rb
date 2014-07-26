@@ -715,14 +715,14 @@ GCP_CONNECTION_STATE_NOT_READY = 3   # "OFFLINE"
         ) ,
       printer: PrinterStateSection.new( 
             state: state.to_s.upcase,
-
       )
     )
 
     status_response = Cloudprint.client_connection.post( ::Kinokero.gcp_service + GCP_UPDATE ) do |req|
       req.headers['Authorization'] = gcp_form_auth_token()
       req.body =  {
-        :semantic_state_diff  => state_diff.to_json
+          printerid: @gcp_control[:gcp_printerid],
+          semantic_state_diff: state_diff.to_json
       }
 
       log_request( 'device update', req )
