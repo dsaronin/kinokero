@@ -705,33 +705,36 @@ GCP_CONNECTION_STATE_NOT_READY = 3   # "OFFLINE"
 
 # ------------------------------------------------------------------------------
 
-  def gcp_ready_state_changed( ready_state, state, reason )
-
-    state_diff = CloudDeviceState.new(
 #       cloud_connection_state: 
 #         ( ready_state ? 
 #          GCP_CONNECTION_STATE_READY : 
 #          GCP_CONNECTION_STATE_NOT_READY
 #         ) ,
-      version: "1.0",
-      printer: PrinterStateSection.new( 
-            state: "STOPPED",
-            marker_state: MarkerState.new(
-              item: [
-                MarkerState::Item.new(
-                  vendor_id: "black",
-                  state: 'EXHAUSTED',
-                  level_percent: 0
-                ),
-                MarkerState::Item.new(
-                  vendor_id: "color",
-                  state: 'OK',
-                  level_percent: 88,
-                  level_pages: 100
-                )
-              ]
-            )
-      )
+#       version: "1.0",
+#       printer: PrinterStateSection.new( 
+#             state: "STOPPED",
+#             marker_state: MarkerState.new(
+#               item: [
+#                 MarkerState::Item.new(
+#                   vendor_id: "black",
+#                   state: 'EXHAUSTED',
+#                   level_percent: 0
+#                 ),
+#                 MarkerState::Item.new(
+#                   vendor_id: "color",
+#                   state: 'OK',
+#                   level_percent: 88,
+#                   level_pages: 100
+#                 )
+#               ]
+#             )
+#       )
+
+  def gcp_ready_state_changed( ready_state, state, reason )
+
+    state_diff = CloudDeviceState.new(
+       printer: PrinterStateSection.new( 
+       )
     )
 
     status_response = Cloudprint.client_connection.post( ::Kinokero.gcp_service + GCP_UPDATE ) do |req|
