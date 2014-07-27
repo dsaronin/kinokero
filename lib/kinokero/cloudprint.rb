@@ -713,8 +713,24 @@ GCP_CONNECTION_STATE_NOT_READY = 3   # "OFFLINE"
 #          GCP_CONNECTION_STATE_READY : 
 #          GCP_CONNECTION_STATE_NOT_READY
 #         ) ,
+      version: "1.0",
       printer: PrinterStateSection.new( 
-            state: "IDLE",
+            state: "STOPPED",
+            marker_state: MarkerState.new(
+              item: [
+                Item.new(
+                  vendor_id: "black",
+                  state: 'EXHAUSTED',
+                  level_percent: 0
+                ),
+                Item.new(
+                  vendor_id: "color",
+                  state: 'OK',
+                  level_percent: 88,
+                  level_pages: 100
+                )
+              ]
+            )
       )
     )
 
