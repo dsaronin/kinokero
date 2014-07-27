@@ -718,12 +718,12 @@ GCP_CONNECTION_STATE_NOT_READY = 3   # "OFFLINE"
             state: "STOPPED",
             marker_state: MarkerState.new(
               item: [
-                Item.new(
+                MarkerState::Item.new(
                   vendor_id: "black",
                   state: 'EXHAUSTED',
                   level_percent: 0
                 ),
-                Item.new(
+                MarkerState::Item.new(
                   vendor_id: "color",
                   state: 'OK',
                   level_percent: 88,
