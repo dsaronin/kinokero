@@ -73,7 +73,7 @@ class Proxy
     )
 
       # begin polling the printer device status
-    @my_devices[item].gcp_printer_control.start_poll_thread
+    # @my_devices[item].gcp_printer_control.start_poll_thread
 
   end
 
