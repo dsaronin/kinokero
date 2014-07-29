@@ -322,6 +322,12 @@ GCP_CONNECTION_STATE_NOT_READY = 3   # "OFFLINE"
 #
   def self.gcp_anonymous_register(params)
 
+    sem_state = CloudDeviceState.new(
+       printer: PrinterStateSection.new( 
+          state: "IDLE"
+       )
+    )
+
     reg_response =  Cloudprint.client_connection.post ::Kinokero.gcp_service + GCP_REGISTER do |req|
       req.headers['X-CloudPrint-Proxy'] = ::Kinokero.my_proxy_id 
       req.body =  {
@@ -338,6 +344,7 @@ GCP_CONNECTION_STATE_NOT_READY = 3   # "OFFLINE"
         update_url:   params[:gcp_update_url],
         firmware:     params[:gcp_firmware],
 
+        semantic_state: sem_state.to_json,
 
         :capabilities => Faraday::UploadIO.new( 
                   params[:capability_cdd], 
