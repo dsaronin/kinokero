@@ -323,6 +323,7 @@ GCP_CONNECTION_STATE_NOT_READY = 3   # "OFFLINE"
   def self.gcp_anonymous_register(params)
 
     sem_state = CloudDeviceState.new(
+       version: "1.0",
        printer: PrinterStateSection.new( 
           state: "IDLE"
        )
