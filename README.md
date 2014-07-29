@@ -12,6 +12,8 @@ be handled by whatever is invoking Kinokero.
 
 * The gem is currently pre-Alpha.
 * All GCP protocol interactions are working
+  - note I am upgrading /register to meet GCP2.0 spec
+  - I have left GCP1.0 spec /register intact
 * jingle notifications are working.
 * Files can be cloudprinted remotely.
 * I'm currently working on improving the CUPS programmatic interface & status reporting.

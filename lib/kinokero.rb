@@ -36,6 +36,12 @@ module Kinokero
 
 CRLF = '\r\n'
 
+# mimetype for how to encode CDD files
+MIMETYPE_JSON      = 'application/json'
+MIMETYPE_PROTOBUF  = 'application/protobuf'
+MIMETYPE_GENERAL   = 'application/octet-stream'
+MIMETYPE_CDD       =  MIMETYPE_GENERAL
+
 # mimetype for how to encode PPD files
 MIMETYPE_PPD     = 'application/vnd.cups.ppd'
 
@@ -111,6 +117,7 @@ PRINTER_POLL_CYCLE = 5    # wait five seconds before recheck status
 # class Cloudprint required
     @@mimetype_oauth  = MIMETYPE_OAUTH # how to encoade oauth files
     @@mimetype_ppd  =   MIMETYPE_PPD   # how to encode PPD files
+    @@mimetype_cdd  =   MIMETYPE_CDD   # how to encode CDD files
     @@polling_secs  =   POLLING_SECS   # secs to sleep before register polling again
     @@truncate_log  =   TRUNCATE_LOG   # number of characters to truncate response logs 
     @@followup_host  =  FOLLOWUP_HOST  #

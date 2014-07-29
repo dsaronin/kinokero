@@ -307,7 +307,7 @@ GCP_CONNECTION_STATE_NOT_READY = 3   # "OFFLINE"
 
 # ------------------------------------------------------------------------------
 
-# gcp_anonymous_register - posts /register for anon printer; returns response hash
+# gcp_anonymous_register - /register gcp2.0 for anon printer; returns response hash
 # args:
   # params  - hash with parameters: 
   #           :id, :printer_name, :capability_ppd, :default_ppd, :status
@@ -321,6 +321,46 @@ GCP_CONNECTION_STATE_NOT_READY = 3   # "OFFLINE"
 #   - 
 #
   def self.gcp_anonymous_register(params)
+
+    reg_response =  Cloudprint.client_connection.post ::Kinokero.gcp_service + GCP_REGISTER do |req|
+      req.headers['X-CloudPrint-Proxy'] = ::Kinokero.my_proxy_id 
+      req.body =  {
+        :name    => params[:gcp_printer_name],
+        :proxy   => ::Kinokero.my_proxy_id,
+        
+        gcp_version:  '2.0',
+        use_cdd:      'true',
+        uuid:         params[:gcp_uuid],
+        manufacturer: params[:gcp_manufacturer],
+        model:        params[:gcp_model],
+        setup_url:    params[:gcp_setup_url],
+        support_url:  params[:gcp_support_url],
+        update_url:   params[:gcp_update_url],
+        firmware:     params[:gcp_firmware],
+
+
+        :capabilities => Faraday::UploadIO.new( 
+                  params[:capability_cdd], 
+                  ::Kinokero.mimetype_cdd 
+        ),
+
+      }
+
+      Kinokero::Log.log_request( 'get anon-reg', req )
+
+    end  # request do
+
+    Kinokero::Log.log_response( 'anon-reg', reg_response )
+
+    return reg_response
+
+  end
+
+# ------------------------------------------------------------------------------
+
+# gcp_anonymous_register - /register gcp1.0 for anon printer; returns response hash
+# 
+  def self.gcp_anonymous_register_1_0(params)
 
     reg_response =  Cloudprint.client_connection.post ::Kinokero.gcp_service + GCP_REGISTER do |req|
       req.headers['X-CloudPrint-Proxy'] = ::Kinokero.my_proxy_id 
@@ -350,7 +390,7 @@ GCP_CONNECTION_STATE_NOT_READY = 3   # "OFFLINE"
 
   end
 
-  # req.headers['Authorization'] = "GoogleLogin auth=" + AuthAccessToken
+# req.headers['Authorization'] = "GoogleLogin auth=" + AuthAccessToken
 # ------------------------------------------------------------------------------
 # From GCP documentation:
 #   If the user has successfully claimed the token then the poll_response hash is:
