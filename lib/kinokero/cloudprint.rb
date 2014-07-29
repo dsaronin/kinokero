@@ -260,13 +260,21 @@ GCP_CONNECTION_STATE_NOT_READY = 3   # "OFFLINE"
 
               gcp_token_expiry_time: Time.now + oauth_response['expires_in'].to_i,
 
-              default_ppd:     params[:default_ppd],
               capability_ppd:  params[:capability_ppd],
+              capability_cdd:  params[:capability_cdd],
               cups_alias:      params[:cups_alias],
               item:            params[:item],
-              status:          params[:status],
               virgin_access:   true,  # boolean for dealing with jingle access token quirk
-              is_active:       true
+              is_active:       true,
+
+              gcp_uuid:         params[:gcp_uuid],
+              gcp_manufacturer: params[:gcp_manufacturer],
+              gcp_model:        params[:gcp_model],
+              gcp_setup_url:    params[:gcp_setup_url],
+              gcp_support_url:  params[:gcp_support_url],
+              gcp_update_url:   params[:gcp_update_url],
+              gcp_firmware:     params[:gcp_firmware],
+
             }
 
             # let calling module save the response for us
@@ -380,10 +388,6 @@ GCP_CONNECTION_STATE_NOT_READY = 3   # "OFFLINE"
         :status => params[:status],
         :capabilities => Faraday::UploadIO.new( 
                   params[:capability_ppd], 
-                  ::Kinokero.mimetype_ppd 
-        ),
-        :defaults => Faraday::UploadIO.new( 
-                  params[:default_ppd], 
                   ::Kinokero.mimetype_ppd 
         ),
       }
