@@ -1,0 +1,244 @@
+hp-check[24307]: info: :
+hp-check[24307]: info: :[01mHP Linux Imaging and Printing System (ver. 3.14.4)[0m
+hp-check[24307]: info: :[01mDependency/Version Check Utility ver. 15.1[0m
+hp-check[24307]: info: :
+hp-check[24307]: info: :Copyright (c) 2001-13 Hewlett-Packard Development Company, LP
+hp-check[24307]: info: :This software comes with ABSOLUTELY NO WARRANTY.
+hp-check[24307]: info: :This is free software, and you are welcome to distribute it
+hp-check[24307]: info: :under certain conditions. See COPYING file for more details.
+hp-check[24307]: info: :
+hp-check[24307]: info: :[01mNote: hp-check can be run in three modes:[0m
+hp-check[24307]: info: :1. Compile-time check mode (-c or --compile): Use this mode before compiling the HPLIP supplied tarball (.tar.gz or .run) to determine if the proper dependencies are installed to successfully compile 
+hp-check[24307]: info: :HPLIP.                                                                                                                                                                                                  
+hp-check[24307]: info: :2. Run-time check mode (-r or --run): Use this mode to determine if a distro supplied package (.deb, .rpm, etc) or an already built HPLIP supplied tarball has the proper dependencies installed to     
+hp-check[24307]: info: :successfully run.                                                                                                                                                                                       
+hp-check[24307]: info: :3. Both compile- and run-time check mode (-b or --both) (Default): This mode will check both of the above cases (both compile- and run-time dependencies).                                              
+hp-check[24307]: info: :
+hp-check[24307]: info: :Check types:                                                                                                                                                                                            
+hp-check[24307]: info: :a. EXTERNALDEP - External Dependencies                                                                                                                                                                  
+hp-check[24307]: info: :b. GENERALDEP - General Dependencies (required both at compile and run time)                                                                                                                            
+hp-check[24307]: info: :c. COMPILEDEP - Compile time Dependencies                                                                                                                                                               
+hp-check[24307]: info: :d. [All are run-time checks]                                                                                                                                                                            
+hp-check[24307]: info: :PYEXT SCANCONF QUEUES PERMISSION                                                                                                                                                                        
+hp-check[24307]: info: :
+hp-check[24307]: info: :Status Types:
+hp-check[24307]: info: :    OK
+hp-check[24307]: info: :    MISSING       - Missing Dependency or Permission or Plug-in
+hp-check[24307]: info: :    INCOMPAT      - Incompatible dependency-version or Plugin-version
+hp-check[24307]: info: :
+hp-check[24307]: info: :
+hp-check[24307]: info: :---------------
+hp-check[24307]: info: :| SYSTEM INFO |
+hp-check[24307]: info: :---------------
+hp-check[24307]: info: :
+hp-check[24307]: info: : Kernel: 3.11.0-26-generic #45-Ubuntu SMP Tue Jul 15 04:02:06 UTC 2014 GNU/Linux
+ Host: jabari
+ Proc: 3.11.0-26-generic #45-Ubuntu SMP Tue Jul 15 04:02:06 UTC 2014 GNU/Linux
+ Distribution: ubuntu 13.10
+hp-check[24307]: info: : Bitness: 64 bit
+
+hp-check[24307]: info: :
+hp-check[24307]: info: :-----------------------
+hp-check[24307]: info: :| HPLIP CONFIGURATION |
+hp-check[24307]: info: :-----------------------
+hp-check[24307]: info: :
+hp-check[24307]: info: :HPLIP-Version: HPLIP 3.14.4
+hp-check[24307]: info: :HPLIP-Home: /usr/share/hplip
+hp-check[24307]: info: :HPLIP-Installation: Auto installation is supported for ubuntu distro  13.10 version 
+hp-check[24307]: info: :
+hp-check[24307]: info: :[01mCurrent contents of '/etc/hp/hplip.conf' file:[0m
+hp-check[24307]: info: :# hplip.conf.  Generated from hplip.conf.in by configure.
+
+[hplip]
+version=3.14.4
+
+[dirs]
+home=/usr/share/hplip
+run=/var/run
+ppd=/usr/share/ppd/HP
+ppdbase=/usr/share/ppd
+doc=/usr/share/doc/hplip-3.14.4
+html=/usr/share/doc/hplip-3.14.4
+icon=/usr/share/applications
+cupsbackend=/usr/lib/cups/backend
+cupsfilter=/usr/lib/cups/filter
+drv=/usr/share/cups/drv/hp
+bin=/usr/bin
+
+# Following values are determined at configure time and cannot be changed.
+[configure]
+network-build=yes
+libusb01-build=no
+pp-build=no
+gui-build=yes
+scanner-build=yes
+fax-build=yes
+dbus-build=yes
+cups11-build=no
+doc-build=yes
+shadow-build=no
+hpijs-install=no
+foomatic-drv-install=no
+foomatic-ppd-install=no
+foomatic-rip-hplip-install=no
+hpcups-install=yes
+cups-drv-install=yes
+cups-ppd-install=no
+internal-tag=3.14.4
+restricted-build=no
+ui-toolkit=qt4
+qt3=no
+qt4=yes
+policy-kit=no
+lite-build=no
+udev_sysfs_rules=no
+hpcups-only-build=no
+hpijs-only-build=no
+
+hp-check[24307]: info: :
+hp-check[24307]: info: :[01mCurrent contents of '/var/lib/hp/hplip.state' file:[0m
+hp-check[24307]: info: :[plugin]
+installed = 1
+eula = 1
+version = 3.14.4
+
+
+hp-check[24307]: info: :
+hp-check[24307]: info: :[01mCurrent contents of '~/.hplip/hplip.conf' file:[0m
+hp-check[24307]: info: :[upgrade]
+notify_upgrade = true
+last_upgraded_time = 1397326118
+pending_upgrade_time = 1406527007
+latest_available_version = 3.14.6
+
+[settings]
+systray_visible = 0
+systray_messages = 0
+
+[last_used]
+device_uri = "hp:/net/HP_LaserJet_Professional_P_1102w?ip=192.168.1.65"
+printer_name = 
+working_dir = .
+
+[commands]
+scan = /usr/bin/xsane -V %SANE_URI%
+
+[refresh]
+rate = 30
+enable = false
+type = 1
+
+[polling]
+enable = false
+interval = 5
+device_list = 
+
+[fax]
+voice_phone = 
+email_address = 
+
+[installation]
+date_time = 07/28/2014 14:36:38
+version = 3.14.4
+
+
+hp-check[24307]: info: : <Package-name>        <Package-Desc>      <Required/Optional> <Min-Version> <Installed-Version> <Status>   <Comment>
+hp-check[24307]: info: :
+hp-check[24307]: info: :--------------------------
+hp-check[24307]: info: :|  External Dependencies |
+hp-check[24307]: info: :--------------------------
+hp-check[24307]: info: :
+hp-check[24307]: info: : policykit            Admin-Policy-framework    OPTIONAL        -               0.105           OK         -
+hp-check[24307]: info: : gs                   Ghostscript               REQUIRED        7.05            9.10            OK         -
+hp-check[24307]: info: : network              Network-wget              OPTIONAL        -               1.14            OK         -
+hp-check[24307]: info: : scanimage            Shell-Scanning            OPTIONAL        1.0             1.0.23          OK         -
+hp-check[24307]: info: : avahi-utils          avahi-utils               OPTIONAL        -               0.6.31          OK         -
+hp-check[24307]: info: : dbus                 DBus                      REQUIRED        -               1.6.12          OK         -
+hp-check[24307]: info: : cups                 CUPS                      REQUIRED        1.1             1.7             OK         'CUPS Scheduler is running'
+hp-check[24307]: info: : xsane                SANE-GUI                  OPTIONAL        0.9             0.998           OK         -
+hp-check[24307]: info: :
+hp-check[24307]: info: :-------------------------
+hp-check[24307]: info: :|  General Dependencies |
+hp-check[24307]: info: :-------------------------
+hp-check[24307]: info: :
+hp-check[24307]: info: : reportlab            Python-PDF-Lib            OPTIONAL        2.0             2.6             OK         -
+hp-check[24307]: info: : libcrypto            OpenSSL-Crypto-Lib        REQUIRED        -               1.0.1           OK         -
+hp-check[24307]: info: : pil                  Python-Image-Lib          OPTIONAL        -               1.1.7           OK         -
+hp-check[24307]: info: : pyqt4-dbus           PyQt4-DBUS                REQUIRED        4.0             4.10.3          OK         -
+hp-check[24307]: info: : libjpeg              JPEG-Lib                  REQUIRED        -               -               OK         -
+hp-check[24307]: info: : libpthread           POSIX-Threads-Lib         REQUIRED        -               2.17            OK         -
+hp-check[24307]: info: : python-dbus          Python-DBUS               REQUIRED        0.80.0          1.2.0           OK         -
+hp-check[24307]: info: : python-devel         Python-SDK                REQUIRED        2.2             2.7.5           OK         -
+hp-check[24307]: info: : pyqt4                Python-Qt4                REQUIRED        4.0             4.10.3          OK         -
+hp-check[24307]: info: : cups-devel           CUPS-SDK                  REQUIRED        -               1.7             OK         -
+hp-check[24307]: info: : sane-devel           SANE-SDK                  REQUIRED        -               1.0.23          OK         -
+hp-check[24307]: info: : libusb               USB-Lib                   REQUIRED        -               1.0             OK         -
+hp-check[24307]: info: : sane                 Scan-Lib                  REQUIRED        -               1.0.23          OK         -
+hp-check[24307]: info: : cups-image           CUPS-Image-Lib            REQUIRED        -               1.7             OK         -
+hp-check[24307]: info: : libnetsnmp-devel     SNMP-Networking-SDK       REQUIRED        5.0.9           5.7.2           OK         -
+hp-check[24307]: info: : python-xml           Python-XML-Lib            REQUIRED        -               2.1.0           OK         -
+hp-check[24307]: info: : python-notify        Desktop-notifications     OPTIONAL        -               -               OK         -
+hp-check[24307]: info: :
+hp-check[24307]: info: :------------------------------
+hp-check[24307]: info: :|  Compile Time Dependencies |
+hp-check[24307]: info: :------------------------------
+hp-check[24307]: info: :
+hp-check[24307]: info: : gcc                  gcc-Compiler              REQUIRED        -               4.8.1           OK         -
+hp-check[24307]: info: : libtool              Build-tools               REQUIRED        -               2.4.2           OK         -
+hp-check[24307]: info: : make                 GNU-Build-tools           REQUIRED        3.0             3.81            OK         -
+hp-check[24307]: info: :
+hp-check[24307]: info: :----------------------
+hp-check[24307]: info: :|  Python Extentions |
+hp-check[24307]: info: :----------------------
+hp-check[24307]: info: :
+hp-check[24307]: info: : cupsext              CUPS-Extension            REQUIRED        -               3.14.4          OK         -
+hp-check[24307]: info: : pcardext             PhotoCard-Extension       REQUIRED        -               3.14.4          OK         -
+hp-check[24307]: info: : hpmudext             IO-Extension              REQUIRED        -               3.14.4          OK         -
+hp-check[24307]: info: :
+hp-check[24307]: info: :-----------------------
+hp-check[24307]: info: :|  Scan Configuration |
+hp-check[24307]: info: :-----------------------
+hp-check[24307]: info: :
+hp-check[24307]: info: : hpaio                HPLIP-SANE-Backend        REQUIRED        -               3.14.4          OK         'hpaio found in /etc/sane.d/dll.conf'
+hp-check[24307]: info: : scanext              Scan-SANE-Extension       REQUIRED        -               3.14.4          OK         -
+hp-check[24307]: info: :
+hp-check[24307]: info: :------------------------------
+hp-check[24307]: info: :| DISCOVERED SCANNER DEVICES |
+hp-check[24307]: info: :------------------------------
+hp-check[24307]: info: :
+hp-check[24307]: info: :No Scanner found.
+hp-check[24307]: info: :
+hp-check[24307]: info: :--------------------------
+hp-check[24307]: info: :| DISCOVERED USB DEVICES |
+hp-check[24307]: info: :--------------------------
+hp-check[24307]: info: :
+hp-check[24307]: info: :No devices found.
+hp-check[24307]: info: :
+hp-check[24307]: info: :---------------------------------
+hp-check[24307]: info: :| INSTALLED CUPS PRINTER QUEUES |
+hp-check[24307]: info: :---------------------------------
+hp-check[24307]: info: :
+hp-check[24307]: info: :
+hp-check[24307]: info: :[01mHP_LaserJet_Professional_P_1102w[0m
+hp-check[24307]: info: :[01m--------------------------------[0m
+hp-check[24307]: info: :Type: Unknown
+hp-check[24307]: info: :Device URI: ipps://uwanda.local:631/printers/HP_LaserJet_Professional_P_1102w
+hp-check[24307]: info: :
+hp-check[24307]: info: :[01mlaserjet_1102w[0m
+hp-check[24307]: info: :[01m--------------[0m
+hp-check[24307]: info: :Type: Printer
+hp-check[24307]: info: :Device URI: hp:/net/HP_LaserJet_Professional_P_1102w?ip=192.168.1.65
+hp-check[24307]: info: :PPD: /etc/cups/ppd/laserjet_1102w.ppd
+hp-check[24307]: info: :PPD Description: HP LaserJet Professional P 1102w, hpcups 3.13.9, requires proprietary plugin
+hp-check[24307]: info: :Printer status: printer laserjet_1102w is idle.  enabled since Mon 28 Jul 2014 01:59:30 PM PDT	ready to print
+hp-check[24307]: info: :Required plug-in status: Installed
+hp-check[24307]: info: :Communication status: Good
+hp-check[24307]: info: :
+hp-check[24307]: info: :
+hp-check[24307]: info: :--------------
+hp-check[24307]: info: :| PERMISSION |
+hp-check[24307]: info: :--------------
+hp-check[24307]: info: :
+hp-check[24307]: info: :[32;01mNo errors or warnings.[0m
+hp-check[24307]: info: :
+hp-check[24307]: info: :Done.

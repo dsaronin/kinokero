@@ -201,8 +201,15 @@ SAMPLE_GCP_OPTIONS = {
   is_active: false,   # set to true after successful registration
 
   capability_ppd: '/etc/cups/ppd/my_printer.ppd',
-  default_ppd: '/etc/cups/ppd/my_printer.ppd',
-  status: 'active',
+  capability_cdd: '/etc/cups/cdd/laserjet_1102w.cdd',
+
+  gcp_uuid: 'VND3R11877',
+  gcp_manufacturer: 'Hewlett-Packard',
+  gcp_model: 'LaserJet P1102w',
+  gcp_setup_url: 'http://www8.hp.com/us/en/campaigns/wireless-printing-center/printer-setup-help.html',
+  gcp_support_url: 'http://h10025.www1.hp.com/ewfrf/wc/product?product=4110396&lc=en&cc=us&dlc=en&lang=en&cc=us',
+  gcp_update_url: 'http://h10025.www1.hp.com/ewfrf/wc/product?product=4110396&lc=en&cc=us&dlc=en&lang=en&cc=us',
+  gcp_firmware: '20130703',
 }
 
 # VALID_GCP_OPTIONS is used to determine if user options valid
