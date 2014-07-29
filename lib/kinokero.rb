@@ -144,7 +144,7 @@ PRINTER_POLL_CYCLE = 5    # wait five seconds before recheck status
 # printer device/cups related
     @@printer_poll_cycle = PRINTER_POLL_CYCLE
 
-  mattr_accessor :my_proxy_id,:mimetype_oauth, :mimetype_ppd, :polling_secs,
+  mattr_accessor :my_proxy_id,:mimetype_oauth, :mimetype_ppd, :mimetype_cdd, :polling_secs,
     :truncate_log, :followup_host, :followup_uri, :gaia_host, :loging_uri,
     :loging_url, :gcp_url, :gcp_service, :ssl_ca_path, 
     :authorization_scope, :authorization_redirect_uri, :oauth2_token_endpoint,
