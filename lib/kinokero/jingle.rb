@@ -23,6 +23,7 @@ class Jingle
     @gcp_channel   = ::Kinokero.gcp_channel
     @client        = nil
     @is_connection = false    # true if connection established
+    @in_callback   = false    # semaphore true during callback stanza
     
     Jabber::debug = true
   end
@@ -70,6 +71,9 @@ class Jingle
 # </message>
   def gtalk_notification_callback( &block )
     @client.add_message_callback do |m|
+
+      @in_callback = true   # shows we're within callback now
+
       if m.from == @gcp_channel
           # grab the "push:data" snippet from within the "push:push" snippet
           # from within the current stanza m
@@ -97,6 +101,9 @@ class Jingle
           end   # decoded printerid nil  if..then..else
         end   # printerid useless if..then..else
       end    # if channel correct
+
+      @in_callback = false   # shows we're not within callback now
+
     end  # callback block
   end
 
@@ -123,7 +130,7 @@ class Jingle
 # -----------------------------------------------------------------------------
 
   def gtalk_close_connection()
-    unless @client.nil?
+    unless @client.nil?  || @in_callback
         # cease responding to message callbacks
       @client.delete_message_callback( nil )
 
