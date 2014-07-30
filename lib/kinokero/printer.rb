@@ -98,10 +98,13 @@ module Kinokero
             # get current device cups state
           state_hash = Cups.options_for( @gcp_printer_control[:cups_alias] ) 
 
+            # convert string to boolean for is_accepting jobs
+          is_accepting = (state_hash['printer-is-accepting-jobs'] == 'true')
+
             # if different from before
-          if @was_state ^ state_hash['printer-is-accepting-jobs']
+          if @was_state ^ is_accepting
                # remember the changed state
-            @was_state = state_hash['printer-is-accepting-jobs']
+            @was_state = is_accepting
                # then tell GCP about the change
             @cloudprint.gcp_ready_state_changed( 
                 @was_state,
