@@ -102,18 +102,24 @@ class Proxy
 # -----------------------------------------------------------------------------
   def do_delete(item, skip_gcp=nil )
 
-      # stop polling the printer device status
-    @my_devices[item].stop_poll_thread
+        # forestall reentreant issues by checking our validity
+    unless  (my_device = @my_devices[item]).nil?  
 
-      # forestall reentreant issues by checking our validity`
-    unless  @my_devices[item].nil?  ||  @my_devices[item].cloudprint.nil?
-         # do delete housekeeping & maybe issue GCP command
-      @my_devices[item].cloudprint.gcp_delete_printer( skip_gcp )
-      @my_devices[item].cloudprint = nil    # release the reference to our object
-      @my_devices.delete( item )   # remove device struct from our list
-    end
+        # stop polling the printer device status
+      my_device.stop_poll_thread
+
+        # forestall reentreant issues by checking our validity
+      unless  my_device.cloudprint.nil?
+           # do delete housekeeping & maybe issue GCP command
+        my_device.cloudprint.gcp_delete_printer( skip_gcp )
+        my_device.cloudprint = nil    # release the reference to our object
+      end   # unless cloudprint's been removed
+
+    end  # unless device already removed
+
+    @my_devices.delete( item )   # remove device struct from our list
+
   end
-
 
 # -----------------------------------------------------------------------------
 # do_register -- registers our default printer, prints claim info
