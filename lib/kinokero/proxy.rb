@@ -57,10 +57,17 @@ class Proxy
   def do_connect(item)
       # establish a jingle connection
     @my_devices[item].cloudprint.gtalk_start_connection do |printerid|
-
         # NOTE: this execution takes place asynchronously 
         # upon callback from jingle notification
-      do_print_jobs( printerid )
+
+      if printerid =~ /delete/
+          # jingle notified us of delete
+          # potentially reentreant; but delete anyway
+          # TODO: verify printerid for us?
+        do_delete( item, true )
+      else   # print notification
+        do_print_jobs( printerid )
+      end   # if..then..else notification type
 
     end  # block
 
@@ -89,15 +96,22 @@ class Proxy
 
 # -----------------------------------------------------------------------------
 # do_delete -- 
+# this is potentially reentreant:
+# an initial do_delete spawns a jingle delete notification which
+# then calls do delete again at an indeterminate point
 # -----------------------------------------------------------------------------
-  def do_delete(item)
+  def do_delete(item, skip_gcp=nil )
 
       # stop polling the printer device status
     @my_devices[item].stop_poll_thread
 
-    @my_devices[item].cloudprint.gcp_delete_printer
-    @my_devices[item].cloudprint = nil    # release the reference to our object
-    @my_devices.delete( item )   # remove device struct from our list
+      # forestall reentreant issues by checking our validity`
+    unless  @my_devices[item].nil?  ||  @my_devices[item].cloudprint.nil?
+         # do delete housekeeping & maybe issue GCP command
+      @my_devices[item].cloudprint.gcp_delete_printer( skip_gcp )
+      @my_devices[item].cloudprint = nil    # release the reference to our object
+      @my_devices.delete( item )   # remove device struct from our list
+    end
   end
 
 

@@ -677,7 +677,9 @@ GCP_CONNECTION_STATE_NOT_READY = 3   # "OFFLINE"
 
 # ------------------------------------------------------------------------------
 
-  def gcp_delete_printer( )
+  def gcp_delete_printer( skip_gcp=nil )
+
+    unless skip_gcp
 
     remove_response = Cloudprint.client_connection.post( ::Kinokero.gcp_service + GCP_DELETE ) do |req|
       req.headers['Authorization'] = gcp_form_auth_token()
@@ -690,7 +692,9 @@ GCP_CONNECTION_STATE_NOT_READY = 3   # "OFFLINE"
     end  # request do
     log_response( 'remove printer', remove_response )
 
-    if remove_response[ 'success' ]
+    end  # skip issuing gcp command
+
+    if skip_gcp  ||  remove_response[ 'success' ]
 
       # unsubscribe & close jingle connection
       @jingle.gtalk_close_connection()  unless @jingle.nil?
@@ -699,7 +703,7 @@ GCP_CONNECTION_STATE_NOT_READY = 3   # "OFFLINE"
 
     end
 
-    return remove_response.body
+    return skip_gcp  ||  remove_response.body
 
   end
 
