@@ -97,7 +97,7 @@ SSL_CERT_PATH = "/usr/lib/ssl/certs"
 CUPS_TESTPAGE_FILE = "/usr/share/cups/data/default-testpage.pdf"
 
 # printer device status polling cycle (float secs to sleep)
-PRINTER_POLL_CYCLE = 5    # wait five seconds before recheck status
+PRINTER_POLL_CYCLE = 15    # wait fifteen seconds before recheck status
 
 # -----------------------------------------------------------------------------
 
