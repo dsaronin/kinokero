@@ -134,7 +134,7 @@ module Kinokero
   def cups_state_to_sym( state )
     case ( state )
       when '3' then :idle
-      when '4' then :busy
+      when '4' then :processing
       when '5' then :stopped
       else
         state.to_sym

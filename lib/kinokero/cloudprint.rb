@@ -757,11 +757,6 @@ GCP_CONNECTION_STATE_NOT_READY = 3   # "OFFLINE"
 
 # ------------------------------------------------------------------------------
 
-#       cloud_connection_state: 
-#         ( ready_state ? 
-#          GCP_CONNECTION_STATE_READY : 
-#          GCP_CONNECTION_STATE_NOT_READY
-#         ) ,
 #       version: "1.0",
 #       printer: PrinterStateSection.new( 
 #             state: "STOPPED",
@@ -784,8 +779,12 @@ GCP_CONNECTION_STATE_NOT_READY = 3   # "OFFLINE"
 
   def gcp_ready_state_changed( ready_state, state, reason )
 
+      # TODO: screen out unexpected states
+    #
+    # state_diff will only show what has changed from previous CDS
     state_diff = CloudDeviceState.new(
        printer: PrinterStateSection.new( 
+          state: state.to_s.upcase,
        )
     )
 

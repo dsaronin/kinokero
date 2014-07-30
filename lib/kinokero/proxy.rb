@@ -73,7 +73,7 @@ class Proxy
     )
 
       # begin polling the printer device status
-    # @my_devices[item].gcp_printer_control.start_poll_thread
+    @my_devices[item].gcp_printer_control.start_poll_thread
 
   end
 
@@ -91,6 +91,10 @@ class Proxy
 # do_delete -- 
 # -----------------------------------------------------------------------------
   def do_delete(item)
+
+      # stop polling the printer device status
+    @my_devices[item].gcp_printer_control.stop_poll_thread
+
     @my_devices[item].cloudprint.gcp_delete_printer
     @my_devices[item].cloudprint = nil    # release the reference to our object
     @my_devices.delete( item )   # remove device struct from our list
