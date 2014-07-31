@@ -297,20 +297,26 @@ GCP_CONNECTION_STATE_NOT_READY = 3   # "OFFLINE"
 
       # continue on asynchronously with whatever
       # step 2: tell user where to claim printer
-    return {
+    response = {
       success:                 status, 
       swalapala_printer_id:    params[:printer_id],
-      gcp_printer_name:        reg_response['printers'][0]['name'],
-      gcp_printer_id:          reg_response['printers'][0]['id'],
-      gcp_invite_page_url:     reg_response['invite_page_url'],
-      gcp_easy_reg_url:        reg_response['complete_invite_url'],
-      gcp_auto_invite_url:     reg_response['automated_invite_url'],
-      gcp_claim_token_url:     reg_response['invite_url'],
-      gcp_printer_reg_token:   reg_response['registration_token'],
-      gcp_reg_token_duration:  reg_response['token_duration'],
       cups_alias:              params[:cups_alias] 
     }
 
+    if status
+
+      response[:gcp_printer_name]       = reg_response['printers'][0]['name'],
+      response[:gcp_printer_id]         = reg_response['printers'][0]['id'],
+      response[:gcp_invite_page_url]    = reg_response['invite_page_url'],
+      response[:gcp_easy_reg_url]       = reg_response['complete_invite_url'],
+      response[:gcp_auto_invite_url]    = reg_response['automated_invite_url'],
+      response[:gcp_claim_token_url]    = reg_response['invite_url'],
+      response[:gcp_printer_reg_token]  = reg_response['registration_token'],
+      response[:gcp_reg_token_duration] = reg_response['token_duration'],
+
+    end   # successful response
+
+    return response
   end
 
 # ------------------------------------------------------------------------------
