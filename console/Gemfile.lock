@@ -1,6 +1,6 @@
 GIT
   remote: git://github.com/dsaronin/kinokero.git
-  revision: ec39aa35314c345e14e1717b6717dafde6dadcc4
+  revision: e90a11b0721a96e54dc844874fd8a6cbcb892e57
   specs:
     kinokero (0.0.5)
       activesupport
