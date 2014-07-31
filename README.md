@@ -209,6 +209,7 @@ mapped to the same, or different, CUPS printers on the local system. The file is
 Variables (you supply the correct information) are indicated enclosed in angular
 brackets: <variable name>.
 
+```
 test:
   printer_id: 0
   item: test
@@ -225,6 +226,7 @@ test:
   gcp_support_url: <url to a page for supporting the printer>
   gcp_update_url: <url to a page for updating the printer>
   gcp_firmware: '<firmware version number>'
+```
 
 For legacy purposes, the PPD file name (complete path) is required.
 From that, please use the Google CDD converter to convert the 
