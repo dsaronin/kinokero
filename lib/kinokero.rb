@@ -1,5 +1,6 @@
 require 'faraday-cookie_jar'
 require 'logger'
+require 'json'
 require 'forwardable'
 
 require 'active_support/core_ext/module/attribute_accessors'

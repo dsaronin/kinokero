@@ -1,13 +1,14 @@
 GIT
   remote: git://github.com/dsaronin/kinokero.git
-  revision: 8af49fa76747dc0c0e576bf18263a4b2ba2a569c
+  revision: ec39aa35314c345e14e1717b6717dafde6dadcc4
   specs:
-    kinokero (0.0.4)
+    kinokero (0.0.5)
       activesupport
       beefcake
       faraday
       faraday-cookie_jar
       faraday_middleware
+      json
       logger
       simple_oauth
       typhoeus
