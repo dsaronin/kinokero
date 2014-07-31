@@ -1,4 +1,6 @@
+require 'json'
 require 'active_support/core_ext/module/attribute_accessors'
+require 'active_support/json/encoding'
 
 require 'faraday-cookie_jar'
 require 'logger'
@@ -8,7 +10,6 @@ require "faraday"
 require "faraday_middleware"
 require "simple_oauth"
 require 'typhoeus/adapters/faraday'
-require 'json'
 
 require 'job_state.pb'
 require 'print_job_state_diff.pb'
