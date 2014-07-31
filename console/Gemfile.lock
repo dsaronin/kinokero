@@ -1,6 +1,6 @@
 GIT
   remote: git://github.com/dsaronin/kinokero.git
-  revision: e90a11b0721a96e54dc844874fd8a6cbcb892e57
+  revision: 5621ddc55893560e6984257f8270aa565e4d6a8e
   specs:
     kinokero (0.0.5)
       activesupport
@@ -43,6 +43,7 @@ GEM
     json (1.8.1)
     logger (1.2.8)
     minitest (5.4.0)
+    multi_json (1.10.1)
     multipart-post (2.0.0)
     simple_oauth (0.2.0)
     thread_safe (0.3.4)
@@ -61,3 +62,4 @@ PLATFORMS
 DEPENDENCIES
   cups
   kinokero!
+  multi_json

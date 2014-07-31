@@ -2,13 +2,14 @@ require 'active_support/core_ext/module/attribute_accessors'
 
 require 'faraday-cookie_jar'
 require 'logger'
-require 'json'
 require 'forwardable'
 
 require "faraday"
 require "faraday_middleware"
 require "simple_oauth"
 require 'typhoeus/adapters/faraday'
+require 'json'
+require 'multi_json'
 
 require 'job_state.pb'
 require 'print_job_state_diff.pb'
