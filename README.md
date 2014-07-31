@@ -56,17 +56,23 @@ I used popular working Ruby gems to make this package DRY:
 
 ## Installation
 
-Add this line to your application's Gemfile:
+Add this line to your application's Gemfile (pre-alpha versions):
 
-    gem 'kinokero'
+```
+    gem 'kinokero', :git => "git://github.com/dsaronin/kinokero.git"  
+```
 
 And then execute:
 
+```
     $ bundle
+```
 
 Or install it yourself as:
 
-    $ gem install kinokero
+```
+    $ gem install kinokero, :git => "git://github.com/dsaronin/kinokero.git"
+```
 
 ## Console
 
