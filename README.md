@@ -164,41 +164,41 @@ specific to a printer.
 
 #### commands which don't require a printer item
 
-*help* - the list of commands
-*quit* - exit the console
-*exit* - exit the console
-*save* - writes the internal seed information to the seed file
-*devices* - lists Proxy's my_devices hash for all Kinokero devices (lengthy)
-*cups* - switches to submode for querying CUPS primitives
+* *help* - the list of commands
+* *quit* - exit the console
+* *exit* - exit the console
+* *save* - writes the internal seed information to the seed file
+* *devices* - lists Proxy's my_devices hash for all Kinokero devices (lengthy)
+* *cups* - switches to submode for querying CUPS primitives
 
 #### commands which do require a printer item
 
-*list* - returns GCP response listing GCP parameters for the given printer if registered.
-*fetch* - returns GCP job fetch list for given printer
-*register* - anonymous register the given printer. if the given printer
-*ready* - queries CUPS for the printer and performs a GCP /update command for its status
-*refresh* - refreshes the OAUTH2 token for the given printer
-*delete* - deletes the given printer from GCP registered list
-*connect* - starts a persistent jingle connection for the given printer; tells GCP that printer is now 'on-line' and ready to receive print requests.
+* *list* - returns GCP response listing GCP parameters for the given printer if registered.
+* *fetch* - returns GCP job fetch list for given printer
+* *register* - anonymous register the given printer. if the given printer
+* *ready* - queries CUPS for the printer and performs a GCP /update command for its status
+* *refresh* - refreshes the OAUTH2 token for the given printer
+* *delete* - deletes the given printer from GCP registered list
+* *connect* - starts a persistent jingle connection for the given printer; tells GCP that printer is now 'on-line' and ready to receive print requests.
    this is only necessary if the console has been started in manual mode.
-*time* - time when OAUTH2 token expires next for given printer
-*gcp* - dump of Cloudprint gcp_control hash for given printer
+* *time* - time when OAUTH2 token expires next for given printer
+* *gcp* - dump of Cloudprint gcp_control hash for given printer
 
 ### CUPS sub-mode commands
 
 The CUPS sub-mode is for querying the local CUPS system and displaying the results.
 
 
-*help* - lists sub-mode commands
-*quit* - exit the cups sub-mode
-*exit* - exit the cups sub-mode
+* *help* - lists sub-mode commands
+* *quit* - exit the cups sub-mode
+* *exit* - exit the cups sub-mode
 
-*printers* - displays CUPS printers by name
-*default* - displays the CUPS default printer name
-*jobs* - displays the last CUPS printer job status structure
-*options* - displays the options (attributes) for the default printer
-*print* - prints a test page to the default printer
-*scan* - displays a polled scan of printer status while printer prints a test page
+* *printers* - displays CUPS printers by name
+* *default* - displays the CUPS default printer name
+* *jobs* - displays the last CUPS printer job status structure
+* *options* - displays the options (attributes) for the default printer
+* *print* - prints a test page to the default printer
+* *scan* - displays a polled scan of printer status while printer prints a test page
 
 ### Seed file
 
