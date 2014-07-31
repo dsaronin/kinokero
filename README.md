@@ -110,7 +110,7 @@ and run bundler to install all the required gems.
 You will need to also set up your Google developers API for
 your proxy and have that information in the following 
 environmental variables (I do it in .bashrc). The samples
-shown below have been sterialized for security.
+shown below have been sterilized for security.
 
 ```
 export GCP_PROXY_API_PROJECT_NBR=407407407407
@@ -142,7 +142,10 @@ connected (jingle connection) to the GCP servers.
 ```
 
 ### Command syntax
-<command> [<printer item>]
+
+```
+  <command> [<printer item>]
+```
 
 example: register wild
 will register a printer called "gcp_wild_printer" and persist the data in the "wild" item in the seed yaml file.
