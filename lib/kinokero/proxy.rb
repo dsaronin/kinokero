@@ -158,6 +158,8 @@ class Proxy
 
     print_gcp_registration_info( response )  # output registration instructions
 
+    return response
+
   end
 
 # -----------------------------------------------------------------------------

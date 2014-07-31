@@ -299,6 +299,7 @@ GCP_CONNECTION_STATE_NOT_READY = 3   # "OFFLINE"
       # step 2: tell user where to claim printer
     response = {
       success:                 status, 
+      message:                 reg_response['message'],
       swalapala_printer_id:    params[:printer_id],
       cups_alias:              params[:cups_alias] 
     }
