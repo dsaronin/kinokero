@@ -147,7 +147,12 @@ connected (jingle connection) to the GCP servers.
   <command> [<printer item>]
 ```
 
-example: register wild
+example: 
+
+```
+  register wild
+```
+
 will register a printer called "gcp_wild_printer" and persist the data in the "wild" item in the seed yaml file.
 
 A single word command (listed below) is required.
