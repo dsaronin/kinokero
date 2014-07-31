@@ -1,2 +1,2 @@
 #!/bin/bash
-bundle exec irb -r `pwd`/twiga.rb
+bundle exec irb -r "`pwd`/twiga.rb -m"

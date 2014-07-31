@@ -5,15 +5,15 @@ test:
   cups_alias: laserjet_1102w
   is_active: true
   virgin_access: false
-  gcp_xmpp_jid: 96ab75441292575edf7c3f3308db4fea@cloudprint.googleusercontent.com
+  gcp_xmpp_jid: 345e29425516857a8c70581f58a180c7@cloudprint.googleusercontent.com
   gcp_confirmation_url: https://www.google.com/cloudprint/regconfirmpage?printername=gcp_test_printer&email=dsanderson77@gmail.com&dpi=300&pagesize=215900,279400
   gcp_owner_email: dsanderson77@gmail.com
   gcp_printer_name: gcp_test_printer
-  gcp_printerid: dd2ab0d7-a49c-a75c-4852-0e4309c8c1d3
-  gcp_access_token: ya29.UgBXdrX5c5vwQyEAAAB83drY1gLJcsBwb1GaL3wwcN4nMyEfHzQ8yo5YJ-jptQbvP11-PRWeowRL54uN3uA
-  gcp_refresh_token: 1/VpGsH1s_cGlD_UJM7JLXU56_xC16NJ7rKJLyC1TeerE
+  gcp_printerid: d0510370-f36b-356f-1a82-f93c0756a5d9
+  gcp_access_token: ya29.UwCf33j8HH4t7xwAAAAtOQ0xP1wGhvRxnriopWbvKUUPBgaw6aJ_xUYXpBXqEw
+  gcp_refresh_token: 1/MPXAGbW_0AkF5eSFtc96PesWp68lFnOz-HUSUd5aU_w
   gcp_token_type: Bearer
-  gcp_token_expiry_time: 2014-07-30 12:47:07.741645579 -07:00
+  gcp_token_expiry_time: 2014-07-31 16:35:00.538511653 -07:00
   capability_ppd: /etc/cups/ppd/laserjet_1102w.ppd
   capability_cdd: /etc/cups/cdd/laserjet_1102w.cdd
   gcp_uuid: VND3R11877
