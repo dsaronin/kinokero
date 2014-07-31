@@ -2,6 +2,8 @@ require 'faraday-cookie_jar'
 require 'logger'
 require 'forwardable'
 
+require 'active_support/core_ext/module/attribute_accessors'
+
 require "faraday"
 require "faraday_middleware"
 require "simple_oauth"

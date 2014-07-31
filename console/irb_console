@@ -1,0 +1,2 @@
+#!/bin/bash
+bundle exec irb -r `pwd`/twiga.rb

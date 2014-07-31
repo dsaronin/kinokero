@@ -1,0 +1,7 @@
+source 'https://rubygems.org'
+
+ruby "2.0.0"
+
+gem 'kinokero', :git => "git://github.com/dsaronin/kinokero.git"
+gem 'cups'
+
