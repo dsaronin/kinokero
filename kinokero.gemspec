@@ -31,4 +31,5 @@ Gem::Specification.new do |spec|
   spec.add_dependency 'faraday-cookie_jar'
   spec.add_dependency 'xmpp4r'
   spec.add_dependency 'json'
+  spec.add_dependency 'cups'
 end
