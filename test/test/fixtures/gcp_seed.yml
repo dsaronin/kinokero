@@ -1,0 +1,25 @@
+---
+test:
+  printer_id: 0
+  item: test
+  cups_alias: laserjet_1102w
+  is_active: true
+  virgin_access: false
+  gcp_xmpp_jid: 345e29425516857a8c70581f58a180c7@cloudprint.googleusercontent.com
+  gcp_confirmation_url: https://www.google.com/cloudprint/regconfirmpage?printername=gcp_test_printer&email=sample_owner@gmail.com&dpi=300&pagesize=215900,279400
+  gcp_owner_email: sample_owner@gmail.com
+  gcp_printer_name: gcp_test_printer
+  gcp_printerid: d0510370-f36b-356f-1a82-f93c0756a5d9
+  gcp_access_token: ya29.UwCf33j8HH4t7xwAAAAtOQ0xP1wGhvRxnriopWbvKUUPBgaw6aJ_xUYXpBXqEw
+  gcp_refresh_token: 1/MPXAGbW_0AkF5eSFtc96PesWp68lFnOz-HUSUd5aU_w
+  gcp_token_type: Bearer
+  gcp_token_expiry_time: 2014-07-31 16:35:00.538511653 -07:00
+  capability_ppd: /etc/cups/ppd/laserjet_1102w.ppd
+  capability_cdd: /etc/cups/cdd/laserjet_1102w.cdd
+  gcp_uuid: VND3R11877
+  gcp_manufacturer: Hewlett-Packard
+  gcp_model: LaserJet P1102w
+  gcp_setup_url: http://www8.hp.com/us/en/campaigns/wireless-printing-center/printer-setup-help.html
+  gcp_support_url: http://h10025.www1.hp.com/ewfrf/wc/product?product=4110396&lc=en&cc=us&dlc=en&lang=en&cc=us
+  gcp_update_url: http://h10025.www1.hp.com/ewfrf/wc/product?product=4110396&lc=en&cc=us&dlc=en&lang=en&cc=us
+  gcp_firmware: '20130703'

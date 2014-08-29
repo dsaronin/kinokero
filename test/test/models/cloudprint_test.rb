@@ -1,16 +1,13 @@
 require 'test_helper'
+require 'test_kinokero'
 
 class CloudprintTest < ActiveSupport::TestCase
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  setup :setup_jig
+  teardown :teardown_jig
 
-    puts "***** outer set up *****"
-   
   context "a printer" do
     
-    setup do
-      puts ">>>>> inner set up >>>>>"
-    end
-
     should 'be true' do
       assert true
     end
