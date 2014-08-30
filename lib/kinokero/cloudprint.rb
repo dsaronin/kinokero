@@ -109,8 +109,9 @@ GCP_CONNECTION_STATE_NOT_READY = 3   # "OFFLINE"
     
     @options = validate_cloudprint_options( DEFAULT_OPTIONS.merge(options) )
     @gcp_control = validate_gcp_control( gcp_control ) 
+    verbose = @options[:verbose]
 
-    Cloudprint.client_connection() # set up faraday connection iff first time
+    Cloudprint.make_client_connection( verbose ) # set up faraday connection
 
       # set up a reason why jingle not started
     gcp_control[:message] = "device inactive at initialization" unless gcp_control[:is_active]
@@ -118,7 +119,7 @@ GCP_CONNECTION_STATE_NOT_READY = 3   # "OFFLINE"
     if gcp_control[:is_active]  &&
       printer_still_active?()  # verify that this printer is still active
 
-      @jingle = Kinokero::Jingle.new( self, gcp_control ) 
+      @jingle = Kinokero::Jingle.new( self, gcp_control, verbose ) 
     end  # if active printer
 
   end
@@ -126,10 +127,24 @@ GCP_CONNECTION_STATE_NOT_READY = 3   # "OFFLINE"
 
 # ------------------------------------------------------------------------------
 
-# sets up the client-to-host faraday connection
+# returns the client-to-host faraday connection
 #
 # * *Args*    :
 #   - 
+# * *Returns* :
+#   - Faraday connection object 
+# * *Raises* :
+#   - 
+#
+  def self.client_connection( )
+       # creates connection if first time; assumes verbose
+    @@connection ||= make_client_connection( true )  
+  end
+
+# sets up the client-to-host faraday connection
+#
+# * *Args*    :
+#   - verbose: true if verbose debugging log output
 # * *Returns* :
 #   - Faraday connection object 
 # * *Raises* :
@@ -139,9 +154,9 @@ GCP_CONNECTION_STATE_NOT_READY = 3   # "OFFLINE"
 #     so we want faraday to parse all responses from JSON to HASH 
 #     regardless of content-type
 #
-  def self.client_connection()
+  def self.make_client_connection( verbose )
 
-    @@connection ||= Faraday.new( 
+    @@connection = Faraday.new( 
           ::Kinokero.gcp_url, 
           :ssl => { :ca_path => ::Kinokero.ssl_ca_path }
     ) do |faraday|
@@ -154,7 +169,7 @@ GCP_CONNECTION_STATE_NOT_READY = 3   # "OFFLINE"
       faraday.request  :multipart        # multipart files
       faraday.request  :url_encoded      # form-encode POST params
       faraday.response :json, { :content_type => [ /\bjson$/, /\bplain$/, /\btext$/ ]  }
-      faraday.response :logger           # log requests to STDOUT
+      faraday.response(:logger) if verbose  #  log requests to STDOUT
       # faraday.adapter  :typhoeus         # make requests with typhoeus
       faraday.adapter Faraday.default_adapter # useful for debugging
     end # do faraday setup

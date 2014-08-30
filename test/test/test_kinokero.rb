@@ -203,7 +203,15 @@ GCP_SEED_FILE = "../fixtures/gcp_seed.yml"
       validate_pre_conditions()   # validate prerequisite assumptions
        
         # read seed file, set up proxy for testing
-      @proxy = Kinokero::Proxy.new( build_device_list(), {} )
+      @proxy = Kinokero::Proxy.new(         
+        build_device_list(), 
+        {    # options
+          :verbose => false,         # log everything?
+          :auto_connect => false,    # automatically connect active devices?
+          :log_truncate => false,    # truncate long responses?
+          :log_response => false     # log the responses?
+        } 
+      )
     end  # initial @proxy setup
   end
 

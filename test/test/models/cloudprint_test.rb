@@ -12,9 +12,9 @@ class CloudprintTest < ActiveSupport::TestCase
       assert true
     end
     
-    should 'be true again' do
-      assert true
-    end
+#     should 'be true again' do
+#       assert true
+#     end
     
   end   # context post
 

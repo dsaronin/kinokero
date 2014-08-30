@@ -17,7 +17,7 @@ class Jingle
 # -----------------------------------------------------------------------------
 # -----  jabber initialization here   -----------------------------------------
 # -----------------------------------------------------------------------------
-  def initialize( my_cloudprint, gcp_control )
+  def initialize( my_cloudprint, gcp_control, verbose )
     @my_cloudprint = my_cloudprint  # cloudprint object
     @gcp_control   = gcp_control
     @gcp_channel   = ::Kinokero.gcp_channel
@@ -25,7 +25,7 @@ class Jingle
     @is_connection = false    # true if connection established
     @in_callback   = false    # semaphore true during callback stanza
     
-    Jabber::debug = true
+    Jabber::debug = verbose
   end
 
 # -----------------------------------------------------------------------------
