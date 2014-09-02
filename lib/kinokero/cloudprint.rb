@@ -656,9 +656,11 @@ GCP_CONNECTION_STATE_NOT_READY = 3   # "OFFLINE"
       @gcp_control[:gcp_token_expiry_time] = 
                   Time.now + oauth_response.body['expires_in'].to_i
       @gcp_control[:virgin_access] = false
+      oauth_response.body['success'] = true
 
     else  # failed to refresh token
 
+      oauth_response.body['success'] = false
       Kinokero::Log.error( 'refresh fail' )  { "**********************************" }
 
     end  # if..then..else success
