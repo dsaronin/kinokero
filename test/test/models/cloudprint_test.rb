@@ -27,6 +27,45 @@ class CloudprintTest < ActiveSupport::TestCase
         assert refresh_result['success']
       end
     end    # end should test
+
+    should 'update device status' do
+
+      if @proxy.my_devices['test'].gcp_printer_control[:is_active]  # for an active printer
+
+        update_result = @proxy.my_devices['test'].cloudprint.gcp_ready_state_changed( 
+            true,   # shows ready for jobs
+            0,  # waiting for work
+            ''      # no reason description needed
+        )
+
+        assert !update_result['success']   # should fail cuz printer not connected & ready
+
+      end  # if active
+
+    end    # end should test
+    
+    should 'register and delete offshoot printer' do
+
+      item = 'wildblue'
+
+        # build an offshoot request list
+      new_request = build_gcp_request( item )
+
+      response = Kinokero::Cloudprint.register_anonymous_printer( new_request ) do |gcp_ctl|
+
+          # wrap the newly registered printer in a device object
+        # new_device =  Kinokero::Printer.new( gcp_ctl, new_request)
+
+          # create a cloudprint object to manage the protocols
+        # cloudprint = 
+        #         Kinokero::Cloudprint.new( gcp_ctl, {} )
+
+      end   # handle new printer information
+
+      assert response[:success]
+
+    
+    end    # end should test
     
   end   # context post
 
