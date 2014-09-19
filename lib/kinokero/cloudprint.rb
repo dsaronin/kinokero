@@ -569,6 +569,17 @@ GCP_CONNECTION_STATE_NOT_READY = 3   # "OFFLINE"
 
     Kinokero::Log.log_response( 'oauth2 code', oauth_response )
 
+    if oauth_response.status == HTTP_RESPONSE_OK
+
+      oauth_response.body['success'] = true
+
+    else  # failed to fetch token
+
+      oauth_response.body['success'] = false
+      Kinokero::Log.error( 'oauth2 token fetch fail' )  { "**********************************" }
+
+    end  # if..then..else success
+
     return oauth_response
 
   end

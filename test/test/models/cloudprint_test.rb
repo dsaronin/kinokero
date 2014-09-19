@@ -64,15 +64,32 @@ class CloudprintTest < ActiveSupport::TestCase
 
       assert response[:success]
 
-    
     end    # end should test
 
     should 'fail to poll an old printer id claim' do
+
       poll_url = "https://www.google.com/cloudprint/getauthcode?printerid=#{@proxy.my_devices['test'].gcp_printer_control[:printer_id]}&oauth_client_id=" + Kinokero.proxy_client_id
       poll_response = Kinokero::Cloudprint.gcp_poll_request( poll_url )
       assert   !poll_response.body['success']     # should have failed
 
+    end    # end should test
+
+
+    should 'form an auth token' do
+
+      token = @proxy.my_devices['test'].cloudprint.gcp_form_auth_token()
+
+      assert_kind_of String,token
+      assert_not_equal '',token
+
     end  # end should test
+
+    should 'fail to get oauth2 token using an old token' do
+
+      old_token = "4/efjvnDKE7-fklBzH8G7KZVQ3S1V7.ckxazuujaQMWshQV0ieZDArE9o5tjAI"
+      oauth_response = Kinokero::Cloudprint.gcp_get_oauth2_tokens( old_token )
+
+    end    # end should test
     
   end   # context post
 

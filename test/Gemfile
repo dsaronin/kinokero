@@ -65,4 +65,4 @@ group :test do
   gem "shoulda-context"   #   , "~>1.1.2"
 end
 
-gem 'kinokero', :path => "../../kinokero"
+gem 'kinokero', :path => "../../kinokero", :branch => 'edge'
