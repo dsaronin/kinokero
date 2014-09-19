@@ -75,6 +75,17 @@ class CloudprintTest < ActiveSupport::TestCase
     end    # end should test
 
 
+    should 'form a jingle auth token' do
+
+      @proxy.my_devices['test'].gcp_printer_control[:virgin_access] = true  # force logic
+      token = @proxy.my_devices['test'].cloudprint.gcp_form_jingle_auth_token()
+
+      assert_kind_of String,token
+      assert_not_equal '',token
+
+    end  # end should test
+
+
     should 'form an auth token' do
 
       token = @proxy.my_devices['test'].cloudprint.gcp_form_auth_token()
@@ -87,7 +98,8 @@ class CloudprintTest < ActiveSupport::TestCase
     should 'fail to get oauth2 token using an old token' do
 
       old_token = "4/efjvnDKE7-fklBzH8G7KZVQ3S1V7.ckxazuujaQMWshQV0ieZDArE9o5tjAI"
-      oauth_response = Kinokero::Cloudprint.gcp_get_oauth2_tokens( old_token )
+      oauth_response = Kinokero::Cloudprint.gcp_get_oauth2_tokens( old_token ).body
+      assert   !oauth_response['success']    # should fail on old data
 
     end    # end should test
     
