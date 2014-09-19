@@ -66,6 +66,13 @@ class CloudprintTest < ActiveSupport::TestCase
 
     
     end    # end should test
+
+    should 'fail to poll an old printer id claim' do
+      poll_url = "https://www.google.com/cloudprint/getauthcode?printerid=#{@proxy.my_devices['test'].gcp_printer_control[:printer_id]}&oauth_client_id=" + Kinokero.proxy_client_id
+      poll_response = Kinokero::Cloudprint.gcp_poll_request( poll_url )
+      assert   !poll_response.body['success']     # should have failed
+
+    end  # end should test
     
   end   # context post
 

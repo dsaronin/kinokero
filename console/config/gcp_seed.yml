@@ -24,17 +24,17 @@ test:
   gcp_update_url: http://h10025.www1.hp.com/ewfrf/wc/product?product=4110396&lc=en&cc=us&dlc=en&lang=en&cc=us
   gcp_firmware: '20130703'
 wild:
-  gcp_xmpp_jid: c8a9227480ae5d761feab569f8ff011e@cloudprint.googleusercontent.com
-  gcp_confirmation_url: https://www.google.com/cloudprint/regconfirmpage?printername=gcp_wild_printer&email=dsanderson77@gmail.com&dpi=300&pagesize=215900,279400
-  gcp_owner_email: dsanderson77@gmail.com
+  gcp_xmpp_jid: 9bd529179dfa665930799067d4016e9e@cloudprint.googleusercontent.com
+  gcp_confirmation_url: https://www.google.com/cloudprint/regconfirmpage?printername=gcp_wild_printer&email=conjugalis@gmail.com&dpi=300&pagesize=215900,279400
+  gcp_owner_email: conjugalis@gmail.com
   gcp_printer_name: gcp_wild_printer
-  gcp_printerid: b5cd8d55-434a-70a1-cc3f-59140ab308d9
-  gcp_access_token: ya29.UwBA0klAbgq9dSEAAACsdzxstyBCgFWCYJMX8ziytn8HkBmEjk1GZvmiBYYOSFIOHkx2c3twv30a5X1zpa0
-  gcp_refresh_token: 1/8KTdm9ZIUXZ5GtoJ0Kf4sqVMfELxMCvdU5b3QBDNHnA
+  gcp_printerid: 94f42964-2269-fdeb-99af-4ed1bd3f07fe
+  gcp_access_token: ya29.hABKAR8kZeUq4vbgUgxV_xv3oXY-cc-FRkZvTvrf5H3fGuklzY6h8s29
+  gcp_refresh_token: 1/JDe8Y-rjbxRDzswmLEDuh8CJdnQ40Q10QhRyNWhyHn0
   gcp_token_type: Bearer
-  gcp_token_expiry_time: 2014-07-31 12:56:27.051376227 -07:00
-  is_active: true
-  virgin_access: false
+  gcp_token_expiry_time: 2014-09-17 19:11:40.886171387 -07:00
+  is_active: false
+  virgin_access: true
   printer_id: 0
   item: wild
   cups_alias: laserjet_1102w

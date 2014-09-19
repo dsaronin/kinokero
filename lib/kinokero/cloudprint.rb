@@ -397,6 +397,7 @@ GCP_CONNECTION_STATE_NOT_READY = 3   # "OFFLINE"
 # ------------------------------------------------------------------------------
 
 # gcp_anonymous_register - /register gcp1.0 for anon printer; returns response hash
+# DEPRECATED: older version
 # 
   def self.gcp_anonymous_register_1_0(params)
 
@@ -989,7 +990,8 @@ GCP_CONNECTION_STATE_NOT_READY = 3   # "OFFLINE"
   end
 
 # ------------------------------------------------------------------------------
-
+  private     # because untested
+# ------------------------------------------------------------------------------
 # simple auth token requester;
 # won't work for accounts that require two-step 
 #
