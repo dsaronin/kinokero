@@ -72,10 +72,10 @@ GCP_CONNECTION_STATE_NOT_READY = 3   # "OFFLINE"
 
     # default options and configurations for cloudprinting
   DEFAULT_OPTIONS = {
-    :verbose => true,         # log everything?
+    :verbose => false,         # log everything?
     :auto_connect => true,    # automatically connect active devices?
     :log_truncate => false,   # truncate long responses?
-    :log_response => true    # log the responses?
+    :log_response => false    # log the responses?
   }
 
 # #########################################################################
