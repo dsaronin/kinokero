@@ -145,6 +145,18 @@ class CloudprintTest < ActiveSupport::TestCase
     end    # end should test
 
 
+    should 'fail job status abort' do
+
+      jobid = 'd8f3fe33-a07f-c554-7f9b-ab80c7103030'
+      status_response = @proxy.my_devices['test'].cloudprint.gcp_job_status_abort( 
+                  jobid, 
+                  0,     # currently not used
+                  0 
+      )
+      assert   !status_response['success']    # should fail on old data
+
+    end    # end should test
+
 
 
   end   # context post

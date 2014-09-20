@@ -26,6 +26,7 @@ require 'vendor_state.pb'
 require 'printer_state_section.pb'
 require 'scanner_state_section.pb'
 require 'cloud_device_state.pb'
+require 'device_action_cause.pb'
 
 require 'xmpp4r/client'
 
