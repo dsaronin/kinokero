@@ -158,6 +158,17 @@ class CloudprintTest < ActiveSupport::TestCase
     end    # end should test
 
 
+    should 'fail ready state changed' do
+
+      status_response = @proxy.my_devices['test'].cloudprint.gcp_ready_state_changed( 
+          true,   # shows ready for jobs
+          0,      # waiting for work
+          'wild blue'    # reason 
+      )
+      assert   !status_response['success']    # should fail on old data
+
+    end    # end should test
+
 
   end   # context post
 
