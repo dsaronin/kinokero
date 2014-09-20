@@ -272,6 +272,89 @@ over any of the control structures. It might be required in the future.
 
 TODO: Write usage instructions here
 
+
+## Testing
+
+Unit Testing is somewhat problematic because the kinokero gem is also a 
+wrapper for interactions with the Google Cloud Print Server (GCPS).
+GCPS, unfortunately, are not really set up to handle unit testing. There is
+no sandbox; everything is _live._
+
+There are several issues associated with this. 
+
+To use unit testing, you'll 
+need to register yourself into the Google API and obtains client id and secret.
+You'll then have to set these up in your local environment variables.
+The unit testing for Cloudprint will verify whether these exist or not and
+fail the unit tests at the outset if not.
+
+```
+export GCP_PROXY_CLIENT_ID="407123456789-321ngkabcdefghijklmnooppqrstuvwx.apps.googleusercontent.com"
+export GCP_PROXY_CLIENT_SECRET="iAMsecretiAMsecretiAMsec"
+```
+
+Next, you'll have to create and register a test printer and claim it
+at some Google account. You can use the console to that. Then copy
+and paste the gcp_seed.yml information in the test item area of 
+test/test/fixtures/gcp_seed.yml.
+
+The next problem is the manually-intensive nature of registering a
+printer. This isn't conducive to automated tests, so the actual
+registration of a printer is not currently in the cloudprint_test.rb.
+
+And finally, a number of GCPS commands require an active on-line
+printer to fully test. But it is possible to test the _failure_ of
+various GCPS commands by issueing them against non-existent
+print jobs and files. At the very least, we can test the command 
+set up, invocation against GCPS, and an unsuccessful GCPS response. This 
+has been done for many of the GCPS actions. These tests are seperated
+in the test file and a comment marks the start of the section for 
+those tests. That does mean that there will be an OAUTH2 token fetch
+fail message printed to the log (below) when running the test. This
+is good and should cause no alarm, since it means the code is working
+correctly!
+
+```
+E, [2014-09-20T12:29:37.479671 #10941] ERROR -- oauth2 token fetch fail: **********************************
+```
+
+If  you do encounter errors or failures when running the cloudprint tests,
+you may want to turn on logging by switching the verbose setting. You can
+change this in the <i>test/test/test_kinokero.rb</i> test helper, line 206:
+set it to true for a verbose logging; otherwise false for brevity. When 
+logging is verbose (enabled) then ALL requests AND responses to/from
+GCPS are logged, as well as all Jingle interactions.
+
+```ruby
+      full_verbose = false    # ok to change this setting
+```
+
+### Available & planned unit tests
+
+The list below has the status of all kinokero unit tests:
+
+* Cloudprint - <i>test/models/cloudprint_test.rb</i>
+  this tests the primary GCPS wrapped interface for all GCPS actions.
+  Unit test is completed and working.
+* Jingle - tbd
+* Printer - tbd
+* Proxy - tbd
+
+### Running a unit test
+
+There is a mini Rails application for the testing environment.
+From the kinokero gem directory:
+
+```
+  $cd test   # gets you to the mini Rails app
+  $ruby -I test test/models/cloudprint_test.rb
+```
+
+or substitute different unit test filenames for <i>cloudprint_test.rb</i>
+
+
+
+
 ## Contributing
 
 1. Fork it

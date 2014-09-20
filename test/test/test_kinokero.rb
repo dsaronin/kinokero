@@ -201,12 +201,17 @@ GCP_SEED_FILE = "../fixtures/gcp_seed.yml"
   def setup_jig()
     if @proxy.nil?  # start up the GCP proxy
       validate_pre_conditions()   # validate prerequisite assumptions
+
+         # TODO: make this a command-line option to set
+      full_verbose = false    # ok to change this setting
+
+      Kinokero.verbose = full_verbose  # sets the class-level verbose
        
         # read seed file, set up proxy for testing
       @proxy = Kinokero::Proxy.new(         
         build_device_list(), 
         {    # options
-          :verbose => false,         # log everything?
+          :verbose => full_verbose,         # log everything?
           :auto_connect => false,    # automatically connect active devices?
           :log_truncate => false,    # truncate long responses?
           :log_response => false     # log the responses?
