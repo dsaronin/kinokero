@@ -170,6 +170,15 @@ class CloudprintTest < ActiveSupport::TestCase
     end    # end should test
 
 
+    should 'fail to delete printer' do
+
+      delete_response = @proxy.my_devices['lime'].cloudprint.gcp_delete_printer( )
+      assert   !delete_response['success']    # should fail on old data
+
+    end    # end should test
+
+
+
   end   # context post
 
 # _____________________________________________________________________________    

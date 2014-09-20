@@ -23,3 +23,29 @@ test:
   gcp_support_url: http://h10025.www1.hp.com/ewfrf/wc/product?product=4110396&lc=en&cc=us&dlc=en&lang=en&cc=us
   gcp_update_url: http://h10025.www1.hp.com/ewfrf/wc/product?product=4110396&lc=en&cc=us&dlc=en&lang=en&cc=us
   gcp_firmware: '20130703'
+
+# item: lime is expected to be not registered anymore and not active
+lime:
+  gcp_xmpp_jid: 3e0163e6a4802ba77c29d73410aad929@cloudprint.googleusercontent.com
+  gcp_confirmation_url: https://www.google.com/cloudprint/regconfirmpage?printername=gcp_lime_printer&email=dsanderson77@gmail.com&dpi=300&pagesize=215900,279400
+  gcp_owner_email: dsanderson77@gmail.com
+  gcp_printer_name: gcp_lime_printer
+  gcp_printerid: 8231517c-716d-4b0a-f721-83fdbe52a05d
+  gcp_access_token: ya29.UgA-fXhCHp0ZiR0AAADbQqXfRA-ks9CK2POGZA8yYF2a1vhEQa4G4_QSltFK_g
+  gcp_refresh_token: 1/NjwUJyyrebUIXsvl1mvqDmKCr-VtZfYR3pPusRPkLH0
+  gcp_token_type: Bearer
+  gcp_token_expiry_time: 2014-07-30 10:27:22.592090444 -07:00
+  is_active: false
+  virgin_access: false
+  printer_id: 0
+  item: lime
+  cups_alias: laserjet_1102w
+  capability_ppd: /etc/cups/ppd/laserjet_1102w.ppd
+  capability_cdd: /etc/cups/cdd/laserjet_1102w.cdd
+  gcp_uuid: VND3R11877
+  gcp_manufacturer: Hewlett-Packard
+  gcp_model: LaserJet P1102w
+  gcp_setup_url: http://www8.hp.com/us/en/campaigns/wireless-printing-center/printer-setup-help.html
+  gcp_support_url: http://h10025.www1.hp.com/ewfrf/wc/product?product=4110396&lc=en&cc=us&dlc=en&lang=en&cc=us
+  gcp_update_url: http://h10025.www1.hp.com/ewfrf/wc/product?product=4110396&lc=en&cc=us&dlc=en&lang=en&cc=us
+  gcp_firmware: '20130703'
