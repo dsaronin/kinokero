@@ -44,7 +44,14 @@ class CloudprintTest < ActiveSupport::TestCase
 
     end    # end should test
     
-    should 'register and delete offshoot printer' do
+# *****************************************************************************
+#   The following tests are primarily testing the setup and server calls to GCP
+#   Because the test printer in the fixture is 'old' or off-line, all of the calls
+#   will fail ... but at least we can test that the set up and call occurred and
+#   returned an unsuccessful result.
+# *****************************************************************************
+    
+    should 'register offshoot printer' do
 
       item = 'wildblue'
 
@@ -103,6 +110,43 @@ class CloudprintTest < ActiveSupport::TestCase
 
     end    # end should test
     
+    should 'fail to get job file' do
+
+      file_url = 'https://www.google.com/cloudprint/download?id=d8f3fe33-a07f-c554-7f9b-ab80c7103030'
+      assert_nil   @proxy.my_devices['test'].cloudprint.gcp_get_job_file( file_url )
+
+    end    # end should test
+
+    should 'fail to get printer job queue fetch' do
+
+      fetch_response = @proxy.my_devices['test'].cloudprint.gcp_get_printer_fetch( 
+            @proxy.my_devices['test'].gcp_printer_control[:printer_id] 
+      )
+      assert   !fetch_response['success']    # should fail on old data
+
+    end    # end should test
+
+    should 'determine test printer is still active' do
+
+      assert @proxy.my_devices['test'].cloudprint.printer_still_active?
+
+    end    # end should test
+
+    should 'fail job status change' do
+
+      jobid = 'd8f3fe33-a07f-c554-7f9b-ab80c7103030'
+      status_response = @proxy.my_devices['test'].cloudprint.gcp_job_status( 
+                  jobid, 
+                  ::Kinokero::Cloudprint::GCP_JOBSTATE_DONE, 
+                  1 
+      )
+      assert   !status_response['success']    # should fail on old data
+
+    end    # end should test
+
+
+
+
   end   # context post
 
 # _____________________________________________________________________________    
