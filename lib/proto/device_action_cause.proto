@@ -1,0 +1,19 @@
+message DeviceActionCause {
+
+    // Next number = 3.
+    enum ErrorCode {
+      // Error while downloading job.
+      DOWNLOAD_FAILURE = 0;
+      // Error due to invalid job ticket.
+      INVALID_TICKET = 1;
+      // A generic printing error occurred.
+      PRINT_FAILURE = 2;
+      // Error due to some other device action.
+      OTHER = 100;
+    }
+
+    // Error code for the device action which caused the current job state
+    // (required).
+    optional ErrorCode error_code = 1;
+}
+
