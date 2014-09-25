@@ -63,6 +63,36 @@ class PrinterTest < ActiveSupport::TestCase
     end  # test
 
 
+    should 'start poll thread' do
+
+      assert @proxy.my_devices['test'].start_poll_thread()
+      assert @proxy.my_devices['test'].poll_thread
+
+    end  # test
+
+
+    should 'set up model info' do
+
+      assert @proxy.my_devices['test'].setup_model( {} )
+
+    end  # test
+
+
+    should 'set up gcp info correctly' do
+      assert @proxy.my_devices['test'].setup_gcp( 
+        @proxy.my_devices['test'].gcp_printer_control
+      )
+
+    end  # test
+
+
+    should 'set up gcp info incorrectly' do
+      assert_raise(ArgumentError)  {  
+        @proxy.my_devices['test'].setup_gcp( { cups_alias: 0  } )
+      }
+
+    end  # test
+
 
   end  # context printer
 
