@@ -17,7 +17,9 @@
 # get temporary managed printer data for testing interfaces
 # ****************************************************************************
 
-GCP_SEED_FILE = "../fixtures/gcp_seed.yml"
+GCP_SEED_FILE = '../fixtures/gcp_seed.yml'
+CUPS_NULL_PRINTER = 'lp_null'    # expected null printer
+REGISTER_NULL_PRINTER = "lpadmin -p #{CUPS_NULL_PRINTER} -E -v file:///dev/null"
 
 # #########################################################################
 # ##########  working with seed data  #####################################
@@ -195,6 +197,10 @@ GCP_SEED_FILE = "../fixtures/gcp_seed.yml"
     find_or_fail( '/etc/cups/ppd/laserjet_1102w.ppd' )
     find_or_fail( '/etc/cups/cdd/laserjet_1102w.cdd' )
     find_or_fail( File.expand_path(GCP_SEED_FILE , __FILE__ ) )
+
+    unless Cups.show_destinations.include?( CUPS_NULL_PRINTER )
+      system( REGISTER_NULL_PRINTER )  # register null printer
+    end   # unless null printer already exists
 
   end
 

@@ -2,7 +2,7 @@
 test:
   printer_id: 0
   item: test
-  cups_alias: laserjet_1102w
+  cups_alias: lp_null
   is_active: true
   virgin_access: false
   gcp_xmpp_jid: 345e29425516857a8c70581f58a180c7@cloudprint.googleusercontent.com
@@ -39,7 +39,7 @@ lime:
   virgin_access: false
   printer_id: 0
   item: lime
-  cups_alias: laserjet_1102w
+  cups_alias: lp_null
   capability_ppd: /etc/cups/ppd/laserjet_1102w.ppd
   capability_cdd: /etc/cups/cdd/laserjet_1102w.cdd
   gcp_uuid: VND3R11877
