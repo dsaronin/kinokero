@@ -28,9 +28,7 @@ class PrinterTest < ActiveSupport::TestCase
 
     should "print a file" do
 
-      assert   @proxy.my_devices['test'].print_file( 
-                  '/etc/cups/ppd/laserjet_1102w.ppd' 
-               )
+      assert   @proxy.my_devices['test'].print_file( CUPS_PPD_FILE )
 
     end  # test
 
