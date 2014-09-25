@@ -56,6 +56,12 @@ class PrinterTest < ActiveSupport::TestCase
 
     end  # test
 
+    should 'stop poll thread' do
+
+      assert_nil @proxy.my_devices['test'].stop_poll_thread()
+
+    end  # test
+
 
 
   end  # context printer
