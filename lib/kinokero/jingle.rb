@@ -10,7 +10,7 @@ class Jingle
 
 # #########################################################################
 
-  attr_reader :gcp_channel, :gcp_control, :my_cloudprint
+  attr_reader :gcp_channel, :gcp_control, :my_cloudprint, :is_connection
 
 # #########################################################################
 
@@ -27,6 +27,18 @@ class Jingle
     
     Jabber::debug = verbose
   end
+
+# -----------------------------------------------------------------------------
+
+  def self.set_verbose
+    Jabber::debug = true
+  end
+
+
+  def self.clear_verbose
+    Jabber::debug = false
+  end
+
 
 # -----------------------------------------------------------------------------
 

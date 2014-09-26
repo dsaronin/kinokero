@@ -9,6 +9,30 @@ class JingleTest < ActiveSupport::TestCase
 
   context "jingle" do   # test suite for printer.rb
 
+    should 'have active jingle connection' do
+      assert  @proxy.my_devices['test'].cloudprint.jingle
+    end   # should test do
+
+
+    should 'start then close connection' do
+      jingle = @proxy.my_devices['test'].cloudprint.jingle
+      jingle.gtalk_start_connection do |printerid|
+        
+      end   # do
+
+      assert jingle.is_connection
+
+      jingle.gtalk_close_connection
+
+      assert !jingle.is_connection
+
+    end   # should test do
+
+
+
+
+
+
 
   end  # context jingle
 
