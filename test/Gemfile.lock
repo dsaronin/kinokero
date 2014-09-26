@@ -76,7 +76,7 @@ GEM
       http-cookie (~> 1.0.0)
     faraday_middleware (0.9.1)
       faraday (>= 0.7.4, < 0.10)
-    ffi (1.9.3)
+    ffi (1.9.5)
     haml (4.0.5)
       tilt
     haml-rails (0.5.3)

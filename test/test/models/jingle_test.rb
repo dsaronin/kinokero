@@ -16,6 +16,9 @@ class JingleTest < ActiveSupport::TestCase
 
     should 'start then close connection' do
       jingle = @proxy.my_devices['test'].cloudprint.jingle
+
+      #  Kinokero::Jingle.set_verbose
+
       jingle.gtalk_start_connection do |printerid|
         
       end   # do
@@ -29,7 +32,7 @@ class JingleTest < ActiveSupport::TestCase
     end   # should test do
 
 
-
+# TODO: add dynamic queue print job and test the asynch notification
 
 
 
