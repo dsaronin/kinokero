@@ -331,14 +331,14 @@ GCPS are logged, as well as all Jingle interactions.
 
 ### Available & planned unit tests
 
-The list below has the status of all kinokero unit tests:
+The list below has the status of all kinokero unit tests.
+All these unit tests are completed and working.
 
 * Cloudprint - <i>test/models/cloudprint_test.rb</i>
   this tests the primary GCPS wrapped interface for all GCPS actions.
-  Unit test is completed and working.
-* Jingle - tbd
-* Printer - tbd
-* Proxy - tbd
+* Jingle - <i>test/models/jingle_test.rb</i>
+* Printer - <i>test/models/printer_test.rb</i>
+* Proxy - <i>test/models/proxy_test.rb</i>
 
 ### Running a unit test
 
