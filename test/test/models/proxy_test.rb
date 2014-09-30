@@ -81,6 +81,11 @@ class ProxyTest < ActiveSupport::TestCase
     end   # should do
 
 
+    should 'connect printer on-line with gcp' do
+      @proxy.do_connect( 'test' )
+      assert @proxy.my_devices['test'].cloudprint.jingle.is_connection
+    end   # should do
+
     should 'return item given a printerid' do
       result = @proxy.item_from_printerid(
         @proxy.my_devices['test'].gcp_printer_control[:gcp_printerid]
