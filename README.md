@@ -285,40 +285,40 @@ attributes require persistence, meaning that they have to be supplied to the pro
 at initialization for any active printers (this occur at a restart/reboot state).
 
 GCPS-issued items which need persistence
-* +gcp_xmpp_jid:+ GCPS-issued id for accessing jingle servers
-* +gcp_confirmation_url:+ GCPS-issued url for confirming the printer registration
-* +gcp_owner_email:+ GCPS-issued owner's email
+* *gcp_xmpp_jid:* GCPS-issued id for accessing jingle servers
+* *gcp_confirmation_url:* GCPS-issued url for confirming the printer registration
+* *gcp_owner_email:* GCPS-issued owner's email
 
-* +gcp_printer_name:+ user-determined name which shows up in cloudprint user's managed printer list
-* +gcp_printerid:+ GCPS-issued printer id
+* *gcp_printer_name:* user-determined name which shows up in cloudprint user's managed printer list
+* *gcp_printerid:* GCPS-issued printer id
 
-* +gcp_refresh_token:+ GCPS-issued used to refresh the OAUTH2 token
-* +gcp_access_token:+  GCPS-issued OAUTH2 token
-* +gcp_token_expiry_time:+ UTC time for when the OAUTH2 token expires (thus needing to be refreshed)
-* +gcp_token_type:+ GCPS-issued, used to form the OAUTH2 token
+* *gcp_refresh_token:* GCPS-issued used to refresh the OAUTH2 token
+* *gcp_access_token:*  GCPS-issued OAUTH2 token
+* *gcp_token_expiry_time:* UTC time for when the OAUTH2 token expires (thus needing to be refreshed)
+* *gcp_token_type:* GCPS-issued, used to form the OAUTH2 token
 
 Items supplied by proxy user
-* +item:+ identifier for this printer item, such as: 'test'
-* +printer_id:+ local persistence id (such as for a database record)
-* +cups_alias:+ printer name from the OS' standpoint (such as registered with CUPS)
+* *item:* identifier for this printer item, such as: 'test'
+* *printer_id:* local persistence id (such as for a database record)
+* *cups_alias:* printer name from the OS' standpoint (such as registered with CUPS)
 
-* +capability_ppd:+ complete file pathname for the PPD printer description file (legacy)
-* +capability_cdd:+ complete file pathname for the CCD cloud device description file (gcp v2.0)
+* *capability_ppd:* complete file pathname for the PPD printer description file (legacy)
+* *capability_cdd:* complete file pathname for the CCD cloud device description file (gcp v2.0)
 
-* +gcp_uuid:+ printer serial number, such as: 'VND3R11877'
-* +gcp_manufacturer:+ printer manufacturer, such as: 'Hewlett-Packard'
-* +gcp_model:+ printer model, such as: 'LaserJet P1102w'
-* +gcp_setup_url:+ a url for how-to set up the printer
-* +gcp_support_url:+ a url for getting support
-* +gcp_update_url:+ a url for getting updates
-* +gcp_firmware:+ printer firmware version number, such as: '20130703'
+* *gcp_uuid:* printer serial number, such as: 'VND3R11877'
+* *gcp_manufacturer:* printer manufacturer, such as: 'Hewlett-Packard'
+* *gcp_model:* printer model, such as: 'LaserJet P1102w'
+* *gcp_setup_url:* a url for how-to set up the printer
+* *gcp_support_url:* a url for getting support
+* *gcp_update_url:* a url for getting updates
+* *gcp_firmware:* printer firmware version number, such as: '20130703'
 
 Kinokero-internal usage (persistence required)
-* +is_active:+ set to true after successful registration; false if no longer in use
-* +virgin_access:+ true for initial oauth2 token for a freshly registered printer; false after first refresh
+* *is_active:* set to true after successful registration; false if no longer in use
+* *virgin_access:* true for initial oauth2 token for a freshly registered printer; false after first refresh
 
 Future API usage
-* +message:+ last error message saved
+* *message:* last error message saved
 
 ## Testing
 
