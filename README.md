@@ -270,7 +270,8 @@ over any of the control structures. It might be required in the future.
 
 ## Usage
 
-TODO: Write usage instructions here
+Note that the primary example for setting up and using this gem is the
+console code: <i>console/twiga.rb</i> and all config, setup folders.
 
 
 ## Testing
@@ -318,7 +319,7 @@ correctly!
 E, [2014-09-20T12:29:37.479671 #10941] ERROR -- oauth2 token fetch fail: **********************************
 ```
 
-If  you do encounter errors or failures when running the cloudprint tests,
+If you do encounter errors or failures when running the cloudprint tests,
 you may want to turn on logging by switching the verbose setting. You can
 change this in the <i>test/test/test_kinokero.rb</i> test helper, line 206:
 set it to true for a verbose logging; otherwise false for brevity. When 
@@ -353,7 +354,12 @@ From the kinokero gem directory:
 or substitute different unit test filenames for <i>cloudprint_test.rb</i>
 
 
+## future stuff
 
+* use a robot account; A gcp developer claims:
+  As long as the same robot account is used for all printers handled by the proxy, you can use just one XMPP connection for notifications for all of the printers. This is mentioned briefly in the documentation at https://developers.google.com/cloud-print/docs/devguide#connectorregistration - just use the robot account from the first registered printer as the 'owner' for all subsequent registrations. In this special case, we make the user who created that robot account the owner of the new printer as well, and use the same robot account credentials for it. This will also resolve the /list issue you mentioned, as calling /list authenticated with the robot account will allow you to see all of the associated printers.
+* autotest register printer; same developer claims, but I couldn't figure it out:
+  We don't have a special server to test registration against, but you can automate the claim flow for unit tests. It isn't documented externally, but if you use your browser's devtools to look at the requests we make on the claim page, you can see the flow your tests would need to follow to automatically 'claim' a test printer (you can do this with a test Gmail account you register, or with a user's credentials - same for generating the XMPP JID).
 
 ## Contributing
 
