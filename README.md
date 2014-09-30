@@ -247,11 +247,15 @@ persistent application.
 
 Cloudprint - is the primary interace for issuing commands to 
 Google Cloudprint servers via HTTP POST commands. Proxy functions
-use these primitives to do their work.
+use these primitives to do their work. The main data structure
+used here is based off of an options hash termed
+<i>gcp_control</i> (described below).
 
 Jingle - is the interface for the gtalk jingle (XMPP) protocol
 required for asynchronously receiving notification of pending
-print jobs (uses a callback mechanism).
+print jobs (uses a callback mechanism). Class Cloudprint 
+directly accesses Jingle, so you probably won't have to be 
+too concerned about it.
 
 Printer - is the interface to the local OS CUPS system and does any
 actual printing. It also does device state polling.
@@ -273,6 +277,59 @@ over any of the control structures. It might be required in the future.
 Note that the primary example for setting up and using this gem is the
 console code: <i>console/twiga.rb</i> and all config, setup folders.
 
+### Invocation
+
+In your Gemfile:
+```
+  gem 'kinokero'
+```
+
+Or directly install:
+```
+  gem install kinokero
+```
+
+### gcp_control hash
+
+This is used throughout the gem, so each attribute will be explained here. Most
+attributes require persistence, meaning that they have to be supplied to the proxy
+at initialization for any active printers (this occur at a restart/reboot state).
+
+GCPS-issued items which need persistence
+  gcp_xmpp_jid: GCPS-issued id for accessing jingle servers
+  gcp_confirmation_url: GCPS-issued url for confirming the printer registration
+  gcp_owner_email: GCPS-issued owner's email
+
+  gcp_printer_name: user-determined name which shows up in cloudprint user's managed printer list
+  gcp_printerid: GCPS-issued printer id
+
+  gcp_refresh_token: GCPS-issued used to refresh the OAUTH2 token
+  gcp_access_token:  GCPS-issued OAUTH2 token
+  gcp_token_expiry_time: UTC time for when the OAUTH2 token expires (thus needing to be refreshed)
+  gcp_token_type: GCPS-issued, used to form the OAUTH2 token
+
+Items supplied by proxy user
+  item: identifier for this printer item, such as: 'test'
+  printer_id: local persistence id (such as for a database record)
+  cups_alias: printer name from the OS' standpoint (such as registered with CUPS)
+
+  capability_ppd: complete file pathname for the PPD printer description file (legacy)
+  capability_cdd: complete file pathname for the CCD cloud device description file (gcp v2.0)
+
+  gcp_uuid: printer serial number, such as: 'VND3R11877'
+  gcp_manufacturer: printer manufacturer, such as: 'Hewlett-Packard'
+  gcp_model: printer model, such as: 'LaserJet P1102w'
+  gcp_setup_url: a url for how-to set up the printer
+  gcp_support_url: a url for getting support
+  gcp_update_url: a url for getting updates
+  gcp_firmware: printer firmware version number, such as: '20130703'
+
+Kinokero-internal usage (persistence required)
+  is_active: set to true after successful registration; false if no longer in use
+  virgin_access: true for initial oauth2 token for a freshly registered printer; false after first refresh
+
+Future API usage
+  message: last error message saved
 
 ## Testing
 
@@ -363,8 +420,13 @@ or substitute different unit test filenames for <i>cloudprint_test.rb</i>
 
 ## Contributing
 
+GCP interaction is, shall we say, delicate. Any changes to Cloudprint or Jingle
+need to be carefully considered and tested under various conditions.
+
 1. Fork it
 2. Create your feature branch (`git checkout -b my-new-feature`)
 3. Commit your changes (`git commit -am 'Add some feature'`)
 4. Push to the branch (`git push origin my-new-feature`)
-5. Create new Pull Request
+5. Run the unit tests and make sure nothing is broken. Supply
+   new unit tests for any added features.
+6. Create new Pull Request
