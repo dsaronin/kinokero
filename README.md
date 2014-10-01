@@ -378,7 +378,10 @@ cups testpage file path
 printer device/cups related
 * *printer_poll_cycle:* = PRINTER_POLL_CYCLE
 
-Current constant defaults are defined as follows:
+### kinokero global constants
+
+Current constant defaults are defined as follows, with the
+actual definitions in _lib/kinokero.rb_ .
 
 ```ruby
 # mimetype for how to encode CDD files
@@ -418,16 +421,11 @@ MIMETYPE_OAUTH =  "application/x-pkcs12"
 GCP_URL = 'https://www.google.com/'
 GCP_SERVICE = 'cloudprint'
 
-# -----------------------------------------------------------------------------
-
 # jingle constants required
 
 XMPP_SERVER     = "talk.google.com" 
 NS_GOOGLE_PUSH  = "google:push"
 GCP_CHANNEL     = "cloudprint.google.com"
-
-# -----------------------------------------------------------------------------
-
 
 # MY_PROXY_ID is a unique name for this running of the GCP connector client
 # formed with gem name + machine-node name (expected to be  unique)
@@ -466,8 +464,8 @@ export GCP_PROXY_CLIENT_SECRET="iAMsecretiAMsecretiAMsec"
 ```
 
 Next, you'll have to create and register a test printer and claim it
-at some Google account. You can use the console to that. Then copy
-and paste the gcp_seed.yml information in the test item area of 
+at some Google account. You can use the console to do that. Then copy
+and paste the gcp_seed.yml information into the test item area of 
 test/test/fixtures/gcp_seed.yml.
 
 The next problem is the manually-intensive nature of registering a
