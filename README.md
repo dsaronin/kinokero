@@ -545,6 +545,16 @@ From the kinokero gem directory:
 
 or substitute different unit test filenames for <i>cloudprint_test.rb</i>
 
+## references
+
+These references are for Google Cloudprint documentation.
+* Google cloudprint overall site: http://www.google.com/cloudprint/learn/
+* Google cloudprint developers documentation: https://developers.google.com/cloud-print/docs/overview
+* Cloud Device Description protocol: https://developers.google.com/cloud-print/docs/cdd
+* Web tool to automatically convert PPD (or XPS) files in CDD format
+  (required because kinokero supports Cloudprint 2.0): https://www.google.com/cloudprint/tools/cdd/cdd.html
+* Google Protobuf language: https://developers.google.com/protocol-buffers/docs/overview
+
 
 ## future stuff
 
