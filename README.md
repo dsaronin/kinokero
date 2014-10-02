@@ -345,9 +345,10 @@ record number for the given persistence.
 In these examples we see three logical cloudprint printers
 defined. The first two map into the same physical CUPS device.
 The last one maps into a CUPS device, but has actually been
-defined to be file:///dev/null and so no physical device exists.
-
-
+defined as follows, so no actual physical device exists.
+```
+  $ lpadmin -p lp_null -E -v file:///dev/null
+```
 
 
 
