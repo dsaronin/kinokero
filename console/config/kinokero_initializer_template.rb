@@ -13,7 +13,7 @@ Kinokero.setup do |config|
 
 # two verbose settings are needed: one for Proxy instances and the 
 # other for any class-level decisions; the one below is class-level
-#   config.verbose             =  false  
+   config.verbose             =  false  
 
 # unique name for this running of the GCP connector client
 #   config.my_proxy_id         =  Kinokero::MY_PROXY_ID
@@ -31,36 +31,48 @@ Kinokero.setup do |config|
 #  class Cloudprint required
 # ---------------------------------------------------------------------
 
-#   config.mimetype_oauth  = MIMETYPE_OAUTH # how to encoade oauth files
+# how to encoade oauth files
+#   config.mimetype_oauth  = MIMETYPE_OAUTH 
 
-#   config.mimetype_ppd  =   MIMETYPE_PPD   # how to encode PPD files
+# how to encode PPD files
+#   config.mimetype_ppd  =   MIMETYPE_PPD   
 
-#   config.mimetype_cdd  =   MIMETYPE_CDD   # how to encode CDD files
+# how to encode CDD files
+#   config.mimetype_cdd  =   MIMETYPE_CDD   
 
-#   config.polling_secs  =   POLLING_SECS   # secs to sleep before register polling again
+# secs to sleep before register polling again
+#   config.polling_secs  =   POLLING_SECS   
 
-#   config.truncate_log  =   TRUNCATE_LOG   # number of characters to truncate response logs 
+# number of characters to truncate response logs 
+#   config.truncate_log  =   TRUNCATE_LOG   
 
+# cloudprint registration main URL
 #   config.followup_host =   FOLLOWUP_HOST  #
 
+# GCP constant
 #   config.followup_uri  =   FOLLOWUP_URI   #
 
+# Google primary URI
 #   config.gaia_host  =      GAIA_HOST      #
 
+# user-based OAUTH2 access (future expansion)
 #   config.login_uri  =      LOGIN_URI      #
 
-#   config.login_url  =      LOGIN_URL      #
-
+# GCPS primary URL
 #   config.gcp_url  =        GCP_URL        #
 
+# GCPS service point
 #   config.gcp_service  =    GCP_SERVICE    #
 
-#   config.ssl_ca_path  =    SSL_CERT_PATH  # SSL certificates path for this machine
+# full pathname of SSL certificates path for this machine
+#   config.ssl_ca_path  =    SSL_CERT_PATH
 
+
+# GCP documentation constants
 #   config.authorization_scope  =        AUTHORIZATION_SCOPE         #
-
 #   config.authorization_redirect_uri  = AUTHORIZATION_REDIRECT_URI  #
 
+# Google OAUTH2 token handling endpint URL
 #   config.oauth2_token_endpoint  =      OAUTH2_TOKEN_ENDPOINT       #
 
 
@@ -68,22 +80,27 @@ Kinokero.setup do |config|
 #  class Jingle required
 # ---------------------------------------------------------------------
 
+# Google jingle (XMPP) server domain
 #   config.xmpp_server  =     XMPP_SERVER     #  
 
+# Jingle extension for google push stanzas
 #   config.ns_google_push  =  NS_GOOGLE_PUSH  #  
 
+# Jingle cloudprint channel domain
 #   config.gcp_channel  =     GCP_CHANNEL     #  
 
 # ---------------------------------------------------------------------
 #  cups testpage file path
 # ---------------------------------------------------------------------
 
+# pathname location of a printable testfile on local machine
 #   config.cups_testpage_file = CUPS_TESTPAGE_FILE
 
 # ---------------------------------------------------------------------
 #  printer device/cups related
 # ---------------------------------------------------------------------
 
+# number of seconds to wait before polling printer status
 #   config.printer_poll_cycle = PRINTER_POLL_CYCLE
 
 

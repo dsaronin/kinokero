@@ -339,7 +339,30 @@ Future API usage
 There are several global parameters which can be set at gem configuration.
 Default values are provided for each parameter. These are expained below.
 Many parameters, however, are fixed by Google Cloud Printer documentation demands
-and should not be changed
+and should not be changed.
+
+
+#### configuration in Rails application
+
+When using kinokero
+in a Rails application, use the template
+<i>console/config/kinokero_initializer_template.rb</i>, which
+shows how to access and change any of these parameters during
+your rails project initialization.
+Copy it into your Rails <i>project-name/config/initializers</i>
+directory, and rename it to: _kinokero.rb_ .
+
+The template file also contains comments describing each parameter.
+
+#### configuration in non-Rails application
+
+You can change these parameters similar to the example below for 
+changing the verbose setting.
+```ruby
+  Kinokero.verbose = true
+```
+
+#### listing of all configuration parameters and defaults
 
 class Proxy required
 * *my_proxy_id:*         =  MY_PROXY_ID    # unique name for this running of the GCP connector client
@@ -378,10 +401,10 @@ cups testpage file path
 printer device/cups related
 * *printer_poll_cycle:* = PRINTER_POLL_CYCLE
 
-### kinokero global constants
+#### kinokero global constants used for defaults
 
 Current constant defaults are defined as follows, with the
-actual definitions in _lib/kinokero.rb_ .
+actual definitions in _lib/kinokero.rb_ . 
 
 ```ruby
 # mimetype for how to encode CDD files
