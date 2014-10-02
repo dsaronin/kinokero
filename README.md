@@ -283,6 +283,165 @@ intercept print notifications and print jobs, etc. So the "user" of kinokero is
 whoever is using the proxy to register and control local printers. It is not
 the end user trying to print something on a cloud printer.
 
+### Printer Names, ids, and aliases
+
+This can potentially be a point of confusion to first time kinokero users, 
+so please pay close attention. Kinokero has been set up so that you can map
+several cloudprint (logical) devices to a single CUPS (physical) device. The
+reason you might want to do this is because each logical device can be defined
+with its own CDD (Cloud Device Description) parameters: such as color vs
+monochrome, dual-sided vs single-sided, etc. For economic purposes, an
+organization might want to limit access to the color-capabilities of a
+laser printer and give out broader access to the monochrome-capability of
+that same printer. With kinokero, this is theoretically possible to do.
+
+So let's work backward through the different names and described them and
+their purpose. The gcp_control hash (later section) maps these all together.
+
+<b>item:</b> This is the hash key into the @proxy.my_devices hash of all
+gcp_control hashes being managed by kinokero.
+
+<b>gcp_cups_alias:</b> This is the printer name as recognized by cups when used
+to issue a print command.
+```
+  lp -d <gcp_cups_alias>
+```
+
+<b>gcp_printer_name:</b> This is the name by which a cloudprint user sees the
+printer when it shows up in their cloudprint managed printers list. For example:
+"Brother MFC-9340CDW".
+
+<b>gcp_printerid:</b> This is a string issued by GCPS for use in GCPS calls.
+For example: "d0510370-f36b-356f-1a82-f93c0756a5d9". This also appears in the
+"advanced details" section of DETAILS for a cloudprint printer in the Manage
+Printers dashboard.
+
+<b>printer_id:</b> This is some type of unique id (string or integer) which
+the user's program (the one which invokes kinokero) uses to access a persistence
+record for the given logical printer. It could, for example, be a database
+record number for the given persistence.
+
+#### Examples
+
+  item: color
+  gcp_cups_alias: laserjet_1020w
+  gcp_printer_name: color laser printer
+  gcp_printerid: d0510370-f36b-356f-1a82-f93c0756a5d9
+  printer_id:  509
+
+  item: b&w
+  gcp_cups_alias: laserjet_1020w
+  gcp_printer_name: monochrome laser printer
+  gcp_printerid: cda248c1-e1f5-8066-1e10-3efe078cface
+  printer_id:  510
+
+  item: test
+  gcp_cups_alias: lp_null
+  gcp_printer_name: null_printer
+  gcp_printerid: 8231517c-716d-4b0a-f721-83fdbe52a05d
+  printer_id:  508
+
+In these examples we see three logical cloudprint printers
+defined. The first two map into the same physical CUPS device.
+The last one maps into a CUPS device, but has actually been
+defined to be file:///dev/null and so no physical device exists.
+
+
+
+
+
+### setting up and initializing the gem
+
+This section will describe the basic first steps of prepping a call to each of the
+major classes of the kinokero gem: Proxy, Printer, and Cloudprint. Proxy.new is the
+highest level and in turn invokes Printer.new and Cloudprint.new. So if you're 
+choosing to work at the Proxy level (recommended!), you won't need to worry
+about the other two.
+
+For references, see the sections below dealing with the primary gcp_control hash,
+kinokero global parameters, pre-defined gem constants,
+and template file for Rails config/initializers usage.
+
+#### Class Proxy initialization
+```ruby
+
+  # build a hash of options for all active & inactive printers
+  # from the persistence memory (in this case a YAML file)
+  # for details on the gcp_control hash, see later sections in this README
+  #
+  def build_device_list()
+
+    load_gcp_seed()    # load the YAML seed data
+
+      # prep to build up a hash of gcp_control hashes
+    gcp_control_hash = {}
+
+    @seed_data.each_key do |item|
+      gcp_control_hash[ item ] = @seed_data[ item ].symbolize_keys  # strip item into hash with keys
+    end   # convert each seed to a device object
+
+    return gcp_control_hash
+    
+  end   # convert each seed to a device object
+
+  gem_options = {
+        # true if automatically jingle connect active printers from list
+      auto_connect:  true,  
+        # true if instance-level verbose log trace of all GCPS and jingle requests
+      verbose:       true, 
+        # true if truncate long responses
+      log_truncate:  true, 
+        # true if log trace all responses from GCPS
+      log_response:  true 
+  }
+
+  @proxy = Kinokero::Proxy.new( build_device_list(), gem_options )
+```
+
+#### Class Proxy automatice running
+
+Proxy is the higher level way to do all cloudprint control. If your gem_options
+have auto_connect set to true, then everything else is automatic for all
+currently registered printers. As job print notifications are received, the
+files will be downloaded, printed, deleted, and the job status updated to DONE.
+
+#### Class Proxy register or remove cloudprint printers
+```ruby
+  new_request = {
+      item:  'name for this item',
+      printer_id:   0,  # will be cue to create new record
+      gcp_printer_name: "gcp_#{item}_printer",
+      capability_ppd: 'pathname for the PPD file',  # legacy GCP 1.0
+      capability_cdd: 'pathname for the CDD file',  # required GCP 2.0
+      cups_alias: 'cups printer name',
+      gcp_uuid:        string, # see gcp_control hash below 
+      gcp_manufacturer:string, # see gcp_control hash below 
+      gcp_model:       string, # see gcp_control hash below 
+      gcp_setup_url:   string, # see gcp_control hash below 
+      gcp_support_url: string, # see gcp_control hash below 
+      gcp_update_url:  string, # see gcp_control hash below 
+      gcp_firmware:    string, # see gcp_control hash below 
+  }
+
+  response = @proxy.do_register( new_request ) do |gcp_control|
+
+      # item_persistence is user-defined means to persist the
+      # GCPS-issued information for a printer
+      # which must be supplied again to the proxy whenever
+      # rebooting
+      # remember to set up a gcp_control[:printer_id] as the
+      # database record number for this new item for any
+      # future need to update persistence (such as on 
+      # refresh token
+    item_persistence( gcp_control )
+
+  end   # do persist new printer information
+
+  unless response[:success]
+    puts "printer registration failed: #{response[:message]}"
+  end
+```
+
 
 ### gcp_control hash
 
