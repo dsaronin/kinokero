@@ -322,7 +322,7 @@ record for the given logical printer. It could, for example, be a database
 record number for the given persistence.
 
 #### Examples
-
+```
   item: color
   gcp_cups_alias: laserjet_1020w
   gcp_printer_name: color laser printer
@@ -340,6 +340,7 @@ record number for the given persistence.
   gcp_printer_name: null_printer
   gcp_printerid: 8231517c-716d-4b0a-f721-83fdbe52a05d
   printer_id:  508
+```
 
 In these examples we see three logical cloudprint printers
 defined. The first two map into the same physical CUPS device.
