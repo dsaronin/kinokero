@@ -400,15 +400,27 @@ and template file for Rails config/initializers usage.
   @proxy = Kinokero::Proxy.new( build_device_list(), gem_options )
 ```
 
-#### Class Proxy automatice running
+#### Class Proxy automatic running
 
 Proxy is the higher level way to do all cloudprint control. If your gem_options
 have auto_connect set to true, then everything else is automatic for all
 currently registered printers. As job print notifications are received, the
 files will be downloaded, printed, deleted, and the job status updated to DONE.
 
-#### Class Proxy register or remove cloudprint printers
+#### Class Proxy register cloudprint printers
+This shows the required preparation and invocation to register
+a new printer as a cloudprint printer managed by the kinokero proxy.
+This is the only way to register a printer from the proxy. It uses
+GCPS' anonymous printer registration method (meaning that the owner
+google account is not known at the time when registration is invoked.
+The owner must 'claim' the printer using a GCPS-issued token. In the
+process of claiming the printer, the owner might have to sign in to
+a Google account, at which point authentication is established and
+then the proxy can proceed to get OAUTH2 authorization tokens).
+
 ```ruby
+
+def register_printer_scaffold( any_parameters )
   new_request = {
       item:  'name for this item',
       printer_id:   0,  # will be cue to create new record
@@ -432,8 +444,8 @@ files will be downloaded, printed, deleted, and the job status updated to DONE.
       # which must be supplied again to the proxy whenever
       # rebooting
       # remember to set up a gcp_control[:printer_id] as the
-      # database record number for this new item for any
-      # future need to update persistence (such as on 
+    # database record number for this new item for any
+    # future need to update persistence (such as on 
       # refresh token
     item_persistence( gcp_control )
 
@@ -442,6 +454,26 @@ files will be downloaded, printed, deleted, and the job status updated to DONE.
   unless response[:success]
     puts "printer registration failed: #{response[:message]}"
   end
+
+end
+
+```
+
+#### Class Proxy remove cloudprint printers
+This shows the required set up for removing a printer from the cloudprint
+management. Cloudprint spec requires the proxy to offer the user a
+way to remove a printer from cloudprint management.
+
+```ruby
+def remove_printer_scaffold( item )
+
+   @proxy.do_delete( item )  # removes printer associated with item
+
+      # do any persistence clean up associated with a deactivated item,
+      # including removal from the my_devices hash.
+   deactivate_item_persistence( @proxy.my_devices, item )
+end
+
 ```
 
 
