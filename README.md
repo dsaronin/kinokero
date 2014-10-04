@@ -469,12 +469,37 @@ def remove_printer_scaffold( item )
 
    @proxy.do_delete( item )  # removes printer associated with item
 
-      # do any persistence clean up associated with a deactivated item,
-      # including removal from the my_devices hash.
+      # deactivate_item_persistence is user-defined means to
+      # do any persistence cleanup associated with a deactivated item,
+      # including removal from the my_devices hash, if desired.
    deactivate_item_persistence( @proxy.my_devices, item )
 end
 
 ```
+
+#### Class Proxy other API methods
+These normally won't be needed. They were originally made high-level
+so that the debugging console could individually trigger an action and
+the resulting log trace be viewed.
+
+Format for discussion will be instance method name & invocation, description.
+Typically returns the body of a json-parsed GCP response hash (they all have
+response['success'] set to true if no errors). See the GCP documentation for
+more detail.
+
+* do_refresh(item) - refreshes the token authorization; update persistence afterwards.
+* do_list(item) - returns the list of printers as a json-parsed list of hashes in response['printers']
+* do_connect(item) - manually initiates the jingle connection which will show the
+  printer as on-line to the cloudprint user.
+* do_fetch_jobs(item) - returns a json-parsed list of gcp job hashes
+* do_print_jobs(printerid) - fetches, then prints all jobs in queue for given printerid
+* do_ready_state(item) - tells GCPS that the printer is ready for jobs
+* item_from_printerid(printerid) - returns the item key associated with the printerid;
+  raises PrinterNotFound exception if nothing matched.
+* print_gcp_registration_information(response) - prints the necessary GCP-issued information
+  needed for claiming a newly registered printer. Printing occurs on the printer
+  being registered. "response" parameter is the kinokero-generated hash of information
+  required.
 
 
 ### gcp_control hash
