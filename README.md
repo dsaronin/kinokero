@@ -364,6 +364,29 @@ For references, see the sections below dealing with the primary gcp_control hash
 kinokero global parameters, pre-defined gem constants,
 and template file for Rails config/initializers usage.
 
+### Class Proxy
+Proxy encapsulates everything needed to function as a Google Cloudprint Proxy
+Connector Client for any number of printer devices which might be connected to the
+client machine.
+
+The Proxy has to function correctly even after recovering from power loss or
+restarting. Thus there has to be a persistence mechanism in place. This
+mechanism is beyond the scope of the gem and is the invoking program's
+responsibility.
+
+At its simpliest, the invoking program accesses Proxy in three ways:
+
+* Kinokero::Proxy.new - instantiates a Proxy object which consists of a
+(possible) list of all actively managed cloudprint devices (from the
+persistence). All active printers are automatically logically connected
+to GCPS thus showing as "on-line" and ready for printing.
+* Proxy#do_register - registers a new printer with GCPS and creates an
+entry in the managed devices list.
+* Proxy#do_delete - removes a managed printer from GCPS control.
+
+The sections below show scaffold coding for preparing those calls.
+
+
 #### Class Proxy initialization
 ```ruby
 
