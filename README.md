@@ -5,14 +5,14 @@ Complete Google CloudPrint Proxy client. Includes seperate classes to handle
 the GCP server protocol (Cloudprint), the GCP Jingle notification protocol 
 (Jingle), and a class for interacting with CUPS devices on a linux system 
 (Printer). The Cloudprint class uses a faraday-based http client for 
-interacting with Google CloudPrint Services. Persistence is expected to 
+interacting with Google CloudPrint Services (GCPS). Persistence is expected to 
 be handled by whatever is invoking Kinokero. Each of these major classes
 can (more or less) function in a stand-alone manner for low-level 
 cloudprint primitives.
 
 # Kinokero Status
 
-* The gem is currently pre-Alpha.
+* The gem is currently Alpha, pending complettion of this documentation.
 * All GCP protocol interactions are working as a GCP2.0 printer
 * jingle notifications are working.
 * Files can be cloudprinted remotely.
@@ -21,8 +21,8 @@ cloudprint primitives.
   which functions as a debug-level persistence calling module for overall 
   testing kinokero. Please see discussion below.
 * Kinokero uses Ruby threads when polling is required.
-* TBD: documentation
-* TBD: unit tests
+* documentation partially completed.
+* unit tests completed (for now).
 
 ## Discussion
 
