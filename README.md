@@ -524,6 +524,19 @@ more detail.
   being registered. "response" parameter is the kinokero-generated hash of information
   required.
 
+### Class Printer
+
+This encapsulates all generic CUPS printer interactions.
+
+### Class Cloudprint
+
+This encapsulates all low-level calls to GCPS.
+
+### Class Jingle
+
+This encapsulates all XMPP interactions with Google's jingle server which
+delivers asynch notifications about the presence of print jobs. _Jinge_
+includes Google's extensions to XMPP for this purpose.
 
 ### gcp_control hash
 
