@@ -21,7 +21,7 @@ _Kinokero_ is swahili for an impala (animal, not Chevy model).
 
 # Kinokero Status
 
-* The gem is currently Alpha, pending complettion of this documentation.
+* The gem is currently at Beta, v0.0.5.
 * All GCP protocol interactions are working as a GCP2.0 printer
 * jingle notifications are working.
 * Files can be cloudprinted remotely.
@@ -30,8 +30,8 @@ _Kinokero_ is swahili for an impala (animal, not Chevy model).
   which functions as a debug-level persistence calling module for overall 
   testing kinokero. Please see discussion below.
 * Kinokero uses Ruby threads when polling is required.
-* documentation partially completed.
-* unit tests completed (for now).
+* Documentation draft completed.
+* Unit tests completed (for now).
 
 ## Discussion
 
@@ -90,7 +90,7 @@ Or install it yourself as:
 
 During development, I needed a convenient setup and testing structure
 to individually trigger GCP primitives and see traces of the request
-and result. I'm callling that the "console" and it has no function
+and result. I'm calling that the "console" and it has no function
 inherent to the gem, other than a convenient setup and testing
 apparatus. Rather than having it vanish, I have made it part of the
 gem superstructure and it can be run indepently, as though it were
@@ -398,6 +398,9 @@ entry in the managed devices list.
 
 The sections below show scaffold coding for preparing those calls.
 
+Note: Any methods not described in the API are not expected to be
+publicly accessible; in future versions they may become inaccessible. 
+Please do not use.
 
 #### Class Proxy initialization
 ```ruby
@@ -543,6 +546,23 @@ NOTE: if you are using Class Proxy, you will not need to access the
 cloudprint objects and you will not need the information in this section.
 You may safely skip this section!
 
+Note: Any methods not described in the API are not expected to be
+publicly accessible; in future versions they may become inaccessible. 
+Please do not use.
+
+#### Printer#start_poll_thread
+Starts a background thread to periodically poll the printer status
+and advise GCPS of any changes or error conditions.
+
+#### Printer#stop_poll_thread
+Stops the background thread to periodically poll the printer status.
+
+#### Printer#print_file(file)
+Prints the file (full path filename) to the object's printer (using
+cups_alias).
+
+
+
 ### Class Cloudprint
 
 This encapsulates all low-level calls to GCPS.
@@ -558,6 +578,10 @@ and a Jingle object created if the printer is active.
 Any responses that are labelled "Returns a GCP json-parsed response hash" means
 that the result is a hash per the GCP documentation, which should be consulted for
 the fields returned.
+
+Note: Any methods not described in the API are not expected to be
+publicly accessible; in future versions they may become inaccessible. 
+Please do not use.
 
 #### Cloudprint.regsiter_anonymous_printer
 
@@ -625,10 +649,18 @@ only one item.
 
 This encapsulates all XMPP interactions with Google's jingle server which
 delivers asynch notifications about the presence of print jobs. _Jingle_
-includes Google's extensions to XMPP for this purpose.
+includes Google's extensions to XMPP for this purpose. There really isn't
+an API here. The _jingle.rb_ code is mainly what's needed to use xmpp4r
+in a Google Jingle context. Notification callbacks are handled through
+Ruby's block closure and infer reentreant code.
+
 NOTE: if you are using Class Proxy, you will not need to access the
 cloudprint objects and you will not need the information in this section.
 You may safely skip this section!
+
+NOTE: Any methods not described in the API are not expected to be
+publicly accessible; in future versions they may become inaccessible. 
+Please do not use.
 
 ### gcp_control hash
 
