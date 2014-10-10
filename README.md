@@ -10,6 +10,15 @@ be handled by whatever is invoking Kinokero. Each of these major classes
 can (more or less) function in a stand-alone manner for low-level 
 cloudprint primitives.
 
+About this document: I've tried to capture anything and everything
+relevant to using the gem. This information is not necessarily well organized (yet).
+Consider it a first draft. If this gem is simply used as a proxy connector
+(recomended), then usage is much simpler. If instead you only want the
+GCPS interfaces ( Class Cloudprint ), then you will need more detailed
+information found in this document.
+
+_Kinokero_ is swahili for an impala (animal, not Chevy model).
+
 # Kinokero Status
 
 * The gem is currently Alpha, pending complettion of this documentation.
@@ -26,15 +35,18 @@ cloudprint primitives.
 
 ## Discussion
 
-GCP documentation is bad at best and inaccurate and incomplete at worst.
+GCP documentation is confusingly bad at best and inaccurate and incomplete at worst.
 There is nothing approaching correct and accurate protocol documentation with
-complete examples. There are no state diagrams. 
+complete examples of actual data requests and responses. 
+There are no state diagrams. 
 
 The Chromium Project has a GCP proxy, but the C++ code is the worst code I have
 ever seen and was almost useless as a reference. Needless to say, the code has
-no documentation. From a Ruby perspective, the code is horrific and frightening.
+no documentation. From a Ruby perspective, the code is horrific and frightening,
+a Halloween nightmare visited upon the safely slumbering programmer.
 Is Ruby the only world with packaged interfaces for doing common things like
-encryption, http client, xmpp client, etc?
+encryption, http client, xmpp client, etc? Compare the code in cloudprint.rb
+to the spaghetti tangle in the chromium proxy connector.
 
 Libjingle was touted as necessary; but again, there is no API documentation and
 numerous sources mentioned the impossibility of getting it working on a linux
@@ -45,14 +57,14 @@ match the current protocol. Lately, Google has added numerous disclaimers to the
 examples (which are not complete GCP examples!) about the code being outdated
 and to use it as reference only.
 
-During development, I had to trial & error hack my way to get the protocol's working.
+During development, I had to trial-&-error hack my way to get the protocols working.
 
 I used popular working Ruby gems to make this package DRY:
 
-* faraday as the http client (and needed faraday middleware)
-* xmpp4r as an excellent XMPP module (made skipping libjingle easy)
-* cups as an interface to the linux CUPS system.
-* beefcake as the protocol buffer handler & compiler
+* _faraday_ as the http client (and needed faraday middleware)
+* _xmpp4r_ as an excellent XMPP module (made skipping libjingle easy)
+* _cups_ as an interface to the linux CUPS system.
+* _beefcake_ as the protocol buffer handler & compiler
 
 ## Installation
 
@@ -239,25 +251,25 @@ tool for this is at: https://www.google.com/cloudprint/tools/cdd/cdd.html
 The kinokero overall structure parallels the different levels for the
 cloudprint protocol.
 
-Proxy - is the overall, high-level appliance that satisfies the basic
+<b>Proxy</b> - is the overall, high-level appliance that satisfies the basic
 functionality of a cloudprint device. This is the expected entry point
 for an application which also maintains persistence of printer information.
 The kinokero console (above), for example, functions as a crude
 persistent application.
 
-Cloudprint - is the primary interace for issuing commands to 
+<b>Cloudprint</b> - is the primary interace for issuing commands to 
 Google Cloudprint servers via HTTP POST commands. Proxy functions
 use these primitives to do their work. The main data structure
 used here is based off of an options hash termed
 <i>gcp_control</i> (described below).
 
-Jingle - is the interface for the gtalk jingle (XMPP) protocol
+<b>Jingle</b> - is the interface for the gtalk jingle (XMPP) protocol
 required for asynchronously receiving notification of pending
 print jobs (uses a callback mechanism). Class Cloudprint 
 directly accesses Jingle, so you probably won't have to be 
 too concerned about it.
 
-Printer - is the interface to the local OS CUPS system and does any
+<b>Printer</b> - is the interface to the local OS CUPS system and does any
 actual printing. It also does device state polling.
 
 ## Threads
@@ -527,16 +539,96 @@ more detail.
 ### Class Printer
 
 This encapsulates all generic CUPS printer interactions.
+NOTE: if you are using Class Proxy, you will not need to access the
+cloudprint objects and you will not need the information in this section.
+You may safely skip this section!
 
 ### Class Cloudprint
 
 This encapsulates all low-level calls to GCPS.
+NOTE: if you are using Class Proxy, you will not need to access the
+cloudprint objects and you will not need the information in this section.
+You may safely skip this section!
+
+Initialization requires the gcp_control hash and the options hash (which
+controls a few instance settings like verbose, auto_connect, log_truncate, and
+log_response). A new Cloudprint object is created, a faraday connection is set up, 
+and a Jingle object created if the printer is active.
+
+Any responses that are labelled "Returns a GCP json-parsed response hash" means
+that the result is a hash per the GCP documentation, which should be consulted for
+the fields returned.
+
+#### Cloudprint.regsiter_anonymous_printer
+
+Pass a request hash and a closure block (invoked upon successful registration
+confirmation). A thread is used to handle the polling of the confirmation status,
+so execution immediategly returns after starting (but before confirmation) passing
+back a response hash containing: 
+
+* :success - true if the registration process was successfully begun
+* :message - error message if not successful
+* :printer_id - any persistence id that might have been passed
+* :cups_alias - the cups name of the printer.
+* :gcp_printer - GCPS printer name (echoed from gcp_control hash)
+* :gcp_printer_id - GCPS-issued printer id
+* :gcp_invite_page_url - complete URL for claim printer page
+* :gcp_easy_reg_url - simple one-click URL to claim the printer
+* :gcp_auto_invite_url - similar
+* :gcp_claim_token_url - similar
+* :gcp_printer_reg_token - token itself for claiming printer
+
+GCP documentation states that the invoker should print out instructions
+to the user on how to claim the printer using the information in the
+response hash.
+
+All the other class-level methods are invoked from this method and
+show should not normally be directly accessed by an outside program.
+
+#### Cloudprint#gtalk_start_connection(&block)
+Invoke this to establish a jingle connection with GCPS. This will let
+GCPS know that the printer is on-line and actively seeking jobs. 
+Jingle sets up an asynch notification thread. When a notification is received,
+the closure block is invoked receiving the printerid (gcp_issued id)
+for the printer have queued jobs.
+
+#### Cloudprint#gcp_get_job_file( file_url )
+Uses the file_url to request the file from GCPS and returns it (the entire
+file!) as the response. If there was an error, then returns nil.
+
+#### Cloudprint#gcp_refresh_tokens
+Requests a refresh of the cloudprint OAUTH2 tokens if expired.
+Persistence should be updated after returning new info in gcp_control hash.
+
+#### Cloudprint#gcp_get_printer_fetch( printerid )
+Returns a GCP json-parsed response hash containing list of jobs pending for a
+given printer.
+
+#### Cloudprint#gcp_job_status( jobid, status, nbr_pages )
+Update the job status. Status should be one of the GCP_JOBSTATE_xxxx constants.
+nbr_pages is the number of pages that have been printed.
+
+
+#### Cloudprint#gcp_job_status_abort( jobid, status, nbr_pages )
+Updates the abort status for a job that failed. Use one of the GCP_USER_ACTION_xxxx
+constants.
+
+#### Cloudprint#gcp_get_printer_list
+Returns a GCP json-parsed response hash containing list of printers.
+Currently, kinokero only supports one printer per cloudprint object 
+(corresponds to specific OAUTH2 credentials), so the printer list will have
+only one item.
+
+
 
 ### Class Jingle
 
 This encapsulates all XMPP interactions with Google's jingle server which
-delivers asynch notifications about the presence of print jobs. _Jinge_
+delivers asynch notifications about the presence of print jobs. _Jingle_
 includes Google's extensions to XMPP for this purpose.
+NOTE: if you are using Class Proxy, you will not need to access the
+cloudprint objects and you will not need the information in this section.
+You may safely skip this section!
 
 ### gcp_control hash
 
