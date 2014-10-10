@@ -17,7 +17,7 @@ Consider it a first draft. If this gem is simply used as a proxy connector
 GCPS interfaces ( Class Cloudprint ), then you will need more detailed
 information found in this document.
 
-_Kinokero_ is swahili for an impala (animal, not Chevy model).
+_Kinokero_ is swahili for an impala (the animal, not the Chevy model).
 
 # Kinokero Status
 
@@ -68,10 +68,10 @@ I used popular working Ruby gems to make this package DRY:
 
 ## Installation
 
-Add this line to your application's Gemfile (pre-alpha versions):
+Add this line to your application's Gemfile:
 
 ```
-    gem 'kinokero', :git => "git://github.com/dsaronin/kinokero.git"  
+    gem 'kinokero'  
 ```
 
 And then execute:
@@ -83,7 +83,7 @@ And then execute:
 Or install it yourself as:
 
 ```
-    $ gem install kinokero, :git => "git://github.com/dsaronin/kinokero.git"
+    $ gem install kinokero
 ```
 
 ## Console
