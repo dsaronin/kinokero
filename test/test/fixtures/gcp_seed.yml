@@ -3,15 +3,15 @@ test:
   printer_id: 0
   item: test
   cups_alias: lp_null
-  is_active: true
+  is_active: false
   virgin_access: false
-  gcp_xmpp_jid: 345e29425516857a8c70581f58a180c7@cloudprint.googleusercontent.com
+  gcp_xmpp_jid: 345e2_garbagegarbagegarbagegarbage_c7@cloudprint.googleusercontent.com
   gcp_confirmation_url: https://www.google.com/cloudprint/regconfirmpage?printername=gcp_test_printer&email=sample_owner@gmail.com&dpi=300&pagesize=215900,279400
   gcp_owner_email: sample_owner@gmail.com
   gcp_printer_name: gcp_test_printer
-  gcp_printerid: d0510370-f36b-356f-1a82-f93c0756a5d9
-  gcp_access_token: ya29.UwCf33j8HH4t7xwAAAAtOQ0xP1wGhvRxnriopWbvKUUPBgaw6aJ_xUYXpBXqEw
-  gcp_refresh_token: 1/MPXAGbW_0AkF5eSFtc96PesWp68lFnOz-HUSUd5aU_w
+  gcp_printerid: d0510370-_garbagegarbagegarbagegarbage_-f93c0756a5d9
+  gcp_access_token: ya29.UwCf_garbagegarbagegarbage_garbagegarbagegarbagegarbage_xUYXpBXqEw
+  gcp_refresh_token: 1/MPXAGbW_garbagegarbagegarbagegarbage_d5aU_w
   gcp_token_type: Bearer
   gcp_token_expiry_time: 2014-07-31 16:35:00.538511653 -07:00
   capability_ppd: /etc/cups/ppd/laserjet_1102w.ppd
@@ -26,13 +26,13 @@ test:
 
 # item: lime is expected to be not registered anymore and not active
 lime:
-  gcp_xmpp_jid: 3e0163e6a4802ba77c29d73410aad929@cloudprint.googleusercontent.com
+  gcp_xmpp_jid: 3e0163e6_garbagegarbagegarbagegarbage_929@cloudprint.googleusercontent.com
   gcp_confirmation_url: https://www.google.com/cloudprint/regconfirmpage?printername=gcp_lime_printer&email=dsanderson77@gmail.com&dpi=300&pagesize=215900,279400
-  gcp_owner_email: dsanderson77@gmail.com
+  gcp_owner_email: sample_owner@gmail.com
   gcp_printer_name: gcp_lime_printer
   gcp_printerid: 8231517c-716d-4b0a-f721-83fdbe52a05d
-  gcp_access_token: ya29.UgA-fXhCHp0ZiR0AAADbQqXfRA-ks9CK2POGZA8yYF2a1vhEQa4G4_QSltFK_g
-  gcp_refresh_token: 1/NjwUJyyrebUIXsvl1mvqDmKCr-VtZfYR3pPusRPkLH0
+  gcp_access_token: ya29.UgA-fX_garbagegarbagegarbagegarbage_F2a1vhEQa4G4_QSltFK_g
+  gcp_refresh_token: 1/NjwUJ_garbagegarbagegarbagegarbage_usRPkLH0
   gcp_token_type: Bearer
   gcp_token_expiry_time: 2014-07-30 10:27:22.592090444 -07:00
   is_active: false
