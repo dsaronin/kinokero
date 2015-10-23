@@ -201,7 +201,8 @@ SAMPLE_GCP_OPTIONS = {
   item: 'test',
   cups_alias: 'cups_printer_name',
   virgin_access: false,   # true for initial oauth2 token
-  is_active: false,   # set to true after successful registration
+  is_active: false,   # set to true if currently cloudprint registration
+  is_registered: false,   # set to true after successful registration
 
   capability_ppd: '/etc/cups/ppd/my_printer.ppd',
   capability_cdd: '/etc/cups/cdd/laserjet_1102w.cdd',
